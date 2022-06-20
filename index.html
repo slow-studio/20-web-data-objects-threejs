@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="./style.css">
+    <title>Web Dev Begin</title>
+
+    <style>
+        body{
+            background-color: rgb(236, 249, 252);
+            color:black;
+        }
+
+        a{
+            color:blue;  
+        }
+
+    	/* Create two equal columns that floats next to each other */
+			.column {
+			float: left;
+			width: 50%;
+			padding: 10px;
+			height: 100%; /* Should be removed. Only for demonstration */
+			}
+
+			/* Clear floats after the columns */
+			.row:after {
+			content: "";
+			display: table;
+			clear: both;
+			}    
+
+    </style>
+
+</head>
+
+<body>
+
+    <header>
+     
+        <hr>
+        <h1>Data Driven Interactive 3d objects for the web</h1>
+        <hr>
+    </header>
+
+    <br>
+    <section>
+        <div class="row">
+
+            <div class="coloumn" style="background-color:antiquewhite;">
+                <div id="container"></div>
+                <a href="./1. place 3d object/index.html">
+                    <h3>Place a 3d object into the web</h3> 
+                </a>                               
+            </div>            
+
+            <div class="coloumn" style="background-color:aqua;">
+                <div id="container"></div>
+                <a href="./2. make it dance/index.html">
+                    <h3>Make it dance</h3>
+                </a>               
+            </div>
+
+        </div>    
+
+        <br>
+        <div class="row">
+
+            <div class="coloumn" style="background-color:rgb(235, 246, 152);">
+                <div id="container"></div>
+                <a href="./3. create native object/index.html">
+                    <h3>Natively create an object on the web</h3>
+                </a>                
+            </div>
+
+            <div class="coloumn" style="background-color:rgb(171, 254, 255);">
+                <div id="container"></div>
+                <a href="./4. data affect object/index.html">
+                    <h3>Let data affect the object parametrically</h3>
+                </a>                
+            </div>
+
+        </div>
+    </section>
+    <br>
+    
+    <footer>
+        <hr>
+        <h5>Web Data Objects</h5>
+    </footer>
+
+</body>
+</html>
