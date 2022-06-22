@@ -1,9 +1,5 @@
-
-
-const scene = new THREE.Scene();
-
 //creating the scene
-//const scene = new THREE.Scene();
+const scene = new THREE.Scene();
 //const gui=new dat.GUI();
 
 var plane=getPlane(20);
@@ -11,7 +7,6 @@ var cube=getCube(1,1,1);
 var pointLight1=getPointLight(7);
 
 plane.name = 'plane1';
-
 plane.rotation.x = Math.PI/2;
 
 scene.add(cube);
