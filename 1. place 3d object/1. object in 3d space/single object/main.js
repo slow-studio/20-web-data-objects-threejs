@@ -1,5 +1,6 @@
+conosle.log(THREE);
 //creating the scene
-const scene = new THREE.Scene();
+var scene = new THREE.Scene();
 //const gui=new dat.GUI();
 
 var plane=getPlane(20);
