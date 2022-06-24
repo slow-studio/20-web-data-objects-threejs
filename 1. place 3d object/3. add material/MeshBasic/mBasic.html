@@ -8,17 +8,29 @@
     <title>add material-mesh basic</title>
 
     <style type="text/css">
-        html, body {margin: 0; padding: 0; overflow: hidden}
+        html, body {margin: 0; padding: 1%; overflow: hidden}
+
+        canvas {
+                background-color: rgb(165, 165, 165);
+                position: absolute;
+                height: 100vh;
+                width: 100vw;
+                overflow: hidden;
+            }
     </style>
+
+    
 </head>
 
 <body>
     <div id="webgl"></div>
     <script src="./js/dat.gui.min.js"></script>
     <script src="../js/three.js"></script> 
+    
     <header>
         <h2>Mesh Basic Material</h2>
     </header>
+    
     <section>
         <script src="./main.js"></script>
     </section>

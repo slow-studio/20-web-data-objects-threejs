@@ -30,7 +30,10 @@ camera.position.set(-1,0,5);
 pointLight1.position.set(-1,1.5,0.5);
 
 //setting up the renderer
-const renderer=new THREE.WebGLRenderer();   //creating an instance of the renderer
+const renderer=new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: true
+});   //creating an instance of the renderer
 renderer.setSize( window.innerWidth, window.innerHeight);   //setting up the size of the renderer
 document.body.appendChild( renderer.domElement);
 
