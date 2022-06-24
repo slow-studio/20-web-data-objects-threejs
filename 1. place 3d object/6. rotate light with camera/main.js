@@ -3,15 +3,13 @@ const scene=new THREE.Scene();
 const gui=new dat.GUI();
 
 //calling the declared function
-var cube=getCube(1,1,1);            //adding a cube to the scene
-var pointLight=getPointLight(3);    //adding a point light,the variable passes the light intensity
-var lightSource=getSphere(0.05);    //adding the light source
-var plane=getPlane();               //adding the plane
-
+var cube=getCube(1,1,1);                //adding a cube to the scene
+var pointLight=getPointLight(1.5);     //adding a point light,the variable passes the light intensity
+// var lightSource=getSphere(0.05);     //adding the light source
+var plane=getPlane();                   //adding the plane
+           
 //adding the individual objects to the scene
 scene.add(cube);
-scene.add(pointLight);
-pointLight.add(lightSource);
 scene.add(plane);
 
 //rotating the plan on the x axis to use it as a floor
@@ -27,27 +25,30 @@ var camera=new THREE.PerspectiveCamera(
 
 //set camera positions
 camera.position.set(3,3,3);
-
-//setting the position of the pointLight on the x,y,z coordinates
 pointLight.position.set(0,1.9,0);
+
+//add the light source as a child of the camera to make the camera as the soure of the light
+camera.add(pointLight);
+
+//we need to add the camera to the scene as we created a child of it
+scene.add(camera)
 
 //setting the position of the box with respect to the y axis on top of the plan
 cube.position.y = cube.geometry.parameters.height/2;  
 
 //adding the GUI controls for the point light
-const pointLightGUI=gui.addFolder('point light')
+const pointLightGUI=gui.addFolder('light intensity')
 
 //adding the GUI controls
 pointLightGUI.add(pointLight, 'intensity').min(0).max(10).step(0.01);
-pointLightGUI.add(pointLight.position, 'x').min(-1).max(3).step(0.01);
-pointLightGUI.add(pointLight.position, 'y').min(1.48).max(5).step(0.01);
-pointLightGUI.add(pointLight.position, 'z').min(-1).max(3).step(0.01);
+
 
 //setting up the renderer
 const renderer=new THREE.WebGLRenderer({
     alpha:true,
     antialias:true
 });   //creating an instance of the renderer
+
 
 renderer.shadowMap.enabled = true;                          //enabling shadow in render
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
@@ -56,7 +57,15 @@ document.body.appendChild( renderer.domElement);
 
 //setting up controls for orbit control
 controls = new THREE.OrbitControls(camera,renderer.domElement);
-controls.rotateSpeed = 0.75;              
+controls.rotateSpeed = 0.75;   
+
+//function to add a PointLight
+function getPointLight(intensity){
+    const light = new THREE.PointLight(0xffffff, intensity);
+    light.castShadow=true;
+    return light;
+}
+
 
 //function to display a box cube
 function getCube(width,height,depth){
@@ -79,26 +88,6 @@ function getPlane(){
     const mesh=new THREE.Mesh(geometry,material)
     mesh.receiveShadow = true;      //set this to true to allow the object to recieve the shadow
     return mesh;
-}
-
-//function to add a PointLight
-function getPointLight(intensity){
-    const light = new THREE.PointLight(0xffffff, intensity);
-    light.castShadow=true;
-    return light;
-}
-
-//function to get a sphere
-function getSphere(size) {
-	var geometry = new THREE.SphereGeometry(size, 24, 24);
-	var material = new THREE.MeshBasicMaterial({
-		color: 0xffffff
-	});
-	var mesh = new THREE.Mesh(
-		geometry,
-		material 
-	);
-	return mesh;
 }
 
 //animating the scene    
