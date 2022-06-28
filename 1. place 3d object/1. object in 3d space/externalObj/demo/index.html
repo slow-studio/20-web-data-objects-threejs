@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - STL</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
+   		<script src="https://cdn.jsdelivr.net/npm/three@0.110/examples/js/controls/OrbitControls.js"></script>
+   		<script src="https://cdn.jsdelivr.net/npm/stl-loader@1/STLLoader.js"></script>
+   		<style>
+        	body {
+            	margin: 0;
+            	overflow: hidden;
+        	}
+    	</style>
+	</head>
+	<body>
+	
+		<!-- Div which will hold the Output -->
+		<div id="WebGL-output">
+		</div>
+
+		<script>
+			// Necessary for camera/plane rotation
+			var degree = Math.PI/180;
+
+			// Setup
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+			var renderer = new THREE.WebGLRenderer();
+
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
+
+			// Resize after viewport-size-change
+			window.addEventListener("resize", function () {
+			    var height = window.innerHeight;
+			    var width = window.innerWidth;
+			    renderer.setSize(width, height);
+			    camera.aspect = width / height;
+			    camera.updateProjectionMatrix();
+			});
+
+			// Adding controls
+			controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+			var loader = new THREE.STLLoader();
+		
+			// Binary files - STL Import
+			loader.load( './assets/obj1.stl', function ( geometry ) {
+			    var material = new THREE.MeshBasicMaterial( { color: 0xFFFFFF, specular: 0x111111, shininess: 200 } );
+			    var mesh = new THREE.Mesh( geometry, material );
+			    mesh.position.set( 0, 0, 0);
+				mesh.scale.set(0.9,0.9,0.9)
+			    scene.add( mesh );
+			} );
+
+			// Camera positioning
+			camera.position.z = 100;
+			camera.position.y = 100;
+			camera.rotation.x = -45 * degree;
+
+			// Lighting
+			scene.add( new THREE.AmbientLight( 0xffffff, 1 ) );
+			const dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
+			dirLight.position.set( 5, 10, 7.5 );
+			scene.add( dirLight );
+
+			
+			// Draw scene
+			var render = function () {
+			    renderer.render(scene, camera);
+			};
+
+			// Run game loop (render,repeat)
+			var GameLoop = function () {
+			    requestAnimationFrame(GameLoop);
+
+			    render();
+			};
+
+			GameLoop();
+		</script>
+
+	</body>
+</html>
