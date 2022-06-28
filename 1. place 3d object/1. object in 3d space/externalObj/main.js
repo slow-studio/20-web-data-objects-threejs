@@ -2,9 +2,6 @@
 const scene=new THREE.Scene();
 const gui=new dat.GUI();
 
-
-var model;
-
 //calling the declared functions
 var plane=getPlane();
 var ambLight=getAmbientLight(0.4);
