@@ -9,7 +9,7 @@ const gui=new dat.GUI();
 var plane=getPlane();
 var sphere=getSphere(0.35,32,16);
 var hemiLight=getHemiLight(0.5);
-var spotLight=getSpotLight(0.7);
+var spotLight=getSpotLight(0.5);
 
 
 //adding elements to the scene
