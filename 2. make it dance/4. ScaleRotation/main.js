@@ -54,7 +54,7 @@ cubeScale.add(cube1.scale, 'z').min(0.1).max(10).step(0.01).name('depth');
 const torusRotate=gui.addFolder('Rotate torus')     //----rotating the cube------------
 torusRotate.add(torus1.rotation, 'x').min(0.1).max(10).step(0.01).name('roatation x');
 torusRotate.add(torus1.rotation, 'y').min(0.1).max(10).step(0.01).name('roatation y');
-torusRotate.add(torus1.rotation, 'z').min(0.1).max(10).step(0.01).name('roatation z');
+
 
 const sphereOpacity=gui.addFolder('Sphere Opacity') //----changing the opacity of the object-------
 sphereOpacity.add(sphere1.material,'opacity').min(0.2).max(1).step(0.001).name('opacity');
