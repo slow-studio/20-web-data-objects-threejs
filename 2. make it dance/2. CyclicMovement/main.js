@@ -5,10 +5,11 @@ const gui=new dat.GUI()
 
 //objects to call the elements
 var cube1=getCube(0.8,0.8,0.8);
-var sphere1=getSphere(0.35,32,16)
-var sphere2=getSphere(0.35,32,16)
-var sphere3=getSphere(0.2,32,16)
-var sphere4=getSphere(0.2,32,16)
+var sphere1=getSphere(0.35,32,16,0x3D9D9B)
+var sphere2=getSphere(0.35,32,16,0x3D9D9B)
+var sphere3=getSphere(0.2,32,16,0x3290FF)
+var sphere4=getSphere(0.2,32,16,0x3290FF)
+
 var hemiLight=getHemiLight(0.5);
 var spotLight=getSpotLight(0.5);
 
@@ -24,13 +25,13 @@ scene.add(spotLight);
 scene.add(sphere1,sphere2,sphere3,sphere4);
 
 //creating a parent container
-var parentContainer = new THREE.Mesh();
-scene.add(parentContainer);
-parentContainer.add(sphere1,sphere2,sphere3,sphere4);
+var parentContainer1 = new THREE.Mesh();
+scene.add(parentContainer1);
+parentContainer1.add(sphere1,sphere2,sphere3,sphere4);
 
 //setting up ther perspective camera
 var camera=new THREE.PerspectiveCamera(
-    45,                                       //camera FOV
+    50,                                       //camera FOV
     window.innerWidth/window.innerHeight,     //camera aspectRatio
     0.1,                                      //nearSight
     1000                                      //farSight
@@ -46,6 +47,7 @@ sphere1.position.set(-1.5,0,0);
 sphere2.position.set(1.5,0,0);
 sphere3.position.set(0,1.5,0);
 sphere4.position.set(0,-1.5,0);
+
 
 //setting up the renderer
 const renderer=new THREE.WebGLRenderer({
@@ -92,10 +94,11 @@ function getCube(width,height,depth){
 }
 
 //function to get a sphere
-function getSphere(radius,widthSegment,heightSegment){
+function getSphere(radius,widthSegment,heightSegment,color){
     const geometry=new THREE.SphereBufferGeometry(radius,widthSegment,heightSegment);
     const material=new THREE.MeshPhongMaterial({      
-        color:  0xaadecc       
+        // color:  0x3D9D9B
+        color: color       
     });
     const mesh=new THREE.Mesh(geometry,material);
     mesh.receiveShadow=true;
@@ -109,10 +112,10 @@ function animate(){
     requestAnimationFrame(animate);
     cube1.rotation.x+=0.0025;
     cube1.rotation.y-=0.0025;
-   // parentContainer.rotation.x+=0.0025;
-    parentContainer.rotation.z-=0.01;   
-    parentContainer.rotation.y-=0.01; 
-    sphere1.ro 
+    
+    //rotating the parent container to rotate the spheres a whole in the z,y axes
+    parentContainer1.rotation.z-=0.01;   
+    parentContainer1.rotation.y-=0.01; 
     renderer.render(scene,camera);
 }
 animate();

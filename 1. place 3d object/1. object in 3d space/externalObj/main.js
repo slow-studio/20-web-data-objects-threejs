@@ -3,7 +3,7 @@ const scene=new THREE.Scene();
 const gui=new dat.GUI();
 
 //calling the declared functions
-var plane=getPlane();
+var plane=getPlane(30,30);
 var ambLight=getAmbientLight(0.4);
 var hemiLight=getHemiLight(0.4);
 var pointLight1=getPointLight(0.2);
@@ -95,8 +95,8 @@ function getSpotLight(intensity){
 }
 
 //function to add a plan-------------------------------
-function getPlane(){
-    const geometry=new THREE.PlaneGeometry(30,30);
+function getPlane(length,breadth){
+    const geometry=new THREE.PlaneGeometry(length,breadth);
     const material=new THREE.MeshPhongMaterial({
         color: 0xffffff,
         side: THREE.DoubleSide

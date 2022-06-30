@@ -1,5 +1,7 @@
 console.log("hello world")
 
+var clock = new THREE.Clock;    //defining clock as a global variable
+
 //creating the 3d scene
 const scene=new THREE.Scene();
 const gui=new dat.GUI();
@@ -61,6 +63,9 @@ document.body.appendChild( renderer.domElement);
 
 //setting up orbit controls
 controls = new THREE.OrbitControls(camera,renderer.domElement);
+controls.maxPolarAngle = Math.PI/2.05;     //prevent orbit controls from going below the ground
+controls.enableDamping = true;   //damping 
+controls.dampingFactor = 0.25;   //damping inertia
 
 //function to get a sphere
 function getSphere(radius,widthSegment,heightSegment){
@@ -107,33 +112,27 @@ function getSpotLight(intensity){
     return light;
 }
 
-// function getLinearMovement(){
-//    while(true){
-//     var spherePosition=0;
-//     for(i=0;i<0.05;i++){
-//         spherePosition=spherePosition+0.005;
-//         console.log(spherePosition)    
-//         return spherePosition;
 
-//    }}
-// }
-
-function getMovement(){
-
-    while(1){
-        sphere.position.x+=0.0025;
-        return sphere.position.x;
+function getMovement(object){
+    var t = clock.getElapsedTime();
+    if (t >= 6.0){
+        clock = new THREE.Clock;
+        object.position.x=0;
+    }else{
+        object.position.x=1+(t/3.0);
+       
     }
 }
 
-//animating the scene    
+//function to animate the scene------
+animate();
 function animate() {
-    requestAnimationFrame( animate );
-    
-        // sphere.rotation.x += 0.0025;
-        // sphere.position.y = sphere.position.y+0.0025;
-        getMovement()
-        renderer.render( scene, camera );
-    }
-    animate();
+    requestAnimationFrame( animate );    
+    render();
+}
 
+function render() {
+    
+    getMovement(sphere)
+    renderer.render( scene, camera );
+}
