@@ -14,11 +14,16 @@ var hemiLight=getHemiLight(0.5);
 var spotLight=getSpotLight(0.5);
 
 
+//setting up positions
+spotLight.position.set(10,30,50);       //setting position of spotlight
 //adding elements to the scene
 scene.add(plane);
 scene.add(sphere);
 scene.add(hemiLight);
 scene.add(spotLight);
+
+
+
 
 //setting up the perspective camera to the scene
 var camera=new THREE.PerspectiveCamera(
@@ -73,7 +78,7 @@ function getSphere(radius,widthSegment,heightSegment){
     const material=new THREE.MeshStandardMaterial({
 
         metalness:0.3,
-        roughness:0.1,
+        roughness:0.75,
         opacity:0.5,
         color:  0xffcc00
         
@@ -115,12 +120,17 @@ function getSpotLight(intensity){
 
 function getMovement(object){
     var t = clock.getElapsedTime();
+    var position;
     if (t >= 6.0){
         clock = new THREE.Clock;
-        object.position.x=0;
-    }else{
+        object.position.x=1;
+    }else if(t<3.0){
         object.position.x=1+(t/3.0);
-       
+        position=position+object.position.x;
+    }else{
+        object.position.x=position;
+        object.position.x=3-(t/3.0);
+        
     }
 }
 

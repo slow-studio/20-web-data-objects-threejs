@@ -11,7 +11,7 @@ sphere1=getSphere(0.35,32,16,0x3290FF)
 torus1=getTorus(0x3D9D9B);
 cube3=getCube(0.8,0.8,0.8,0x3290FF);
 hemiLight=getHemiLight(0.5);
-spotLight=getSpotLight(0.5);
+spotLight=getSpotLight(0.75);
 plane=getPlane(10,10);
 shadowPlane=getShadowPlane()                //this is a shadow plan which is cast on top of the original plan
 
@@ -27,7 +27,7 @@ cube1.scale.set( 1, 1, 1 );
 torus1.position.set(-1.5,0,0);
 sphere1.position.set(1.5,0,0);
 cube2.position.set(0,0,-2.5);
-spotLight.position.set(10,30,30);       //setting position of spotlight
+spotLight.position.set(10,30,50);       //setting position of spotlight
 
 
 //adding elements to the scene
@@ -54,6 +54,7 @@ cubeScale.add(cube1.scale, 'z').min(0.1).max(10).step(0.01).name('depth');
 const torusRotate=gui.addFolder('Rotate torus')     //----rotating the cube------------
 torusRotate.add(torus1.rotation, 'x').min(0.1).max(10).step(0.01).name('roatation x');
 torusRotate.add(torus1.rotation, 'y').min(0.1).max(10).step(0.01).name('roatation y');
+torusRotate.add(torus1.rotation, 'z').min(0.1).max(10).step(0.01).name('roatation z');
 
 
 const sphereOpacity=gui.addFolder('Sphere Opacity') //----changing the opacity of the object-------
@@ -148,8 +149,12 @@ function getTorus(color){
 //function to get a cube---------------------------
 function getCube(width,height,depth,color){
     const geometry=new THREE.BoxGeometry(width,height,depth);
-    const material=new THREE.MeshPhongMaterial({
-        color: color
+    const material=new THREE.MeshStandardMaterial({
+        color: color,
+        metalness:0.2,
+        roughness:0.3,
+        transparent: true,
+        opacity:1
     });
     const mesh=new THREE.Mesh(geometry,material);
     mesh.receiveShadow = true;
@@ -160,8 +165,10 @@ function getCube(width,height,depth,color){
 //function to get a sphere-----------------------------
 function getSphere(radius,widthSegment,heightSegment,color){
     const geometry=new THREE.SphereBufferGeometry(radius,widthSegment,heightSegment);
-    const material=new THREE.MeshPhongMaterial({      
+    const material=new THREE.MeshStandardMaterial({      
         color: color,
+        metalness:0.1,
+        roughness:0.5,
         transparent: true,
         opacity:1
     });
@@ -174,27 +181,29 @@ function getSphere(radius,widthSegment,heightSegment,color){
 
 //function animateSphere2
 function getAnimateObject(object){
-   
-    var t = clock.getElapsedTime();
-    if (t >= 6.0)
-    {
-        clock = new THREE.Clock;
-        object.scale.set(2,2,2);
-    }else
-    {
-        //scaling the object
-        object.scale.x=1-(t/6.0);
-        object.scale.y=1-(t/6.0);
-        object.scale.z=1-(t/6.0);
-        
-        //changing the object visibility
-        object.material.opacity= 1-(t/6.0); 
-        
-        //rotating the object
-        object.rotation.x=1+(t/2.0);
-        object.rotation.y=1+(t/2.0);
-     }
-
+    var t=clock.getElapsedTime()
+    object.scale.set(2,2,2);
+    
+    //rotate the obj
+    object.rotation.x=1+(t/3.0);
+    object.rotation.y=1+(t/3.0);
+    
+    if(t<3.0){
+        object.scale.x=1-(t/3.0);
+        object.scale.y=1-(t/3.0);
+        object.scale.z=1-(t/3.0);
+        object.material.opacity= 1-(t/3.0);
+    }else if(t>=3.0 && t<6.0){
+        object.scale.set(0,0,0);
+        object.scale.x=0+(t/3.0);
+        object.scale.y=0+(t/3.0);
+        object.scale.z=0+(t/3.0);
+        object.material.opacity= 1+(t/3.0);
+        // object.scale.set(2,2,2);
+    }
+    else{
+        clock=new THREE.Clock()    
+    }
 }
 
 

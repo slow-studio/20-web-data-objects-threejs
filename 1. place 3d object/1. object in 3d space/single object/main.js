@@ -3,8 +3,9 @@ const scene = new THREE.Scene();
 //const gui=new dat.GUI();
 
 var plane=getPlane(20);
-var cube=getCube(1,1,1);
+var cube=getSphere(1,32,16);
 var pointLight1=getPointLight(7);
+var hemiLight=getHemiLight(0.5)
 
 plane.name = 'plane1';
 plane.rotation.x = Math.PI/2;
@@ -12,6 +13,7 @@ plane.rotation.x = Math.PI/2;
 scene.add(cube);
 scene.add(pointLight1);
 scene.add(plane);
+scene.add(hemiLight)
 
 //adding a perspective camera to the scene
 var camera=new THREE.PerspectiveCamera(
@@ -46,6 +48,16 @@ function getCube(width,height,depth){
     return mesh;
 }
 
+
+function getSphere(width,height,depth){
+    const geometry=new THREE.SphereGeometry(width,height,depth);
+    const material=new THREE.MeshPhongMaterial({
+        color: 0x44aa88
+        });
+    const mesh=new THREE.Mesh(geometry,material);    
+    return mesh;
+}
+
 //function to add a plane
 function getPlane(size) {
 	var geometry = new THREE.PlaneGeometry(size, size);
@@ -64,6 +76,12 @@ function getPlane(size) {
 //function to get PointLight
 function getPointLight(intensity){
     const light = new THREE.PointLight(0xfae64b, intensity);
+    return light;
+}
+
+//function to add a hemi light-------------------------
+function getHemiLight(intensity){
+    const light=new THREE.HemisphereLight(0xffffee,0xffffee, intensity)
     return light;
 }
 
