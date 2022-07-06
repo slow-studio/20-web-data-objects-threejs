@@ -1,55 +1,10 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Make it dance-Moving Objects</title>
-
-    <style type="text/css">
-        html, body {margin: 0; padding: 0; overflow: hidden}
-
-        canvas {
-                background-color: rgb(53, 53, 53);
-                 }
-    </style>
-    
-</head>
-
-<body>
-
-    <div id="webgl"></div>    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.js"></script>    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/drag-controls@1.0.4/dist/drag-controls.min.js"></script>
-
-
-    <script src="./js/OrbitControls.js"></script>
-    <script src="./js/GLTFLoader.js"></script>
-    
-
-    <header>
-        <h2 style="padding: 1%;">Interactivity using a mouse</h2>
-        <p style="padding-left: 1%;">select an object using the mouse</p>
-    </header>
-    
-    <section>
-        <script src="./main.js"></script>
-    </section>
-
-</body>
-</html> -->
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 	<head>
 		<title>three.js webgl - drag controls</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<!-- <link type="text/css" rel="stylesheet" href="main.css">
+		<link type="text/css" rel="stylesheet" href="main.css">
 		<style>
 			body {
 				background-color: #f0f0f0;
@@ -58,7 +13,7 @@
 			a {
 				color: #08f;
 			}
-		</style> -->
+		</style>
 	</head>
 	<body>
 
@@ -71,20 +26,14 @@
 		<!-- Import maps polyfill -->
 		<!-- Remove this when import maps will be widely supported -->
 		<script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
-
-		<script type="importmap">
-			{
-				"imports": {
-					"three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.js"
-				}
-			}
-		</script>
+        <script src="./js/three.js"></script>
+        <script src="./js/controls/DragControls.js"></script>
+    
+	
 
 		<script type="module">
 
-			import * as THREE from 'three';
 
-			import { DragControls } from 'https://cdn.jsdelivr.net/npm/drag-controls@1.0.4/dist/drag-controls.min.js';
 
 			let container;
 			let camera, scene, renderer;
@@ -161,7 +110,7 @@
 
 				container.appendChild( renderer.domElement );
 
-				controls = new DragControls( [ ... objects ], camera, renderer.domElement );
+				controls = new THREE.DragControls( [ ... objects ], camera, renderer.domElement );
 				controls.addEventListener( 'drag', render );
 
 				//
