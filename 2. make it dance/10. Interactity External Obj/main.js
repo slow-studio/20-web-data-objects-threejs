@@ -45,7 +45,6 @@ for(let i=0;i<150;i++){
 }
 
 
-
 //creaitng parent container 1
 var parentContainer1=new THREE.Mesh();
 scene.add(parentContainer1);
@@ -216,6 +215,15 @@ function getSphere(radius,widthSegment,heightSegment,color){
     return mesh;
 }
 
+//adding windows resize functionalities-------------
+window.addEventListener( 'resize', onWindowResize );
+
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    // render();
+}
 
 //function to animate the scene------
 animate();
