@@ -6,6 +6,7 @@
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
 		<style>
+			
 			body {
 				background-color: #f0f0f0;
 				color: #444;
@@ -171,6 +172,9 @@
 						if ( group.children.includes( object ) === true ) {
 
 							object.material.emissive.set( 0x000000 );
+
+							object.material.color.setHex( Math.random() * 0xffffff );	
+							
 							scene.attach( object );
 
 						} else {
