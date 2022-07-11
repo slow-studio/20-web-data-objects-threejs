@@ -88,6 +88,9 @@ const renderer=new THREE.WebGLRenderer({
 renderer.shadowMap.enabled = true;                          //enabling shadow in render
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
 renderer.setSize( window.innerWidth, window.innerHeight);   //setting up the size of the renderer
+
+// renderer.setSize( 640,480); 
+
 renderer.setClearColor(new THREE.Color('#ffffff'),0.45)
 
 //used to appx appearence of hdr o ndevice monitor
