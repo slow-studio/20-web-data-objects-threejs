@@ -5,9 +5,9 @@ const scene=new THREE.Scene();
 const gui=new dat.GUI();
 
 //adding the gltf objects
-var gltfObj1=getGLTFLoader('./assets/cup1.glb',-1.5,0.5,1.5);
-var gltfObj2=getGLTFLoader('./assets/cup2.glb',0.6,-0.32,-1);
-var gltfObj3=getGLTFLoader('./assets/cup3.glb',2,0.45,1.4);
+var gltfObj1=getGLTFLoader('../assets/cup1.glb',-1.5,0.5,1.5);
+var gltfObj2=getGLTFLoader('../assets/cup2.glb',0.6,-0.32,-1);
+var gltfObj3=getGLTFLoader('../assets/cup3.glb',2,0.45,1.4);
 
 //adding the objects
 var cubeBox=getCube(20,7,20,0xCCCCBE);
@@ -105,7 +105,7 @@ loader.load( assetLocation, function ( gltf ) {
     const newMaterial = new THREE.MeshStandardMaterial({
                                     color: 0xffcc00,
                                    // wireframe: true,
-                                    roughness: 30,
+                                    roughness: 100,
                                     emissive: 0x000000,
                                     
                         });
