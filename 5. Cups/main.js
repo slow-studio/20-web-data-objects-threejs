@@ -72,7 +72,7 @@ camera.position.set(0,1.5,4);
 
 //adding a grid helper to the scene
 const gridHelper=new THREE.GridHelper(10,10,0x000000,0xffffff);
-scene.add(gridHelper);
+// scene.add(gridHelper);
 gridHelper.position.set(0,-0.5,0);
 
 //setting up the renderer
