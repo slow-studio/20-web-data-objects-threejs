@@ -88,6 +88,12 @@ function getPointLight(intensity){
     return light;
 }
 
+//function to get an ambient light
+function getAmbientLight(color,intensity){
+    const light=new THREE.AmbientLight(color,intensity);
+    return light;
+}
+
 //function to get a sphere
 function getSphere(size) {
 	var geometry = new THREE.SphereGeometry(size, 24, 24);
