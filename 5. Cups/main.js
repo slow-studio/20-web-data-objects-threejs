@@ -10,21 +10,23 @@ var gltfObj2=getGLTFLoader('./assets/cup2.glb',0.6,-0.32,-1);
 var gltfObj3=getGLTFLoader('./assets/cup3.glb',2,0.45,1.4);
 
 //adding the objects
-var plane1=getPlane(10,10,0xffffff);
+var cubeBox=getCube(20,7,20,0xCCCCBE);
+var plane1=getPlane(15,10,0xffffff);
 var shadowPlane1=getShadowPlane()         
 
 //adding the lights
-var hemiLight=getHemiLight(0.5)
+var hemiLight=getHemiLight(0.45)
 var directLight1=getDirectionalLight(0xffffcc,0.5);
 var directLight2=getDirectionalLight(0xffffff,0.5);
-var ambientLight=getAmbientLight(0xffffff,1)
+var ambientLight=getAmbientLight(0xffffff,0.5)
 
 //rotating the plan on the x axis to use it as a floor
 plane1.rotateX( - Math.PI / 2);
 
 /*--------------------setting up the object positions-------------------------*/
-//setting the plane positions
-plane1.position.set(0,-0.5,0)
+//setting up cubeBox positions
+cubeBox.position.set(0,3,0)
+
 shadowPlane1.position.set(0,-0.5)
 shadowPlane1.rotateX( - Math.PI / 2);    //rotating the shadow plan to align with the original plan
 
@@ -33,12 +35,12 @@ shadowPlane1.rotateX( - Math.PI / 2);    //rotating the shadow plan to align wit
  directLight2.position.set(-12.2,11.5,12)
 
 //adding the elements to the scene
-scene.add(plane1)
+scene.add(cubeBox)
 scene.add( shadowPlane1 );
-scene.add(hemiLight)
+cubeBox.add(hemiLight)
 // scene.add(ambientLight)
-scene.add(directLight1)
-scene.add(directLight2)
+cubeBox.add(directLight1)
+cubeBox.add(directLight2)
 
 /*------------adding the light controls-----------------*/
 //adding the GUI controls for the point light
@@ -59,7 +61,7 @@ directLightGUI2.add(directLight2.position, 'z').min(-50).max(50).step(0.01);
 
 //adding a perspective camera to the scene
 var camera=new THREE.PerspectiveCamera(
-    55,                                         //FOV
+    45,                                         //FOV
     window.innerWidth / window.innerHeight,     //aspect ration
     1,                                        //near
     1000                                        //far
@@ -90,7 +92,7 @@ document.body.appendChild( renderer.domElement);
 var Orbcontrols = new THREE.OrbitControls(camera,renderer.domElement);
 // Orbcontrols.maxDistance=12;    //set max zoom(dolly) out distance for perspective camera, default=infinity
 // controls.minDistance=0.75
-//Orbcontrols.maxPolarAngle = Math.PI/2.1;     //prevent orbit controls from going below the ground
+Orbcontrols.maxPolarAngle = Math.PI/2.1;     //prevent orbit controls from going below the ground
 Orbcontrols.enableDamping = true;   //damping 
 Orbcontrols.dampingFactor = 0.25;   //damping inertia
 
@@ -125,6 +127,19 @@ loader.load( assetLocation, function ( gltf ) {
 	console.error( error );
 } );
 }
+
+//function to add a box---------------
+function getCube(width,height,depth,colour){
+    const geometry = new THREE.BoxGeometry( width, height, depth );
+    const material = new THREE.MeshPhongMaterial({
+        color: colour
+    });
+    material.side = THREE.BackSide; 
+    const mesh = new THREE.Mesh( geometry, material );
+    mesh.receiveShadow = true;
+    return mesh;  
+}
+
 
 //function to add a plan-------------------------------
 function getPlane(length,breadth,colour){
