@@ -20,12 +20,13 @@ var shadowPlane1=getShadowPlane()
 
 //adding the lights
 var hemiLight=getHemiLight(0.45)
+var rectLight=getRectArLight(2,0xffffff,10,10);
 var directLight1=getDirectionalLight(0xffffcc,0.5);
 var directLight2=getDirectionalLight(0xffffff,0.5);
 var ambientLight=getAmbientLight(0xffffff,0.5)
 
 //rotating the plan on the x axis to use it as a floor
-plane1.rotateX( - Math.PI / 2);
+rectLight.rotateX( - Math.PI / 2);  
 
 /*--------------------setting up the object positions-------------------------*/
 //setting up cubeBox positions
@@ -38,34 +39,34 @@ sphericalBox.position.set(0,11.4,0)
 shadowPlane1.rotateX( - Math.PI / 2);    //rotating the shadow plan to align with the original plan
 
 //setting up the light positions
+rectLight.position.set(-2,4,5)
 //  directLight1.position.set(-2.3,1.5,-1)
-directLight1.position.set(-5.45,11.25,7.78)
+directLight1.position.set(-0.97,1.96,1.23)
  directLight2.position.set(-12.2,11.5,12)
 
 //adding the elements to the scene
-// scene.add(cubeBox);
 scene.add(sphericalBox);
-// sphericalBox.add( shadowPlane1 );
 scene.add(hemiLight)
 scene.add(ambientLight)
 scene.add(directLight1)
 scene.add(directLight2)
 
 //set ambient light and direct light 2 to invisible by default
-ambientLight.visible = false
+hemiLight.visible = false
 directLight2.visible = false
 
 /*------------adding the light controls-----------------*/
+
+//toggle light on and off
+// gui.add(hemiLight,'visible').name('hemi light')
+// gui.add(ambientLight,'visible').name('ambient light')
+
 //adding the GUI controls for the point light
 const directLightGUI1=gui.addFolder('direct light 1')
 // const directLightGUI2=gui.addFolder('direct light 2')
 
-//toggle hemi light, ambient light on and off
-gui.add(hemiLight,'visible').name('hemi light')
-gui.add(ambientLight,'visible').name('ambient light')
-
 //adding the GUI controls for direct light 1
-directLightGUI1.add(directLight1, 'visible')
+// directLightGUI1.add(directLight1, 'visible')
 directLightGUI1.add(directLight1, 'intensity').min(0).max(10).step(0.01);
 directLightGUI1.add(directLight1.position, 'x').min(-50).max(50).step(0.01);
 directLightGUI1.add(directLight1.position, 'y').min(0).max(50).step(0.01);
@@ -111,6 +112,7 @@ document.body.appendChild( renderer.domElement);
 //setting up orbit controls
 var Orbcontrols = new THREE.OrbitControls(camera,renderer.domElement);
 Orbcontrols.enableZoom = false;
+Orbcontrols.enablePan = false;
 // Orbcontrols.maxDistance=12;    //set max zoom(dolly) out distance for perspective camera, default=infinity
 // Orbcontrols.minDistance=0
 Orbcontrols.maxPolarAngle = Math.PI/2.2;     //prevent orbit controls from going below the ground
@@ -166,8 +168,8 @@ function getSphere(radius,widthSegment,heightSegment,color){
     const geometry=new THREE.SphereBufferGeometry(radius,widthSegment,heightSegment);
     const material=new THREE.MeshStandardMaterial({      
         color: color,
-        metalness:0.1,
-        roughness:0.5,
+        // metalness:0.1,
+        roughness:70,
         transparent: true,
         opacity:1
     });
@@ -216,10 +218,26 @@ function getHemiLight(intensity){
     return light;
 }
 
+//function to add a rectangualr area light
+function getRectArLight(intensity,colour,width,height){
+    const light=new THREE.RectAreaLight(colour,intensity,width,height);
+    return light;
+}
+
 //function to add a direcitonal light
 function getDirectionalLight(color,intensity){
     const light = new THREE.DirectionalLight( color, intensity );
     light.castShadow=true;
+    light.shadow.bias=-0.001;
+    light.shadow.mapSize.width=1024
+    light.shadow.mapSize.height=1024
+
+    light.shadow.camera.near=0.1;
+    light.shadow.camera.far=500.0;
+    light.shadow.camera.left=-50;
+    light.shadow.camera.right=30;
+    light.shadow.camera.top=30;
+    light.shadow.camera.bottom=-50;
     return light;
 }
 
