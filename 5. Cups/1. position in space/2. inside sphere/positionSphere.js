@@ -1,3 +1,5 @@
+console.log("initiate shpere position")
+
 console.log("initiating cups")
 
 //creating the 3d scene
@@ -6,11 +8,13 @@ const gui=new dat.GUI();
 
 //adding the gltf objects
 var gltfObj1=getGLTFLoader('../assets/cup1.glb',-1.5,0.5,1.5);
-var gltfObj2=getGLTFLoader('../assets/cup2.glb',0.6,-0.32,-1);
+// var gltfObj2=getGLTFLoader('../assets/cup2.glb',0.6,-0.32,-1);
+var gltfObj2=getGLTFLoader('../assets/cup2.glb',0.6,-0.4,-1);
 var gltfObj3=getGLTFLoader('../assets/cup3.glb',2,0.45,1.4);
 
 //adding the objects
 var cubeBox=getCube(20,7,20,0xCCCCBE);
+var sphericalBox=getSphere(12,32,16,0xCCCCBE);
 var plane1=getPlane(15,10,0xffffff);
 var shadowPlane1=getShadowPlane()         
 
@@ -26,38 +30,53 @@ plane1.rotateX( - Math.PI / 2);
 /*--------------------setting up the object positions-------------------------*/
 //setting up cubeBox positions
 cubeBox.position.set(0,3,0)
+// sphericalBox.position.set(0,9.42,0)
+sphericalBox.position.set(0,11.4,0)
 
-shadowPlane1.position.set(0,-0.5)
+
+// shadowPlane1.position.set(0,-0.5)
 shadowPlane1.rotateX( - Math.PI / 2);    //rotating the shadow plan to align with the original plan
 
 //setting up the light positions
- directLight1.position.set(-2.3,1.5,-1)
+//  directLight1.position.set(-2.3,1.5,-1)
+directLight1.position.set(-5.45,11.25,7.78)
  directLight2.position.set(-12.2,11.5,12)
 
 //adding the elements to the scene
-scene.add(cubeBox)
-scene.add( shadowPlane1 );
-cubeBox.add(hemiLight)
-// scene.add(ambientLight)
-cubeBox.add(directLight1)
-cubeBox.add(directLight2)
+// scene.add(cubeBox);
+scene.add(sphericalBox);
+// sphericalBox.add( shadowPlane1 );
+scene.add(hemiLight)
+scene.add(ambientLight)
+scene.add(directLight1)
+scene.add(directLight2)
+
+//set ambient light and direct light 2 to invisible by default
+ambientLight.visible = false
+directLight2.visible = false
 
 /*------------adding the light controls-----------------*/
 //adding the GUI controls for the point light
 const directLightGUI1=gui.addFolder('direct light 1')
-const directLightGUI2=gui.addFolder('direct light 2')
+// const directLightGUI2=gui.addFolder('direct light 2')
+
+//toggle hemi light, ambient light on and off
+gui.add(hemiLight,'visible').name('hemi light')
+gui.add(ambientLight,'visible').name('ambient light')
 
 //adding the GUI controls for direct light 1
+directLightGUI1.add(directLight1, 'visible')
 directLightGUI1.add(directLight1, 'intensity').min(0).max(10).step(0.01);
 directLightGUI1.add(directLight1.position, 'x').min(-50).max(50).step(0.01);
 directLightGUI1.add(directLight1.position, 'y').min(0).max(50).step(0.01);
 directLightGUI1.add(directLight1.position, 'z').min(-50).max(50).step(0.01);
 
-//adding the GUI controls for direct light 1
-directLightGUI2.add(directLight2, 'intensity').min(0).max(10).step(0.01);
-directLightGUI2.add(directLight2.position, 'x').min(-50).max(50).step(0.01);
-directLightGUI2.add(directLight2.position, 'y').min(0).max(100).step(0.01);
-directLightGUI2.add(directLight2.position, 'z').min(-50).max(50).step(0.01);
+//adding the GUI controls for direct light 2
+// directLightGUI2.add(directLight2, 'visible')
+// directLightGUI2.add(directLight2, 'intensity').min(0).max(10).step(0.01);
+// directLightGUI2.add(directLight2.position, 'x').min(-100).max(100).step(0.01);
+// directLightGUI2.add(directLight2.position, 'y').min(-100).max(100).step(0.01);
+// directLightGUI2.add(directLight2.position, 'z').min(-100).max(100).step(0.01);
 
 //adding a perspective camera to the scene
 var camera=new THREE.PerspectiveCamera(
@@ -68,7 +87,8 @@ var camera=new THREE.PerspectiveCamera(
 );
 
 //set camera positions
-camera.position.set(0,1.5,4);
+camera.position.set(0,1.2,4);
+camera.lookAt(0,0,0)
 
 //adding a grid helper to the scene
 const gridHelper=new THREE.GridHelper(10,10,0x000000,0xffffff);
@@ -90,9 +110,10 @@ document.body.appendChild( renderer.domElement);
 
 //setting up orbit controls
 var Orbcontrols = new THREE.OrbitControls(camera,renderer.domElement);
+Orbcontrols.enableZoom = false;
 // Orbcontrols.maxDistance=12;    //set max zoom(dolly) out distance for perspective camera, default=infinity
-// controls.minDistance=0.75
-Orbcontrols.maxPolarAngle = Math.PI/2.1;     //prevent orbit controls from going below the ground
+// Orbcontrols.minDistance=0
+Orbcontrols.maxPolarAngle = Math.PI/2.2;     //prevent orbit controls from going below the ground
 Orbcontrols.enableDamping = true;   //damping 
 Orbcontrols.dampingFactor = 0.25;   //damping inertia
 
@@ -128,7 +149,7 @@ loader.load( assetLocation, function ( gltf ) {
 } );
 }
 
-//function to add a box---------------
+//function to add a cubical box---------------
 function getCube(width,height,depth,colour){
     const geometry = new THREE.BoxGeometry( width, height, depth );
     const material = new THREE.MeshPhongMaterial({
@@ -140,6 +161,22 @@ function getCube(width,height,depth,colour){
     return mesh;  
 }
 
+//function to get a spherical box-----------------------------
+function getSphere(radius,widthSegment,heightSegment,color){
+    const geometry=new THREE.SphereBufferGeometry(radius,widthSegment,heightSegment);
+    const material=new THREE.MeshStandardMaterial({      
+        color: color,
+        metalness:0.1,
+        roughness:0.5,
+        transparent: true,
+        opacity:1
+    });
+    material.side = THREE.BackSide;     //allow the inside to have color, recieve color and shaodw
+    const mesh=new THREE.Mesh(geometry,material);
+    mesh.receiveShadow=true;
+    mesh.castShadow=true;    
+    return mesh;
+}
 
 //function to add a plan-------------------------------
 function getPlane(length,breadth,colour){
@@ -158,9 +195,9 @@ function getPlane(length,breadth,colour){
 function getShadowPlane(){
     const material = new THREE.ShadowMaterial();
 	material.opacity = 0.2;
-    const mesh = new THREE.Mesh( plane1.geometry, material );
+    const mesh = new THREE.Mesh( sphericalBox.geometry, material );
     mesh.receiveShadow = true;
-    mesh.position.copy( plane1.position );   //the shadow plan will copy its position from the original plan
+    mesh.position.copy( sphericalBox.position );   //the shadow plan will copy its position from the original plan
     return mesh;    
 }
     
