@@ -68,8 +68,6 @@ document.body.appendChild( info );
 var canvas1;
 CANVAS_WIDTH=640,
 CANVAS_HEIGHT=480;
-canvas1=document.getElementById('canvas1');
-document.body.appendChild(canvas1);
 
 //setting up perspective camera
 var camera=new THREE.PerspectiveCamera(
@@ -108,7 +106,7 @@ renderer.toneMappingExposure=0.6;
 //interpolating color gradients
 renderer.outputEncoding=THREE.sRGBEncoding;
 
-canvas1.appendChild( renderer.domElement);
+document.getElementById('canvas1').appendChild( renderer.domElement );
 // document.body.appendChild( renderer.domElement);
 
 
@@ -121,14 +119,14 @@ Orbcontrols.enableDamping = true;   //damping
 Orbcontrols.dampingFactor = 0.25;   //damping inertia
 
 //adding windows resize functionalities-------------
-// window.addEventListener( 'resize', onWindowResize );
+window.addEventListener( 'resize', onWindowResize );
 
-// function onWindowResize() {
-//     camera.aspect = CANVAS_WIDTH/CANVAS_HEIGHT;
-//     camera.updateProjectionMatrix();
+function onWindowResize() {
+    camera.aspect = CANVAS_WIDTH/CANVAS_HEIGHT;
+    camera.updateProjectionMatrix();
     
-//     renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT );
-// }
+    renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT );
+}
 
 // find intersections
 var raycaster = new THREE.Raycaster();

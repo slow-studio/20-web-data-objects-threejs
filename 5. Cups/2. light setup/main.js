@@ -14,13 +14,14 @@ var gltfObj3=getGLTFLoader('./assets/cup3.glb',2,0.45,1.4);
 
 //adding the objects
 var cubeBox=getCube(20,7,20,0xCCCCBE);
-var sphericalBox=getSphere(12,32,16,0xCCCCBE);
+var sphericalBox=getSphere(12,32,16,0xffffff);
 var plane1=getPlane(15,10,0xffffff);
 var shadowPlane1=getShadowPlane()         
 
 //adding the lights
-var hemiLight=getHemiLight(0.45)
+var hemiLight=getHemiLight(0.7)
 var rectLight=getRectArLight(2,0xffffff,10,10);
+var pointLight1=getPointLight(0xffffff,0.5);
 var directLight1=getDirectionalLight(0xffffcc,0.65);
 var directLight2=getDirectionalLight(0xffffff,0.5);
 var ambientLight=getAmbientLight(0xffffff,0.5)
@@ -43,6 +44,7 @@ rectLight.position.set(-2,4,5)
 //  directLight1.position.set(-2.3,1.5,-1)
 directLight1.position.set(-0.97,1.96,1.23)
  directLight2.position.set(-12.2,11.5,12)
+ pointLight1.position.set(-5,5,5);
 
 //adding the elements to the scene
 // scene.add(cubeBox);
@@ -53,6 +55,7 @@ scene.add(rectLight);
 scene.add(ambientLight)
 scene.add(directLight1)
 scene.add(directLight2)
+scene.add(pointLight1);
 
 //set ambient light and direct light 2 to invisible by default
 // hemiLight.visible = false
@@ -66,17 +69,26 @@ directLight1.visible = false
 gui.add(hemiLight,'visible').name('hemi light')
 gui.add(ambientLight,'visible').name('ambient light')
 gui.add(rectLight,'visible').name('rect area light')
+gui.add(pointLight1,'visible').name('Point light')
+gui.add(directLight1, 'visible').name('Direct Light')
+
 
 //adding the GUI controls for the point light
 const directLightGUI1=gui.addFolder('direct light 1')
+const pointLighttGUI1=gui.addFolder('Point light 1')
 // const directLightGUI2=gui.addFolder('direct light 2')
 
 //adding the GUI controls for direct light 1
-directLightGUI1.add(directLight1, 'visible')
 directLightGUI1.add(directLight1, 'intensity').min(0).max(10).step(0.01);
 directLightGUI1.add(directLight1.position, 'x').min(-50).max(50).step(0.01);
 directLightGUI1.add(directLight1.position, 'y').min(0).max(50).step(0.01);
 directLightGUI1.add(directLight1.position, 'z').min(-50).max(50).step(0.01);
+
+// adding the GUI controls for point light1
+pointLighttGUI1.add(pointLight1, 'intensity').min(0).max(10).step(0.01);
+pointLighttGUI1.add(pointLight1.position, 'x').min(-100).max(100).step(0.01);
+pointLighttGUI1.add(pointLight1.position, 'y').min(-100).max(100).step(0.01);
+pointLighttGUI1.add(pointLight1.position, 'z').min(-100).max(100).step(0.01);
 
 //adding the GUI controls for direct light 2
 // directLightGUI2.add(directLight2, 'visible')
@@ -87,8 +99,9 @@ directLightGUI1.add(directLight1.position, 'z').min(-50).max(50).step(0.01);
 
 //adding a perspective camera to the scene
 var camera=new THREE.PerspectiveCamera(
-    45,                                         //FOV
+    40,                                         //FOV
     window.innerWidth / window.innerHeight,     //aspect ration
+    // win_width/win_height,
     1,                                        //near
     1000                                        //far
 );
@@ -112,8 +125,12 @@ const renderer=new THREE.WebGLRenderer({
 renderer.shadowMap.enabled = true;                          //enabling shadow in render
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
 renderer.setSize( window.innerWidth, window.innerHeight);   //setting up the size of the renderer
+// renderer.setSize( 1024/720);
 renderer.setClearColor(new THREE.Color('#808080'),0.45)
-document.body.appendChild( renderer.domElement);
+// document.body.appendChild( renderer.domElement);
+document.getElementById('canvas1').appendChild( renderer.domElement );
+
+// gui.add(renderer.shadowMap,'enabled').name('shadow')
 
 //setting up orbit controls
 var Orbcontrols = new THREE.OrbitControls(camera,renderer.domElement);
@@ -134,7 +151,8 @@ loader.load( assetLocation, function ( gltf ) {
     const newMaterial = new THREE.MeshStandardMaterial({
                                     color: 0xffcc00,
                                    // wireframe: true,
-                                    roughness: 100,
+                                   metalness:0.2,
+                                    roughness: 70,
                                     emissive: 0x000000,
                                     
                         });
@@ -174,8 +192,8 @@ function getSphere(radius,widthSegment,heightSegment,color){
     const geometry=new THREE.SphereBufferGeometry(radius,widthSegment,heightSegment);
     const material=new THREE.MeshStandardMaterial({      
         color: color,
-        // metalness:0.1,
-        roughness:70,
+        metalness:0.5,
+        roughness:40,
         transparent: true,
         opacity:1
     });
@@ -207,14 +225,26 @@ function getShadowPlane(){
     mesh.receiveShadow = true;
     mesh.position.copy( sphericalBox.position );   //the shadow plan will copy its position from the original plan
     return mesh;    
-}
-    
+}    
 
 /*--declaring the lights-------------------------------*/
 
 //function to get an ambient light
 function getAmbientLight(color,intensity){
     const light=new THREE.AmbientLight(color,intensity);
+    return light;
+}
+
+//function to add a point light
+function getPointLight(color,intensity){
+    const light=new THREE.PointLight(color,intensity);
+    light.castShadow=true;
+
+    light.shadow.mapSize.width=1024
+    light.shadow.mapSize.height=1024
+    light.shadow.camera.near=0.1;
+    light.shadow.camera.far=500.0;
+
     return light;
 }
 
@@ -248,12 +278,14 @@ function getDirectionalLight(color,intensity){
 }
 
 //adding windows resize functionalities-------------
-window.addEventListener( 'resize', onWindowResize );
+ window.addEventListener( 'resize', onWindowResize );
 
 function onWindowResize() {
+    // camera.aspect = window.innerWidth / window.innerHeight;
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize( window.innerWidth, window.innerHeight );
+    // renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
 //animating the scene    
