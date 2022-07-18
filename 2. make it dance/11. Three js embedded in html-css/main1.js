@@ -52,7 +52,7 @@ scene.add(parentContainer3);
 
 //info
 info = document.createElement( 'div' );
-info.style.position = 'absolute';
+info.style.position = 'relative';
 info.style.top = '30px';
 info.style.width = '100%';
 info.style.textAlign = 'center';
@@ -61,7 +61,7 @@ info.style.backgroundColor = 'transparent';
 info.style.zIndex = '1';
 info.style.fontFamily = 'Monospace';
 info.innerHTML = 'INTERSECT Count: ' + count;
-document.body.appendChild( info );
+document.getElementById('canvas1').appendChild( info );
 
 //declaring the container element
 
@@ -117,6 +117,11 @@ Orbcontrols.minDistance=3
 //Orbcontrols.maxPolarAngle = Math.PI/2.1;     //prevent orbit controls from going below the ground
 Orbcontrols.enableDamping = true;   //damping 
 Orbcontrols.dampingFactor = 0.25;   //damping inertia
+
+/*--adding drag controls-----------------------------*/
+//setting up drag controls to drag an object around the screen
+const dControls = new THREE.DragControls( objects, camera, renderer.domElement );
+dControls.addEventListener( 'drag', render );
 
 //adding windows resize functionalities-------------
 window.addEventListener( 'resize', onWindowResize );
