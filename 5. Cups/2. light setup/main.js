@@ -2,8 +2,7 @@
 console.log("starting the cups")
 
 /*-------------declaring global variables-------------*/
-var backgroundObjcts=[];
-var objects=[]
+
 var CANVAS_WIDTH=640;       //custon canvas width
 var CANVAS_HEIGHT=480;      //custom canvas height
 
@@ -74,6 +73,8 @@ const scene=new THREE.Scene();
 const gui=new dat.GUI();
 dat.GUI.toggleHide();
 
+
+/*----------------adding each element to the scene----------------*/
 //adding the gltf objects, the fourth parameter specifies the type of object being loaded
 var gltfObj1=getGLTFLoader(locationCup1,x_Cup1,y_cup1,z_cup1,colorCup1,cup1_class,cup1_count);
 var gltfObj2=getGLTFLoader(locationCup2,x_Cup2,y_cup2,z_cup2,colorCup2,cup2_class,cup2_count);
@@ -87,9 +88,6 @@ var pointLight1=getPointLight(color_pointLight,intensity_pointLight);
 var directLight1=getDirectionalLight(color_directLight,intensity_DirectLight);
 var ambientLight=getAmbientLight(color_AmbientLight,intensity_AmbientLight)
 
-//we push the curved plan to the b/g array
-backgroundObjcts.push(gltfPlanBG) 
-console.log(backgroundObjcts)    
 
 //rotating the rectangular light on the x axis 
 rectLight.rotateX( - Math.PI / 2);  
@@ -223,8 +221,7 @@ loader.load( assetLocation, function ( gltf ) {
                           }
                         });
                   
-    model.position.set(positionX,positionY,positionZ);     
-    objects.push(model)                   
+    model.position.set(positionX,positionY,positionZ);                      
 	scene.add(model);
 }); 
 }
@@ -244,7 +241,6 @@ function getPlane(length,breadth,colour){
 
 
 /*--declaring the lights-------------------------------*/
-
 //function to get an ambient light
 function getAmbientLight(color,intensity){
     const light=new THREE.AmbientLight(color,intensity);
@@ -253,8 +249,7 @@ function getAmbientLight(color,intensity){
 
 //function to add a point light
 function getPointLight(color,intensity){
-    const light=new THREE.PointLight(color,intensity);
-   
+    const light=new THREE.PointLight(color,intensity);   
     light.castShadow=true;
     light.shadow.mapSize.width=1024
     light.shadow.mapSize.height=1024
@@ -344,9 +339,8 @@ function timeFunction(obj) {
     }
 
 
-
 /*----this is where we define the interaction which results on clicking the individual cups-----*/
-/*--------count 1=cup1, count2=cup2, count3=cup3---------------------------------------*/
+//count 1=cup1, count 2=cup2, count 3=cup3
 function CupEffect(obj,count){
         
     obj.material.color.set(colorChangeTo_cup);    
@@ -375,7 +369,8 @@ function onWindowResize() {
     renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-//function to animate the scene------
+
+/*---------function to animate and render the scene--------*/
 animate();
 function animate() {   
     requestAnimationFrame( animate );    
