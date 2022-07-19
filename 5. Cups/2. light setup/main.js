@@ -10,6 +10,7 @@ var CANVAS_HEIGHT=480;      //custom canvas height
 var storyCup1="you have selected cup 1"
 var storyCup2="you have selected cup 2"
 var storyCup3="you have selected cup 3"
+var storyBackground="select a cup"
 
 /*-------define the location of each cup here-------------------------*/
 var locationCup1='./assets/cup1.glb', x_Cup1=-1.5,y_cup1=0.5,z_cup1=1.5,colorCup1=0xffcc00, cup1_count=1, cup1_class="cup";     //cup 1
@@ -51,7 +52,7 @@ cameraLookAt_x=0,cameraLookAt_y=0,cameraLookAt_z=0;
 var colorChangeTo_cup=0xb52525;
 
 /*-----setting the parameters for the DELAY TIMEOUT to return the object to its original state after onClick --------------------*/
-var changeObjectColorBackTo=0xffcc00, delayDuration=1000;
+var changeObjectColorBackTo=0xffcc00, delayDuration=500;
 
 
 /*-----------adding text box inside canvas-------------------------------------*/
@@ -132,7 +133,7 @@ directLightGUI1.add(directLight1.position, 'x').min(-50).max(50).step(0.01);
 directLightGUI1.add(directLight1.position, 'y').min(0).max(50).step(0.01);
 directLightGUI1.add(directLight1.position, 'z').min(-50).max(50).step(0.01);
 
-// adding the GUI controls for point light1
+//adding the GUI controls for point light1
 pointLighttGUI1.add(pointLight1, 'intensity').min(0).max(10).step(0.01);
 pointLighttGUI1.add(pointLight1.position, 'x').min(-100).max(100).step(0.01);
 pointLighttGUI1.add(pointLight1.position, 'y').min(-100).max(100).step(0.01);
@@ -166,7 +167,6 @@ const renderer=new THREE.WebGLRenderer({
 renderer.shadowMap.enabled = true;                          //enabling shadow in render
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
 renderer.setSize( window.innerWidth, window.innerHeight);   //setting up the size of the renderer
-
 renderer.setClearColor(new THREE.Color('#808080'),0.45)
 document.getElementById('canvas1').appendChild( renderer.domElement );
 // document.body.appendChild( renderer.domElement);
@@ -186,7 +186,6 @@ var Orbcontrols = new THREE.OrbitControls(camera,renderer.domElement);
 Orbcontrols.enableZoom = false;
 Orbcontrols.enablePan = false;
 // Orbcontrols.enableRotate = false;
-
 Orbcontrols.maxPolarAngle = Math.PI/2.2;     //prevent orbit controls from going below the ground
 Orbcontrols.enableDamping = true;   //damping 
 Orbcontrols.dampingFactor = 0.25;   //damping inertia
@@ -204,16 +203,14 @@ loader.load( assetLocation, function ( gltf ) {
     
     console.log(model.count)
     const newMaterial = new THREE.MeshStandardMaterial({
-                                    color: colour,
-                                   // wireframe: true,
-                                   metalness:0.2,
+                                    color: colour,                              
+                                    metalness:0.2,
                                     roughness: 70,
                                     emissive: 0x000000,                                    
                         });
 						model.traverse((obj) => {
 						    if (obj.isMesh) obj.material = newMaterial;
 						}); 
-
                         model.castShadow = true;
                         model.traverse(function (node) {
                           if (node.isMesh) {
@@ -221,7 +218,7 @@ loader.load( assetLocation, function ( gltf ) {
                             node.receiveShadow = true;
                           }
                         });
-                  
+                    
     model.position.set(positionX,positionY,positionZ);                      
 	scene.add(model);
 }); 
@@ -303,6 +300,14 @@ renderer.domElement.addEventListener('click', onClick);
 
 /*-----------defining the event listeners-------------------*/
 
+
+//declaring function for Window Resize 
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+}
+
 //declaring function for onMouseClick
 function onClick() {
 
@@ -325,6 +330,7 @@ function onClick() {
                 timeFunction(object)
             
             }else{
+                info.innerHTML=(storyBackground)
                 console.log("select a cup")
             }                   
     }    
@@ -360,15 +366,6 @@ function CupEffect(obj,count){
     }
 }  
 
-
-//declaring function for Window Resize 
-function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    // camera.aspect = CANVAS_WIDTH/CANVAS_HEIGHT;
-    camera.updateProjectionMatrix();
-    // renderer.setSize( CANVAS_WIDTH,CANVAS_HEIGHT );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-}
 
 
 /*---------function to animate and render the scene--------*/

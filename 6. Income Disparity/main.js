@@ -1,0 +1,1 @@
+console.log("initiating income disparity")
