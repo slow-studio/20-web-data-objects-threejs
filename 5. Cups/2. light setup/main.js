@@ -1,46 +1,104 @@
-console.log("initiate shpere position")
-console.log("initiating cups")
+/*------------------------------------------the cups----------------------------------------------*/
+console.log("starting the cups")
 
-var clock = new THREE.Clock;
-
-//declaring global variables
+/*-------------declaring global variables-------------*/
 var backgroundObjcts=[];
 var objects=[]
+var CANVAS_WIDTH=640;       //custon canvas width
+var CANVAS_HEIGHT=480;      //custom canvas height
 
-//creating the 3d scene
+/*--------define here the story you want to tell for each individual cup--------*/
+var storyCup1="you have selected cup 1"
+var storyCup2="you have selected cup 2"
+var storyCup3="you have selected cup 3"
+
+/*-------define the location of each cup here-------------------------*/
+var locationCup1='./assets/cup1.glb', x_Cup1=-1.5,y_cup1=0.5,z_cup1=1.5,colorCup1=0xffcc00, cup1_count=1, cup1_class="cup";     //cup 1
+var locationCup2='./assets/cup2.glb',x_Cup2=-0.1,y_cup2=0.18,z_cup2=0,colorCup2=0xffcc00,cup2_count=2,cup2_class="cup";         //cup 2
+var locationCup3='./assets/cup3.glb',x_Cup3=2,y_cup3=0.45,z_cup3=1.4,colorCup3=0xffcc00,cup3_count=3,cup3_class="cup";          //cup 3
+
+/*-----for the background-------*/
+var locationBackGroundPlane='./assets/curved_Plan.glb',x_bg=0,y_bg=-0.5,z_bg=0.3,color_bg=0xffffff,bg_class="background",bg_count=1;
+
+
+/*----light variables, make changes as required----------*/
+//intensity of lghts
+intensity_hemiLight=0.7,intensity_AmbientLight=0.5,intensity_rectLight=1,intensity_pointLight=0.5,intensity_DirectLight=0.65
+
+//color of lights
+color_AmbientLight=0xffffff,color_rectLight=0xffffff,color_pointLight=0xffffff,color_directLight=0xffffcc
+color_hemiLightSky=0xCCCCBE,color_hemiLightSurface=0Xffffee     
+
+//dimensions for rectangular area light
+rectLight_width=10,rectLight_height=10;
+
+//light positions
+var rectLightPosition_x=-2,rectLightPosition_y=4,rectLightPosition_z=5;                         //rectangular area light
+var directLight1Position_x=-0.97, directLight1Position_y=1.96, directLight1Position_z=1.23;     //directional light
+var pointLightPosition1_x=-5, pointLightPosition1_y=5, pointLightPosition1_z=5;                 //point light
+
+
+/*---------set camera variables--------------------*/
+//set the camera parameters
+var camera_FOV=35, cameraAspectRatio=(window.innerWidth/window.innerHeight),camera_NearSight=1,camera_FarSight=1000
+//declaring camera position
+cameraPosition_x=0, cameraPosition_y=1.5,cameraPosition_z=4;
+//declaring camera lookat
+cameraLookAt_x=0,cameraLookAt_y=0,cameraLookAt_z=0;
+
+
+/*---------paramteres to set when user interacts with the canvas elements-------------------------------*/
+//set what color you want the cups to change to when the user clicks on it
+var colorChangeTo_cup=0xb52525;
+
+/*-----setting the parameters for the DELAY TIMEOUT to return the object to its original state after onClick --------------------*/
+var changeObjectColorBackTo=0xffcc00, delayDuration=1000;
+
+
+/*-----------adding text box inside canvas-------------------------------------*/
+info = document.createElement( 'div' );
+info.style.position = 'relative';
+info.style.top = '50px';
+info.style.width = '100%';
+info.style.textAlign = 'center';
+info.style.color = '#b52525';      
+info.style.backgroundColor = 'transparent';
+info.style.zIndex = '1';
+info.style.fontFamily = 'Poppins';
+info.innerHTML = 'Select a cup'      //-----the input to this can be defined from the OnClick function below
+document.getElementById('canvas1').appendChild( info );
+
+
+/*---------creating the 3d scene------*/
 const scene=new THREE.Scene();
 const gui=new dat.GUI();
 dat.GUI.toggleHide();
 
 //adding the gltf objects, the fourth parameter specifies the type of object being loaded
-var gltfObj1=getGLTFLoader('./assets/cup1.glb',-1.5,0.5,1.5,0xffcc00,"cup",1);
-var gltfObj2=getGLTFLoader('./assets/cup2.glb',-0.1,0.18,0,0xffcc00,"cup",2);
-var gltfObj3=getGLTFLoader('./assets/cup3.glb',2,0.45,1.4,0xffcc00,"cup",3);
-var gltfPlanBG=getGLTFLoader('./assets/curved_Plan.glb',0,-0.5,0.3,0xffffff,"background",1);
-
-//adding the plane to display texts and setting up its position
-var TextPlane=getPlane(2,0.75,0xffffff)
-TextPlane.position.set(0,0.8,0)
+var gltfObj1=getGLTFLoader(locationCup1,x_Cup1,y_cup1,z_cup1,colorCup1,cup1_class,cup1_count);
+var gltfObj2=getGLTFLoader(locationCup2,x_Cup2,y_cup2,z_cup2,colorCup2,cup2_class,cup2_count);
+var gltfObj3=getGLTFLoader(locationCup3,x_Cup3,y_cup3,z_cup3,colorCup3,cup3_class,cup3_count);
+var gltfPlanBG=getGLTFLoader(locationBackGroundPlane,x_bg,y_bg,z_bg,color_bg,bg_class,bg_count);
 
 //adding the lights
-var hemiLight=getHemiLight(0.7)
-var rectLight=getRectArLight(2,0xffffff,10,10);
-var pointLight1=getPointLight(0xffffff,0.5);
-var directLight1=getDirectionalLight(0xffffcc,0.65);
-var ambientLight=getAmbientLight(0xffffff,0.5)
+var hemiLight=getHemiLight(color_hemiLightSky,color_hemiLightSurface,intensity_hemiLight)
+var rectLight=getRectArLight(intensity_rectLight,color_rectLight,rectLight_width,rectLight_height);
+var pointLight1=getPointLight(color_pointLight,intensity_pointLight);
+var directLight1=getDirectionalLight(color_directLight,intensity_DirectLight);
+var ambientLight=getAmbientLight(color_AmbientLight,intensity_AmbientLight)
 
 //we push the curved plan to the b/g array
 backgroundObjcts.push(gltfPlanBG) 
 console.log(backgroundObjcts)    
 
-//rotating the plan on the x axis to use it as a floor
+//rotating the rectangular light on the x axis 
 rectLight.rotateX( - Math.PI / 2);  
 
 /*--------------------setting up the object positions-------------------------*/
 //setting up the light positions
-rectLight.position.set(-2,4,5)
-directLight1.position.set(-0.97,1.96,1.23)
-pointLight1.position.set(-5,5,5);
+rectLight.position.set(rectLightPosition_x,rectLightPosition_y,rectLightPosition_z)
+directLight1.position.set(directLight1Position_x,directLight1Position_y,directLight1Position_z)
+pointLight1.position.set(pointLightPosition1_x,pointLightPosition1_y,pointLightPosition1_z);
 
 //adding the elements to the scene
 scene.add(hemiLight)
@@ -48,24 +106,7 @@ scene.add(rectLight);
 scene.add(ambientLight)
 scene.add(directLight1)
 scene.add(pointLight1);
-scene.add(TextPlane)
 
-/*-----------adding text box inside canvas-------------------------------------*/
-//info
-info = document.createElement( 'div' );
-info.style.position = 'relative';
-info.style.top = '50px';
-info.style.width = '100%';
-info.style.textAlign = 'center';
-info.style.color = '#b52525';
-info.style.backgroundColor = 'transparent';
-info.style.zIndex = '1';
-info.style.fontFamily = 'Poppins';
-info.innerHTML = 'Select a cup'      //-----the input to this can be defined from the OnClick function below
-document.getElementById('canvas1').appendChild( info );
-
-//setting the text plane to invisible----
-TextPlane.visible=false;
 
 //set ambient light and direct light 2 to invisible by default
 rectLight.visible = false
@@ -105,27 +146,17 @@ rectLightGUI.add(rectLight.position, 'x').min(-100).max(100).step(0.01);
 rectLightGUI.add(rectLight.position, 'y').min(-100).max(100).step(0.01);
 rectLightGUI.add(rectLight.position, 'z').min(-100).max(100).step(0.01);
 
-//declaring the custom canvas size
-var CANVAS_WIDTH=640;
-var CANVAS_HEIGHT=480;
-
 //adding a perspective camera to the scene-------------------------------------------
 var camera=new THREE.PerspectiveCamera(
-    35,                                         //FOV
-    window.innerWidth / window.innerHeight,     //aspect ration
-    1,                                        //near
-    1000                                        //far
+    camera_FOV,                                         
+    cameraAspectRatio,    
+    camera_NearSight,                                       
+    camera_FarSight                                        
 );
 
 //set camera positions
-camera.position.set(0,1.5,4);
-camera.lookAt(0,0,0)
-
-
-scene.add(TextPlane)
-
-//TextPlane.position.set(0,50,200)
-// TextPlane.position.copy(camera.position);
+camera.position.set(cameraPosition_x,cameraPosition_y,cameraPosition_z);
+camera.lookAt(cameraLookAt_x,cameraLookAt_y,cameraLookAt_z)
 
 //setting up the renderer
 const renderer=new THREE.WebGLRenderer({
@@ -151,17 +182,16 @@ labelRenderer = new THREE.CSS2DRenderer();
 				// document.body.appendChild( labelRenderer.domElement );	
                 document.getElementById('canvas1').appendChild( labelRenderer.domElement );		
 
-/*----adding the text---------------------*/
 
 /*--------setting up orbit controls---------*/
 var Orbcontrols = new THREE.OrbitControls(camera,renderer.domElement);
 // Orbcontrols.enableZoom = false;
 Orbcontrols.enablePan = false;
 // Orbcontrols.enableRotate = false;
-
 Orbcontrols.maxPolarAngle = Math.PI/2.2;     //prevent orbit controls from going below the ground
 Orbcontrols.enableDamping = true;   //damping 
 Orbcontrols.dampingFactor = 0.25;   //damping inertia
+
 
 //--function to call the GLTF Loader----the obj location and positions are passed as parameters in the function call
 function getGLTFLoader(assetLocation,positionX,positionY,positionZ,colour,object_class,object_count){
@@ -179,8 +209,7 @@ loader.load( assetLocation, function ( gltf ) {
                                    // wireframe: true,
                                    metalness:0.2,
                                     roughness: 70,
-                                    emissive: 0x000000,
-                                    
+                                    emissive: 0x000000,                                    
                         });
 						model.traverse((obj) => {
 						    if (obj.isMesh) obj.material = newMaterial;
@@ -200,7 +229,6 @@ loader.load( assetLocation, function ( gltf ) {
 }); 
 }
 
-console.log("objects"+objects)
 
 //function to add a plan-------------------------------
 function getPlane(length,breadth,colour){
@@ -213,6 +241,8 @@ function getPlane(length,breadth,colour){
     mesh.receiveShadow = true;      //set this to true to allow the object to recieve the shadow
     return mesh;
 }
+
+
 /*--declaring the lights-------------------------------*/
 
 //function to get an ambient light
@@ -230,13 +260,12 @@ function getPointLight(color,intensity){
     light.shadow.mapSize.height=1024
     light.shadow.camera.near=0.1;
     light.shadow.camera.far=500.0;
-
     return light;
 }
 
 //function to add a hemi light
-function getHemiLight(intensity){
-    const light=new THREE.HemisphereLight(0xCCCCBE,0xffffee, intensity)
+function getHemiLight(color_hemiLightSky,color_hemiLightSurface,intensity){
+    const light=new THREE.HemisphereLight(color_hemiLightSky,color_hemiLightSurface, intensity)
     return light;
 }
 
@@ -253,7 +282,6 @@ function getDirectionalLight(color,intensity){
     light.shadow.bias=-0.001;
     light.shadow.mapSize.width=1024
     light.shadow.mapSize.height=1024
-
     light.shadow.camera.near=0.1;
     light.shadow.camera.far=500.0;
     light.shadow.camera.left=-50;
@@ -263,10 +291,11 @@ function getDirectionalLight(color,intensity){
     return light;
 }
 
-
-
+/*--adding raycaster to register mouse events-----*/
 raycaster = new THREE.Raycaster();
 mouse = new THREE.Vector2()
+
+
 /*---------------adding event listeners-------------*/
 
 //adding window resize
@@ -274,6 +303,7 @@ mouse = new THREE.Vector2()
 
 //adding on mouse click
 renderer.domElement.addEventListener('click', onClick);
+
 
 /*-----------defining the event listeners-------------------*/
 
@@ -287,45 +317,51 @@ function onClick() {
   
     raycaster.setFromCamera(mouse, camera);
   
-    var intersects = raycaster.intersectObject(scene, true);
-  
+    var intersects = raycaster.intersectObject(scene, true);  
     if (intersects.length > 0) { 
         object = intersects[0].object;
                   
         if(object.parent.object_class=="cup"){
-
-            
                
                 CupEffect(object,object.parent.object_count)
-                // TextPlane.visible=true;
+
+                //setting the timeout function to return the objects to their original state
+                timeFunction(object)
             
             }else{
                 console.log("select a cup")
-                document.location.reload()
             }                   
-    }  
-  
+    }    
   }
+
+
+  //declaring the time out functioon
+function timeFunction(obj) {
+    setTimeout(function(){ 
+        obj.material.color.set(0xffcc00); 
+        }, 
+        delayDuration);
+    }
+
 
 
 /*----this is where we define the interaction which results on clicking the individual cups-----*/
 /*--------count 1=cup1, count2=cup2, count3=cup3---------------------------------------*/
 function CupEffect(obj,count){
         
-    obj.material.color.set(0xb52525);    
-    if(count==1){
-        
+    obj.material.color.set(colorChangeTo_cup);    
+    //for cup1 
+    if(count==cup1_count){        
         console.log("cup"+count)
-        info.innerHTML=('you have selected cup 1')
-        getTween(obj)
-    }else if(count==2){
+        info.innerHTML=(storyCup1)
+    //for cup2  
+    }else if(count==cup2_count){
         console.log("cup"+count)
-        info.innerHTML=('you have selected cup 2')
-        getTween(obj)
-    }else{
+        info.innerHTML=(storyCup2)
+    //for cup3     
+    }else if(count==cup3_count){
         console.log("cup"+count)
-        info.innerHTML=('you have selected cup 3')
-        getTween(obj)
+        info.innerHTML=(storyCup3)      
     }
 }  
 
@@ -339,21 +375,13 @@ function onWindowResize() {
     renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-
 //function to animate the scene------
 animate();
 function animate() {   
-    requestAnimationFrame( animate );
-    TWEEN.update();
-    // var vector = TextPlane.parent.worldToLocal( camera.getWorldPosition() );
-    // TextPlane.lookAt( vector );
-
-
-
+    requestAnimationFrame( animate );    
     render();
 }
-function render() {
-    
+function render() {    
     renderer.render( scene, camera );
 }
 

@@ -118,10 +118,7 @@ Orbcontrols.minDistance=3
 Orbcontrols.enableDamping = true;   //damping 
 Orbcontrols.dampingFactor = 0.25;   //damping inertia
 
-/*--adding drag controls-----------------------------*/
-//setting up drag controls to drag an object around the screen
-const dControls = new THREE.DragControls( objects, camera, renderer.domElement );
-dControls.addEventListener( 'drag', render );
+
 
 //adding windows resize functionalities-------------
 window.addEventListener( 'resize', onWindowResize );
