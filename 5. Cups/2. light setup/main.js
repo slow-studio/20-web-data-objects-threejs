@@ -71,7 +71,7 @@ document.getElementById('canvas1').appendChild( info );
 /*---------creating the 3d scene------*/
 const scene=new THREE.Scene();
 const gui=new dat.GUI();
-dat.GUI.toggleHide();
+dat.GUI.toggleHide();       //ensures the GUI displays hidden by default, press H to view it
 
 
 /*----------------adding each element to the scene----------------*/
@@ -183,9 +183,10 @@ labelRenderer = new THREE.CSS2DRenderer();
 
 /*--------setting up orbit controls---------*/
 var Orbcontrols = new THREE.OrbitControls(camera,renderer.domElement);
-// Orbcontrols.enableZoom = false;
+Orbcontrols.enableZoom = false;
 Orbcontrols.enablePan = false;
 // Orbcontrols.enableRotate = false;
+
 Orbcontrols.maxPolarAngle = Math.PI/2.2;     //prevent orbit controls from going below the ground
 Orbcontrols.enableDamping = true;   //damping 
 Orbcontrols.dampingFactor = 0.25;   //damping inertia
