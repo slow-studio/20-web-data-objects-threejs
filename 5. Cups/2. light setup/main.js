@@ -331,7 +331,7 @@ function onMouseDown(event){
         //this is where you specify the required interaction as required                  
             getTextForCup(object,object.parent.object_count)
             console.log(object)
-            object.opacity.set=0.5
+
                 }else{
                 info.innerHTML=(storyBackground)
                 console.log("select a cup")
