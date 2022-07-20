@@ -301,8 +301,15 @@ mouse = new THREE.Vector2()
 //adding on event listeners to aid user interactions
 // renderer.domElement.addEventListener('click', onClick);
 
+/*----DOM events for web----*/
 renderer.domElement.addEventListener('mousedown',onMouseDown);
 renderer.domElement.addEventListener('mouseup',onMouseUp);
+
+/*----DOM events for touch----*/
+renderer.domElement.addEventListener('touchstart',onTouchStart);
+renderer.domElement.addEventListener('touchend',onTouchEnd);
+
+
 
 /*-----------defining the event listeners-------------------*/
 
@@ -313,6 +320,48 @@ function onWindowResize() {
     renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
+
+/*---------------DOM event listeners for Mobile-----------------------*/
+//declaring function for Touch start event
+function onTouchStart(event){
+    console.log("touch start")
+    var rect = canvas1.getBoundingClientRect();
+    mouse.x = + ( (event.targetTouches[ 0 ].pageX - rect.left) / rect.width ) * 2 - 1;
+     mouse.y = - ( (event.targetTouches[ 0 ].pageY - rect.top) / rect.height ) * 2 + 1;
+    // find intersections
+      raycaster.setFromCamera(mouse, camera);
+    
+    var intersects = raycaster.intersectObject(scene,true);  
+    //check if the mouse has intersected any object on the canvas
+    if (intersects.length > 0) { 
+        object = intersects[0].object;
+              
+        if(object.parent.object_class=="cup"){
+        //this is where you specify the required interaction as required                  
+            getTextForCup(object,object.parent.object_count)
+            console.log(object)
+
+                }else{
+                info.innerHTML=(storyBackground)
+                console.log("select a cup")
+            }                   
+    }    
+}
+
+//declaring function for Touch End event
+function onTouchEnd(){
+    console.log("touch end event")
+    var rect = canvas1.getBoundingClientRect();
+         //this is where you specify the required interaction as required
+        if(object.parent.object_class=="cup"){
+            timeFunction(object)            
+            }                       
+        }           
+    
+
+
+
+/*---------------DOM event listeners for WEB on a PC-----------------------*/
 //declaring function for MouseDown event
 function onMouseDown(event){
     console.log("mouse down event")
@@ -337,7 +386,6 @@ function onMouseDown(event){
                 console.log("select a cup")
             }                   
     }    
-
 }
 
 //declaring function for MouseUp event
@@ -360,7 +408,6 @@ function onMouseUp(){
         }           
     } 
     
-
 //declaring function for onMouseClick
 function onClick(){
     console.log(" on click")
@@ -382,8 +429,7 @@ function onClick(){
     }    
   }
 
-
-  //declaring the time out functioon to return the object to its original state
+//declaring the time out functioon to return the object to its original state
 function timeFunction(obj) {
     setTimeout(function(){ 
         obj.material.color.set(0xffcc00);                                   
