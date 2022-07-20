@@ -49,7 +49,9 @@ cameraLookAt_x=0,cameraLookAt_y=0,cameraLookAt_z=0;
 
 /*---------paramteres to set when user interacts with the canvas elements-------------------------------*/
 //set what color you want the cups to change to when the user clicks on it
-var colorChangeTo_cup=0xb52525;
+var cup1_colorChangeTo=0xDD4CF4,cup2_colorChangeTo=0xFF772B,cup3_colorChangeTo=0xb52525;
+//set this parameters if you want the cup to change its position in the axes when the user click
+var cupPositionChange_axisX=0, cupPositionChange_axisY=0.5, cupPositionChange_axisZ=0;
 
 /*-----setting the parameters for the DELAY TIMEOUT to return the object to its original state after onClick --------------------*/
 var changeObjectColorBackTo=0xffcc00, delayDuration=500;
@@ -206,19 +208,21 @@ loader.load( assetLocation, function ( gltf ) {
                                     color: colour,                              
                                     metalness:0.2,
                                     roughness: 70,
-                                    emissive: 0x000000,                                    
+                                    emissive: 0x000000,
+                                    transparent: true 
+                                                          
                         });
 						model.traverse((obj) => {
 						    if (obj.isMesh) obj.material = newMaterial;
 						}); 
-                        model.castShadow = true;
+                        model.castShadow = true;                
+         
                         model.traverse(function (node) {
                           if (node.isMesh) {
                             node.castShadow = true;
                             node.receiveShadow = true;
                           }
-                        });
-                    
+                        });                   
     model.position.set(positionX,positionY,positionZ);                      
 	scene.add(model);
 }); 
@@ -294,12 +298,13 @@ mouse = new THREE.Vector2()
 //adding window resize
  window.addEventListener( 'resize', onWindowResize );       
 
-//adding on mouse click
-renderer.domElement.addEventListener('click', onClick);
+//adding on event listeners to aid user interactions
+// renderer.domElement.addEventListener('click', onClick);
 
+renderer.domElement.addEventListener('mousedown',onMouseDown);
+renderer.domElement.addEventListener('mouseup',onMouseUp);
 
 /*-----------defining the event listeners-------------------*/
-
 
 //declaring function for Window Resize 
 function onWindowResize() {
@@ -308,64 +313,105 @@ function onWindowResize() {
     renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-//declaring function for onMouseClick
-function onClick() {
-
+//declaring function for MouseDown event
+function onMouseDown(event){
+    console.log("mouse down event")
     event.preventDefault();
-  
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  
-    raycaster.setFromCamera(mouse, camera);
-  
-    var intersects = raycaster.intersectObject(scene, true);  
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    // find intersections
+      raycaster.setFromCamera(mouse, camera);
+    
+    var intersects = raycaster.intersectObject(scene,true);  
+    //check if the mouse has intersected any object on the canvas
     if (intersects.length > 0) { 
         object = intersects[0].object;
-                  
+              
         if(object.parent.object_class=="cup"){
-               
-                CupEffect(object,object.parent.object_count)
-
-                //setting the timeout function to return the objects to their original state
-                timeFunction(object)
-            
-            }else{
+        //this is where you specify the required interaction as required                  
+            getTextForCup(object,object.parent.object_count)
+            console.log(object)
+            object.opacity.set=0.5
+                }else{
                 info.innerHTML=(storyBackground)
                 console.log("select a cup")
             }                   
     }    
+
+}
+
+//declaring function for MouseUp event
+function onMouseUp(){
+    console.log("mouse up event")
+    event.preventDefault();
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    // find intersections
+    raycaster.setFromCamera(mouse, camera);    
+    var intersects = raycaster.intersectObject(scene,true);  
+    //check if the mouse has intersected any object on the canvas
+    if (intersects.length > 0) { 
+        object = intersects[0].object;
+
+        //this is where you specify the required interaction as required
+        if(object.parent.object_class=="cup"){
+            timeFunction(object)            
+            }                       
+        }           
+    } 
+    
+
+//declaring function for onMouseClick
+function onClick(){
+    console.log(" on click")
+    event.preventDefault();  
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;  
+    raycaster.setFromCamera(mouse, camera);  
+    var intersects = raycaster.intersectObject(scene, true);
+    //check if the mouse has intersected any object on the canvas  
+    if (intersects.length > 0) { 
+        object = intersects[0].object;
+         //this is where you specify the required interaction as required          
+        if(object.parent.object_class=="cup"){    
+            getTextForCup(object,object.parent.object_count)
+            }else{
+                info.innerHTML=(storyBackground)
+                console.log("select a cup")
+            }   
+    }    
   }
 
 
-  //declaring the time out functioon
+  //declaring the time out functioon to return the object to its original state
 function timeFunction(obj) {
     setTimeout(function(){ 
-        obj.material.color.set(0xffcc00); 
+        obj.material.color.set(0xffcc00);                                   
         }, 
         delayDuration);
     }
 
 
-/*----this is where we define the interaction which results on clicking the individual cups-----*/
+/*----this is where we define the interaction in the form of text appearing, which results on clicking the individual cups-----*/
 //count 1=cup1, count 2=cup2, count 3=cup3
-function CupEffect(obj,count){
-        
-    obj.material.color.set(colorChangeTo_cup);    
+function getTextForCup(obj,count){          
     //for cup1 
-    if(count==cup1_count){        
+    if(count==cup1_count){     
+        obj.material.color.set(cup1_colorChangeTo);       
         console.log("cup"+count)
         info.innerHTML=(storyCup1)
     //for cup2  
     }else if(count==cup2_count){
+        obj.material.color.set(cup2_colorChangeTo);  
         console.log("cup"+count)
         info.innerHTML=(storyCup2)
     //for cup3     
     }else if(count==cup3_count){
+        obj.material.color.set(cup3_colorChangeTo);  
         console.log("cup"+count)
         info.innerHTML=(storyCup3)      
     }
 }  
-
 
 
 /*---------function to animate and render the scene--------*/
