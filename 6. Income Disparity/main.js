@@ -65,7 +65,7 @@ const renderer=new THREE.WebGLRenderer({
 renderer.shadowMap.enabled = true;                          //enabling shadow in render
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
 renderer.setSize( window.innerWidth, window.innerHeight);   //setting up the size of the renderer
-renderer.setClearColor(new THREE.Color('#808080'),0.45)
+renderer.setClearColor(new THREE.Color('#737373'),1)
 document.getElementById('canvas1').appendChild( renderer.domElement );
 // document.body.appendChild( renderer.domElement);
 
@@ -153,8 +153,18 @@ function getSphere(radius,widthSegmets,heightSegmets,sphereColor){
 }
 
 /*----declaring Event Listeners------------*/
+//adding event listener for the CTA button
+document.getElementById("start").addEventListener("click", viewChange);
+
 //adding window resize
 window.addEventListener( 'resize', onWindowResize );  
+
+
+/*-----defining the add EventListener functions----*/
+function viewChange(){
+    
+    ambientLight.visible = !ambientLight.visible;
+}
 
 //declaring function for Window Resize 
 function onWindowResize() {
