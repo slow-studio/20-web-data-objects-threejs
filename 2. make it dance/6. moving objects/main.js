@@ -173,7 +173,7 @@ function getObjectMovement(object){
     let targetPosition=new THREE.Vector3(0,object.geometry.parameters.radius,0); //move to this target
     let positionChange=new TWEEN.Tween(object.position)
 	    .to(targetPosition,3000)
-	    .easing(TWEEN.Easing.Bounce.InOut)  
+	    .easing(TWEEN.Easing.Linear.None)  
         return positionChange      
     
 }

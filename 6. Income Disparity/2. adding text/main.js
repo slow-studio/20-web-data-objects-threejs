@@ -1,3 +1,5 @@
+console.log("text page transition")
+
 console.log("initiating income disparity")
 
 let objects=[]  //we will store all the objects in this array once they are initiated
@@ -7,7 +9,7 @@ var shouldTransition;
 //set the camera parameters
 var camera_FOV=35, cameraAspectRatio=(window.innerWidth/window.innerHeight),camera_NearSight=1,camera_FarSight=30000
 //declaring camera position
-cameraPosition_x=0, cameraPosition_y=2,cameraPosition_z=30;
+var cameraPosition_x=0, cameraPosition_y=2,cameraPosition_z=30;
 //declaring camera lookat
 cameraLookAt_x=0,cameraLookAt_y=0,cameraLookAt_z=0;
 
@@ -20,7 +22,7 @@ color_AmbientLight=0xffffff;
 
 /*---sphere variables---*/
 var sphereTotal=13;
-var sphereWidthSegmets=24, sphereHeightSegmets=40;  
+var sphereWidthSegmets=16, sphereHeightSegmets=16;  
 
 /*----setting up the light-------*/
 var ambientLight=getAmbientLight(color_AmbientLight,intensity_AmbientLight)
@@ -30,6 +32,9 @@ var ambientLight=getAmbientLight(color_AmbientLight,intensity_AmbientLight)
 let numberOfRows=4;             //total number of rows 
 let numberOfColoumns=4;         //total number of coloumns
 
+/*-------setting up the text to display-----*/
+var displayTextAttheStartOfTheScene="Would like to view the wealth distribution in India?"
+var displayTextWhenButtonClicked="Click on any of the ball to know more details about its"
 
 /*----declaring the scene-------*/
 const scene=new THREE.Scene();
@@ -40,16 +45,42 @@ const scene=new THREE.Scene();
 const size = 50;
 const divisions = 10;
 const gridHelper = new THREE.GridHelper( size, divisions );
-scene.add( gridHelper )
+// scene.add( gridHelper )
 
 
 /*------adding elements to the scene-------------*/
 //adding the lights
 scene.add(ambientLight)
 
+
 //adding the spheres to the scene
 getMultipleSpheres(sphereWidthSegmets, sphereHeightSegmets,populationWealthDistribution)
 
+/*-----------adding text box inside canvas-------------------------------------*/
+info = document.createElement( 'div' );
+info.id = 'textDiv'
+info.style.position = 'relative';
+info.style.top = '80px';
+info.style.left = '20px';
+info.style.width = '100%';
+info.style.textAlign = 'left';
+info.style.color = '#ffffff';      
+info.style.backgroundColor = 'transparent';
+info.style.zIndex = '1';
+info.style.fontFamily = 'Poppins';
+document.getElementById('canvas1').appendChild( info );
+
+// adding paragraph element to the div
+infoText=document.createElement('p')
+infoText.id="displayText"
+infoText.innerHTML=displayTextAttheStartOfTheScene
+info.appendChild(infoText)
+
+// adding a CTA to the div
+btn=document.createElement('button')
+btn.id="btnCTA"
+btn.innerHTML='Click here'
+info.appendChild(btn)
 
 
 
@@ -81,33 +112,44 @@ document.getElementById('canvas1').appendChild( renderer.domElement );
 // document.body.appendChild( renderer.domElement);
 
 
+/*----adding lable rendrer-------------------*/
+labelRenderer = new THREE.CSS2DRenderer();
+				labelRenderer.setSize( window.innerWidth, window.innerHeight );
+				labelRenderer.domElement.style.position = 'absolute';
+				labelRenderer.domElement.style.top = '0px';
+				labelRenderer.domElement.style.pointerEvents = 'none'       //ensures that orbit controls is enabled after adding label rendere
+				// document.body.appendChild( labelRenderer.domElement );	
+                document.getElementById('canvas1').appendChild( labelRenderer.domElement );	
+
+
+
 /*--------setting up orbit controls---------*/
 var Orbcontrols = new THREE.OrbitControls(camera,renderer.domElement);
 // Orbcontrols.enableZoom = false;
-Orbcontrols.enablePan = false;
+// Orbcontrols.enablePan = false;
 Orbcontrols.enableDamping = true;   //damping 
 Orbcontrols.dampingFactor = 0.25;   //damping inertia
 
 
 //setting up drag controls to drag an object around the screen
-const dControls = new THREE.DragControls( objects, camera, renderer.domElement );
-dControls.addEventListener( 'drag', render );
+// const dControls = new THREE.DragControls( objects, camera, renderer.domElement );
+// dControls.addEventListener( 'drag', render );
 
-//disabling orbit controls when drag controls are started
-dControls.addEventListener('dragstart',function(event){
-	Orbcontrols.enabled=false;
-})
-dControls.addEventListener('dragend',function(event){
-	Orbcontrols.enabled=true;
-})
+// //disabling orbit controls when drag controls are started
+// dControls.addEventListener('dragstart',function(event){
+// 	Orbcontrols.enabled=false;
+// })
+// dControls.addEventListener('dragend',function(event){
+// 	Orbcontrols.enabled=true;
+// })
 
-dControls.addEventListener("hoveron", function(event){
-	event.object.material.opacity=0.5;
-})
+// dControls.addEventListener("hoveron", function(event){
+// 	event.object.material.opacity=0.5;
+// })
 
-dControls.addEventListener("hoveroff", function(event){
-	event.object.material.opacity=1
-})
+// dControls.addEventListener("hoveroff", function(event){
+// 	event.object.material.opacity=1
+// })
 
 
 //function to add genreate multiple speheres
@@ -116,8 +158,7 @@ function getMultipleSpheres(sphereWidthSegmets, sphereHeightSegmets,populationWe
     
     //declaring a for loop to add the multiple spheres
     for(let i=0;i<sphereTotal;i++){
-        // var sphereColor=populationWealthDistribution[i].color;
-		var sphereColor=Math.random() * 0xffffff;
+        var sphereColor=populationWealthDistribution[i].color;
 		var sphereRadius=populationWealthDistribution[i].radius;
 
         console.log("sphere total "+sphereRadius)
@@ -179,103 +220,185 @@ function getAmbientLight(color,intensity){
 function getSphere(radius,widthSegmets,heightSegmets,sphereColor){
     const geometry=new THREE.SphereGeometry(radius,widthSegmets,heightSegmets);
     const material=new THREE.MeshPhongMaterial({
-        color: sphereColor
+        color: sphereColor,
+		wireframe: true
     });
     const mesh=new THREE.Mesh(geometry,material);
     return mesh;
 }
 
 
+/*--adding raycaster to register mouse events-----*/
+var raycaster = new THREE.Raycaster();		//declaring rayCaster
+var mouse = new THREE.Vector2()				//declaring mouse variable
 
 
 
 /*----declaring Event Listeners------------*/
 //adding event listener for the CTA button
-document.getElementById("start").addEventListener("click", transitionStartonClick);
+document.getElementById("btnCTA").addEventListener("click", transitionStartonClick);
 
 //adding window resize
 window.addEventListener( 'resize', onWindowResize );  
 
+//adding body event listeners
+/*----DOM events for web----*/
+renderer.domElement.addEventListener('mousedown',onMouseDown);
+// renderer.domElement.addEventListener('mouseup',onMouseUp);
+
+/*----DOM events for touch----*/
+// renderer.domElement.addEventListener('touchstart',onTouchStart);
+// renderer.domElement.addEventListener('touchend',onTouchEnd);
+
 
 /*-----defining the add EventListener functions----*/
 
-function transitionStartonClick(){
+//declaring MouseDown function
+function onMouseDown(){
+
 	
-	transitionByCameraPosition(0,6,65);
-	transitionByScale()  
-	transitionByPosition()
-	document.getElementById("start").style.visibility="hidden";       
+    event.preventDefault();
+    // mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    // mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+	let canvasBounds = renderer.context.canvas.getBoundingClientRect();
+	mouse.x = ( ( event.clientX - canvasBounds.left ) / ( canvasBounds.right - canvasBounds.left ) ) * 2 - 1;
+	mouse.y = - ( ( event.clientY - canvasBounds.top ) / ( canvasBounds.bottom - canvasBounds.top) ) * 2 + 1;
+
+    // find intersections
+      raycaster.setFromCamera(mouse, camera);
+    
+    var intersects = raycaster.intersectObject(scene,true);  
+	if (intersects.length > 0) { 
+        object = intersects[0].object;
+		// console.log(object);
+		// console.log(objects[1]);
+		transitionByText(object);
+	}else{
+		console.log("no sphere selected")
+	}
 }
+
+//declaring touchstart function
+function onTouchStart(event){
+    console.log("touch start")
+    var rect = canvas1.getBoundingClientRect();
+    mouse.x = + ( (event.targetTouches[ 0 ].pageX - rect.left) / rect.width ) * 2 - 1;
+     mouse.y = - ( (event.targetTouches[ 0 ].pageY - rect.top) / rect.height ) * 2 + 1;
+    // find intersections
+      raycaster.setFromCamera(mouse, camera);
+    
+    var intersects = raycaster.intersectObject(scene,true);  
+    //check if the mouse has intersected any object on the canvas
+    if (intersects.length > 0) { 
+        object = intersects[0].object;
+		transitionByText(object);                
+    }else{
+		console.log("no sphere selected")
+	}    
+}
+
+
+//delcaring onClick function for CTA button
+function transitionStartonClick(){
+
+	info.innerHTML=displayTextWhenButtonClicked;
+	transitionByCameraPosition(0,6,65);
+	transitionByPosition();
+	transitionByScale();  
+	// document.getElementById("btnCTA").style.visibility="hidden";       
+}
+
+
+
+//declaring transition by change in text
+function transitionByText(object){
+	console.log("mouse down event")
+	var totalSpheres=objects.length;
+	console.log(totalSpheres)
+	for(let i=0;i<totalSpheres;i++){
+		if(object==objects[i]){
+			var displayText=populationWealthDistribution[i].story;
+			info.innerHTML=displayText;
+		}else{
+			console.log("no sphere selected")
+		}
+		
+	}
+	// info.innerHTML=displayTextWhenButtonClicked;
+}
+
 
 //declaring transition by change in camera position
 function transitionByCameraPosition(changeCameraPosition_x,changeCameraPosition_y,changeCameraPosition_z){
-	camera.position.x=changeCameraPosition_x
-	camera.position.y=changeCameraPosition_y
-	camera.position.z=changeCameraPosition_z
+	// camera.position.set(changeCameraPosition_x,changeCameraPosition_y,changeCameraPosition_z)
+
+	let targetPosition=new THREE.Vector3(changeCameraPosition_x,changeCameraPosition_y,changeCameraPosition_z);
+	let tweenChangeCameraPosition=new TWEEN.Tween(camera.position)
+	.to(targetPosition,10000)
+	.easing(TWEEN.Easing.Linear.None)
+	.start()
+
 }
+
 
 //declaring transition by scale
 function transitionByScale(){
-	console.log("transition by scale")
+
 	for(let i=0;i<objects.length;i++){
 		
 		var wealthDist=populationWealthDistribution[i].wealthDistribution;
-		// console.log(wealthDist)
+		var objectScaleInX, objectScaleInY, objectScaleInZ;
+
 		if(wealthDist<1){
-			// console.log("object "+(i+1)+" populaiton distribution: "+wealthDist)				
-			var scaleAmt=wealthDist*1.5;
-			objects[i].scale.x=scaleAmt;
-			objects[i].scale.y=scaleAmt;
-			objects[i].scale.z=scaleAmt;
-
+			var scaleAmt=wealthDist*1.5;		
 		}else if(wealthDist>1 && wealthDist<10){
-
-			if(wealthDist<5){
-				var scaleAmt=wealthDist*1;
-				objects[i].scale.x=scaleAmt;
-				objects[i].scale.y=scaleAmt;
-				objects[i].scale.z=scaleAmt;					
+			if((wealthDist<5)){
+				var scaleAmt=wealthDist*1;		
 			}else{
-				var scaleAmt=wealthDist*1;
-				objects[i].scale.x=scaleAmt;
-				objects[i].scale.y=scaleAmt;
-				objects[i].scale.z=scaleAmt;				
-			}
-
+				var scaleAmt=wealthDist*1;	
+			}		
 		}else{
-
 			if(wealthDist<50){
 				var scaleAmt=wealthDist*1;
-				objects[i].scale.x=scaleAmt;
-				objects[i].scale.y=scaleAmt;
-				objects[i].scale.z=scaleAmt;
 			}else{
 				var scaleAmt=wealthDist*0.75;
-				objects[i].scale.x=scaleAmt;
-				objects[i].scale.y=scaleAmt;
-				objects[i].scale.z=scaleAmt;
 			}
 		}
-	}
+		
+		objectScaleInX=scaleAmt;
+		objectScaleInY=scaleAmt;
+		objectScaleInZ=scaleAmt;
+
+		//declaring tween animation to animate the scaling
+		let targetScaleTo=new THREE.Vector3(objectScaleInX, objectScaleInY, objectScaleInZ); //scale for x,y,z
+		let scaleChange=new TWEEN.Tween(objects[i].scale)
+			.to(targetScaleTo,10000)
+			.easing(TWEEN.Easing.Linear.None) //type of easing animation
+			.start();
+		}
 }
 
 
 //declaring transition by change in posiiton
 function transitionByPosition(){
-	
-	objects[0].position.set(-38,-11.5,0)			//sphere 5
-	objects[1].position.set(-35.5,-11.3,0)			//sphere 5
-	objects[2].position.set(-32,-10.7,0)			//sphere 5
-	objects[3].position.set(-28,-10.5,0)			//sphere 5
-	objects[4].position.set(-23,-10,0)				//sphere 5
-	objects[5].position.set(-16.5,-9,0)				//sphere 6
-	objects[6].position.set(-7.5,-7.5,0)			//sphere 7
-	objects[7].position.set(5,-5,0)					//sphere 8
-	objects[8].position.set(25,0,0)					//sphere 9
-	objects[9].position.set(75,3,-50)				//sphere 10
+
+	for(let i=0;i<objects.length;i++){
+		let targetPosition=new THREE.Vector3(populationWealthDistribution[i].targetPositionX,populationWealthDistribution[i].targetPositionY,populationWealthDistribution[i].targetPositionZ);
+		let tweenChangePosition=new TWEEN.Tween(objects[i].position)
+		.to(targetPosition,10000)
+		.easing(TWEEN.Easing.Bounce.InOut)
+		.start()
+	}
 
 }
 
+
+//declaring function to display text for each sphere
+function textForEachSphere(objectId){
+		const sphereInfoText=populationWealthDistribution[objectId].story;
+		info.innerHTML=sphereInfoText;
+}
 
 
 //declaring function for Window Resize 
@@ -293,9 +416,12 @@ function onWindowResize() {
 animate();
 function animate() {   
     
+	TWEEN.update();
+	Orbcontrols.update();
     requestAnimationFrame( animate );    
     render();
 }
 function render() {       
     renderer.render( scene, camera );
 }
+
