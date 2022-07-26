@@ -34,7 +34,7 @@ let numberOfColoumns=4;         //total number of coloumns
 
 /*-------setting up the text to display-----*/
 var displayTextAttheStartOfTheScene="Would like to view the wealth distribution in India?"
-var displayTextWhenButtonClicked="Click on any of the ball to know more details about its"
+var displayTextWhenButtonClicked="Click on any of the ball to know more details about it"
 
 /*----declaring the scene-------*/
 const scene=new THREE.Scene();
@@ -241,17 +241,23 @@ document.getElementById("btnCTA").addEventListener("click", transitionStartonCli
 //adding window resize
 window.addEventListener( 'resize', onWindowResize );  
 
-//adding body event listeners
-/*----DOM events for web----*/
-renderer.domElement.addEventListener('mousedown',onMouseDown);
-// renderer.domElement.addEventListener('mouseup',onMouseUp);
-
-/*----DOM events for touch----*/
-// renderer.domElement.addEventListener('touchstart',onTouchStart);
-// renderer.domElement.addEventListener('touchend',onTouchEnd);
-
 
 /*-----defining the add EventListener functions----*/
+
+//delcaring onClick function for CTA button
+function transitionStartonClick(){
+	
+	infoText.innerHTML=displayTextWhenButtonClicked;
+	transitionByCameraPosition(0,6,65);
+	transitionByPosition();
+	transitionByScale();  
+
+	/*---event listeners will get activated only when user clicks the CTA----*/
+	renderer.domElement.addEventListener('mousedown',onMouseDown);
+	renderer.domElement.addEventListener('touchstart',onTouchStart);
+	document.getElementById("btnCTA").style.visibility="hidden";       
+}
+
 
 //declaring MouseDown function
 function onMouseDown(){
@@ -299,17 +305,6 @@ function onTouchStart(event){
 }
 
 
-//delcaring onClick function for CTA button
-function transitionStartonClick(){
-
-	info.innerHTML=displayTextWhenButtonClicked;
-	transitionByCameraPosition(0,6,65);
-	transitionByPosition();
-	transitionByScale();  
-	// document.getElementById("btnCTA").style.visibility="hidden";       
-}
-
-
 
 //declaring transition by change in text
 function transitionByText(object){
@@ -319,7 +314,7 @@ function transitionByText(object){
 	for(let i=0;i<totalSpheres;i++){
 		if(object==objects[i]){
 			var displayText=populationWealthDistribution[i].story;
-			info.innerHTML=displayText;
+			infoText.innerHTML=displayText;
 		}else{
 			console.log("no sphere selected")
 		}
