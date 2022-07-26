@@ -336,7 +336,7 @@ function transitionByCameraPosition(changeCameraPosition_x,changeCameraPosition_
 	let targetPosition=new THREE.Vector3(changeCameraPosition_x,changeCameraPosition_y,changeCameraPosition_z);
 	let tweenChangeCameraPosition=new TWEEN.Tween(camera.position)
 	.to(targetPosition,10000)
-	.easing(TWEEN.Easing.Linear.None)
+	.easing(TWEEN.Easing.Exponential.InOut)
 	.start()
 
 }
