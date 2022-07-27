@@ -25,6 +25,8 @@ color_AmbientLight=0xffffff;
 var sphereTotal=13;
 var sphereWidthSegmets=16, sphereHeightSegmets=16;  
 var isSphereWireframe=true;
+var changeSPhereColorToOnTouch=0xffffff;
+var sphereOpacityValue=0.45;
 
 /*----setting up the light-------*/
 var ambientLight=getAmbientLight(color_AmbientLight,intensity_AmbientLight)
@@ -36,7 +38,7 @@ let numberOfColoumns=4;         //total number of coloumns
 
 /*-------setting up the text to display-----*/
 var displayTextAttheStartOfTheScene="Would like to view the wealth distribution in India?"
-var displayTextWhenButtonClicked="Click on any of the ball to know more details about it"
+var displayTextWhenButtonClicked="Click on any sphere to know more details about it"
 
 /*----declaring the scene-------*/
 const scene=new THREE.Scene();
@@ -213,7 +215,9 @@ function getSphere(radius,widthSegmets,heightSegmets,sphereColor,isSphereWirefra
     const geometry=new THREE.SphereGeometry(radius,widthSegmets,heightSegmets);
     const material=new THREE.MeshPhongMaterial({
         color: sphereColor,
-		wireframe: isSphereWireframe
+		wireframe: isSphereWireframe,
+		transparent: true,
+		opacity:1
     });
     const mesh=new THREE.Mesh(geometry,material);
     return mesh;
@@ -273,17 +277,25 @@ function onMouseDown(){
     var intersects = raycaster.intersectObject(scene,true);  
 	if (intersects.length > 0) { 
         object = intersects[0].object;
-
+		
 		//hide the text box for the sphere if the user clicks outside
 		const sphereTextLabelClassExists = document.querySelectorAll('.label');
 		if (sphereTextLabelClassExists.length>0) {
 			console.log("label exists");
 			sphereText.style.visibility='hidden'
 		} 
+
+		//make changes to the sphere opacity
+		setDefaultSphereOpacity()
+		setObjectOpacity(object);
+
+		//manipulate color of sphers when the user click on them		
+		getOrignalSphereColor(object)
+		object.material.color.set(changeSPhereColorToOnTouch)
 	
 		object.material.wireframe=false;		//wireframe is disabled when the user clicks on the object
 			
-		transitionByText(object);
+		// transitionByText(object);
 		addTextLabel(object)					//add text label to spheres when the user clicks on them
 
 	}else{
@@ -294,7 +306,10 @@ function onMouseDown(){
 			console.log("label exists");
 			sphereText.style.visibility='hidden'
 		} 
-		
+
+		setDefaultSphereOpacity()
+		getOrignalSphereColor(object)			//set the color of the sphere to its original color
+
 	}
 }
 
@@ -326,11 +341,19 @@ function onTouchStart(event){
 		if (sphereTextLabelClassExists.length>0) {
 			console.log("label exists");
 			sphereText.style.visibility='hidden'
-		} 
+		}
+
+		//make changes to the sphere opacity
+		setDefaultSphereOpacity()
+		setObjectOpacity(object);
+		
+		//manipulate color of sphers when the user click on them
+		getOrignalSphereColor(object)
+		object.material.color.set(changeSPhereColorToOnTouch)
 
 		object.material.wireframe=false;		//disable object wireframe when touched
 	
-		transitionByText(object);  
+		// transitionByText(object);  
 		addTextLabel(object)              
     }else{
 
@@ -339,7 +362,10 @@ function onTouchStart(event){
 		if (sphereTextLabelClassExists.length>0) {
 			console.log("label exists");
 			sphereText.style.visibility='hidden'
-		} 
+		}
+		
+		setDefaultSphereOpacity()
+		getOrignalSphereColor(object)			//set the color of the sphere to its original color
 	}    
 }
 
@@ -455,12 +481,13 @@ function addTextLabel(object){
 
 	sphereText = document.createElement( 'div' );
 	sphereText.className = 'label';
-
+	
 	var totalSpheres=objects.length;
 	for(let i=0;i<totalSpheres;i++){
 		if(object==objects[i]){
 			const text=populationWealthDistribution[i].story;	
 			sphereText.textContent = text;		
+
 		}	
 	}
 	
@@ -473,7 +500,33 @@ function addTextLabel(object){
 	sphereLabel.position.set(0,0,0);
 	object.add(sphereLabel);
 }
-			
+
+/*--------change in sphere when clicked----------*/
+//declaring function to change sphere color to original
+function getOrignalSphereColor(object){
+	for(let i=0;i<objects.length;i++){
+		const colorOriginal=populationWealthDistribution[i].color
+		objects[i].material.color.set(colorOriginal)
+	}	
+} 
+
+/*--------change in opacity of spheres-----------*/
+
+//change in opacity of other spheres when use clicks on one
+function setObjectOpacity(object){
+	for(let i=0;i<objects.length;i++){
+		if(objects[i]!=object){
+			objects[i].material.opacity=sphereOpacityValue;
+		}
+	}
+}
+
+//change opacity to original state
+function setDefaultSphereOpacity(){
+	for(let i=0;i<objects.length;i++){
+		objects[i].material.opacity=1;
+	}
+}
 
 
 /*---------function to animate and render the scene--------*/
