@@ -4,6 +4,7 @@ console.log("initiating income disparity")
 
 let objects=[]  //we will store all the objects in this array once they are initiated
 var shouldTransition;
+var sphereText;
 
 /*---------set camera variables--------------------*/
 //set the camera parameters
@@ -23,6 +24,7 @@ color_AmbientLight=0xffffff;
 /*---sphere variables---*/
 var sphereTotal=13;
 var sphereWidthSegmets=16, sphereHeightSegmets=16;  
+var isSphereWireframe=true;
 
 /*----setting up the light-------*/
 var ambientLight=getAmbientLight(color_AmbientLight,intensity_AmbientLight)
@@ -139,17 +141,7 @@ Orbcontrols.dampingFactor = 0.25;   //damping inertia
 // dControls.addEventListener('dragstart',function(event){
 // 	Orbcontrols.enabled=false;
 // })
-// dControls.addEventListener('dragend',function(event){
-// 	Orbcontrols.enabled=true;
-// })
 
-// dControls.addEventListener("hoveron", function(event){
-// 	event.object.material.opacity=0.5;
-// })
-
-// dControls.addEventListener("hoveroff", function(event){
-// 	event.object.material.opacity=1
-// })
 
 
 //function to add genreate multiple speheres
@@ -162,7 +154,7 @@ function getMultipleSpheres(sphereWidthSegmets, sphereHeightSegmets,populationWe
 		var sphereRadius=populationWealthDistribution[i].radius;
 
         console.log("sphere total "+sphereRadius)
-        var object=getSphere(sphereRadius,sphereWidthSegmets,sphereHeightSegmets,sphereColor)
+        var object=getSphere(sphereRadius,sphereWidthSegmets,sphereHeightSegmets,sphereColor,isSphereWireframe)
 
         console.log*(sphereRadius)  
         objects.push(object)    
@@ -217,11 +209,11 @@ function getAmbientLight(color,intensity){
 
 /*---declaring the objects on the scene----*/
 //funciton to add sphere
-function getSphere(radius,widthSegmets,heightSegmets,sphereColor){
+function getSphere(radius,widthSegmets,heightSegmets,sphereColor,isSphereWireframe){
     const geometry=new THREE.SphereGeometry(radius,widthSegmets,heightSegmets);
     const material=new THREE.MeshPhongMaterial({
         color: sphereColor,
-		wireframe: true
+		wireframe: isSphereWireframe
     });
     const mesh=new THREE.Mesh(geometry,material);
     return mesh;
@@ -254,14 +246,18 @@ function transitionStartonClick(){
 
 	/*---event listeners will get activated only when user clicks the CTA----*/
 	renderer.domElement.addEventListener('mousedown',onMouseDown);
+	renderer.domElement.addEventListener('mouseup',onMouseUp);
 	renderer.domElement.addEventListener('touchstart',onTouchStart);
+	renderer.domElement.addEventListener('touchend',onTouchEnd);
+
 	document.getElementById("btnCTA").style.visibility="hidden";       
 }
 
 
+/*----declaring event listeners for web-----------------------------*/
+
 //declaring MouseDown function
 function onMouseDown(){
-
 	
     event.preventDefault();
     // mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
@@ -271,19 +267,45 @@ function onMouseDown(){
 	mouse.x = ( ( event.clientX - canvasBounds.left ) / ( canvasBounds.right - canvasBounds.left ) ) * 2 - 1;
 	mouse.y = - ( ( event.clientY - canvasBounds.top ) / ( canvasBounds.bottom - canvasBounds.top) ) * 2 + 1;
 
-    // find intersections
+    // find intersections from raytracing
       raycaster.setFromCamera(mouse, camera);
     
     var intersects = raycaster.intersectObject(scene,true);  
 	if (intersects.length > 0) { 
         object = intersects[0].object;
-		// console.log(object);
-		// console.log(objects[1]);
+
+		//hide the text box for the sphere if the user clicks outside
+		const sphereTextLabelClassExists = document.querySelectorAll('.label');
+		if (sphereTextLabelClassExists.length>0) {
+			console.log("label exists");
+			sphereText.style.visibility='hidden'
+		} 
+	
+		object.material.wireframe=false;		//wireframe is disabled when the user clicks on the object
+			
 		transitionByText(object);
+		addTextLabel(object)					//add text label to spheres when the user clicks on them
+
 	}else{
-		console.log("no sphere selected")
+
+		//hide the text box for the sphere if the user clicks outside
+		const sphereTextLabelClassExists = document.querySelectorAll('.label');
+		if (sphereTextLabelClassExists.length>0) {
+			console.log("label exists");
+			sphereText.style.visibility='hidden'
+		} 
+		
 	}
 }
+
+//declaring function for mouse up
+function onMouseUp(){
+	object.material.wireframe=true;				//wireframe is renabled when the user leaves the said object	
+	
+}
+
+
+/*----declaring event listeners for mobile -----------------------------------------*/
 
 //declaring touchstart function
 function onTouchStart(event){
@@ -298,12 +320,33 @@ function onTouchStart(event){
     //check if the mouse has intersected any object on the canvas
     if (intersects.length > 0) { 
         object = intersects[0].object;
-		transitionByText(object);                
+
+		//hide the text box for the sphere if the user clicks outside
+		const sphereTextLabelClassExists = document.querySelectorAll('.label');
+		if (sphereTextLabelClassExists.length>0) {
+			console.log("label exists");
+			sphereText.style.visibility='hidden'
+		} 
+
+		object.material.wireframe=false;		//disable object wireframe when touched
+	
+		transitionByText(object);  
+		addTextLabel(object)              
     }else{
-		console.log("no sphere selected")
+
+		//hide the text box for the sphere if the user clicks outside
+		const sphereTextLabelClassExists = document.querySelectorAll('.label');
+		if (sphereTextLabelClassExists.length>0) {
+			console.log("label exists");
+			sphereText.style.visibility='hidden'
+		} 
 	}    
 }
 
+//declaring touchEnd function
+function onTouchEnd(){
+        object.material.wireframe=true;			//object becomes a wireframe when the user left the click                                       
+}
 
 
 //declaring transition by change in text
@@ -331,7 +374,7 @@ function transitionByCameraPosition(changeCameraPosition_x,changeCameraPosition_
 	let targetPosition=new THREE.Vector3(changeCameraPosition_x,changeCameraPosition_y,changeCameraPosition_z);
 	let tweenChangeCameraPosition=new TWEEN.Tween(camera.position)
 	.to(targetPosition,10000)
-	.easing(TWEEN.Easing.Exponential.InOut)
+	.easing(TWEEN.Easing.Linear.None)
 	.start()
 
 }
@@ -382,7 +425,7 @@ function transitionByPosition(){
 		let targetPosition=new THREE.Vector3(populationWealthDistribution[i].targetPositionX,populationWealthDistribution[i].targetPositionY,populationWealthDistribution[i].targetPositionZ);
 		let tweenChangePosition=new TWEEN.Tween(objects[i].position)
 		.to(targetPosition,10000)
-		.easing(TWEEN.Easing.Bounce.InOut)
+		.easing(TWEEN.Easing.Linear.None)
 		.start()
 	}
 
@@ -406,6 +449,32 @@ function onWindowResize() {
 }
 
 
+/*-----------function to add text labels to each individual sphere---------*/
+
+function addTextLabel(object){
+
+	sphereText = document.createElement( 'div' );
+	sphereText.className = 'label';
+
+	var totalSpheres=objects.length;
+	for(let i=0;i<totalSpheres;i++){
+		if(object==objects[i]){
+			const text=populationWealthDistribution[i].story;	
+			sphereText.textContent = text;		
+		}	
+	}
+	
+	sphereText.style.marginTop = '-1em';
+	const sphereLabel=new THREE.CSS2DObject( sphereText );
+	// sphereLabel.position.set(0,0,0);
+
+	// sphereText.style.visibility='hidden'
+	sphereLabel.position.copy(object.position)
+	sphereLabel.position.set(0,0,0);
+	object.add(sphereLabel);
+}
+			
+
 
 /*---------function to animate and render the scene--------*/
 animate();
@@ -415,6 +484,7 @@ function animate() {
 	Orbcontrols.update();
     requestAnimationFrame( animate );    
     render();
+	labelRenderer.render( scene, camera );
 }
 function render() {       
     renderer.render( scene, camera );
