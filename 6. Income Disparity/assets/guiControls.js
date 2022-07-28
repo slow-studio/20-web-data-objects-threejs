@@ -66,7 +66,7 @@ sphereGUI_10.add(objects[9].position, 'y').min(-100).max(100).step(0.01).listen(
 sphereGUI_10.add(objects[9].position, 'z').min(-100).max(100).step(0.01).listen();
 
 //camera controls
-cameraControls.add(camera.position, 'x').min(-100).max(100).step(0.01).listen();
-cameraControls.add(camera.position, 'y').min(-100).max(100).step(0.01).listen();
-cameraControls.add(camera.position, 'z').min(-100).max(500).step(0.01).listen();
+cameraControls.add(camera.position, 'x').min(-500).max(500).step(0.01).listen();
+cameraControls.add(camera.position, 'y').min(-500).max(500).step(0.01).listen();
+cameraControls.add(camera.position, 'z').min(-500).max(500).step(0.01).listen();
 

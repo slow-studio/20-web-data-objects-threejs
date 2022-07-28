@@ -23,9 +23,9 @@ color_AmbientLight=0xffffff;
 
 /*---sphere variables---*/
 var sphereTotal=13;
-var sphereWidthSegmets=16, sphereHeightSegmets=16;  
+// var sphereWidthSegmets=16, sphereHeightSegmets=16;  
 var isSphereWireframe=true;
-var changeSPhereColorToOnTouch=0xffffff;
+var changeSPhereColorToOnTouch=0x004CF0;
 var sphereOpacityValue=0.45;
 
 /*----setting up the light-------*/
@@ -37,8 +37,9 @@ let numberOfRows=4;             //total number of rows
 let numberOfColoumns=4;         //total number of coloumns
 
 /*-------setting up the text to display-----*/
-var displayTextAttheStartOfTheScene="Would like to view the wealth distribution in India?"
-var displayTextWhenButtonClicked="Click on any sphere to know more details about it"
+var displayTextAttheStartOfTheScene="Would you like to view the wealth distribution in India?"
+var displayTextWhenButtonClicked="Click on any of the spheres to know more details about it"
+var ctaInnerText="proceed"
 
 /*----declaring the scene-------*/
 const scene=new THREE.Scene();
@@ -58,7 +59,9 @@ scene.add(ambientLight)
 
 
 //adding the spheres to the scene
-getMultipleSpheres(sphereWidthSegmets, sphereHeightSegmets,populationWealthDistribution)
+// getMultipleSpheres(sphereWidthSegmets, sphereHeightSegmets,populationWealthDistribution)
+getMultipleSpheres(populationWealthDistribution)
+
 
 /*-----------adding text box inside canvas-------------------------------------*/
 info = document.createElement( 'div' );
@@ -83,7 +86,7 @@ info.appendChild(infoText)
 // adding a CTA to the div
 btn=document.createElement('button')
 btn.id="btnCTA"
-btn.innerHTML='Click here'
+btn.innerHTML=ctaInnerText
 info.appendChild(btn)
 
 
@@ -147,7 +150,7 @@ Orbcontrols.dampingFactor = 0.25;   //damping inertia
 
 
 //function to add genreate multiple speheres
-function getMultipleSpheres(sphereWidthSegmets, sphereHeightSegmets,populationWealthDistribution){
+function getMultipleSpheres(populationWealthDistribution){
     var sphereTotal=populationWealthDistribution.length;
     
     //declaring a for loop to add the multiple spheres
@@ -155,7 +158,9 @@ function getMultipleSpheres(sphereWidthSegmets, sphereHeightSegmets,populationWe
         var sphereColor=populationWealthDistribution[i].color;
 		var sphereRadius=populationWealthDistribution[i].radius;
 
-        console.log("sphere total "+sphereRadius)
+		var sphereHeightSegmets=Math.sqrt(populationWealthDistribution[i].wealthDistribution)*16;
+		var sphereWidthSegmets=Math.sqrt(populationWealthDistribution[i].wealthDistribution)*24;
+
         var object=getSphere(sphereRadius,sphereWidthSegmets,sphereHeightSegmets,sphereColor,isSphereWireframe)
 
         console.log*(sphereRadius)  
@@ -291,10 +296,11 @@ function onMouseDown(){
 
 		//manipulate color of sphers when the user click on them		
 		getOrignalSphereColor(object)
-		object.material.color.set(changeSPhereColorToOnTouch)
-	
+		object.material.color.set(changeSPhereColorToOnTouch)	
 		object.material.wireframe=false;		//wireframe is disabled when the user clicks on the object
 			
+		changeControlsTargetTo(object)			//set the orbit controls to point at the selected object
+
 		// transitionByText(object);
 		addTextLabel(object)					//add text label to spheres when the user clicks on them
 
@@ -307,6 +313,7 @@ function onMouseDown(){
 			sphereText.style.visibility='hidden'
 		} 
 
+		setControlsTargetToDefault()
 		setDefaultSphereOpacity()
 		getOrignalSphereColor(object)			//set the color of the sphere to its original color
 
@@ -350,8 +357,9 @@ function onTouchStart(event){
 		//manipulate color of sphers when the user click on them
 		getOrignalSphereColor(object)
 		object.material.color.set(changeSPhereColorToOnTouch)
-
 		object.material.wireframe=false;		//disable object wireframe when touched
+
+		changeControlsTargetTo(object)			//set orbit controls to target the selected object
 	
 		// transitionByText(object);  
 		addTextLabel(object)              
@@ -364,6 +372,7 @@ function onTouchStart(event){
 			sphereText.style.visibility='hidden'
 		}
 		
+		setControlsTargetToDefault()			//set orbit controls to default
 		setDefaultSphereOpacity()
 		getOrignalSphereColor(object)			//set the color of the sphere to its original color
 	}    
@@ -526,6 +535,24 @@ function setDefaultSphereOpacity(){
 	for(let i=0;i<objects.length;i++){
 		objects[i].material.opacity=1;
 	}
+}
+
+//change camera lookAt
+function changeControlsTargetTo(object){
+	console.log("dissddsfv"+object.position.x)
+	let targetPosition=new THREE.Vector3(object.position.x,object.position.y,object.position.z);
+	let tweenChangeTargetControls=new TWEEN.Tween(Orbcontrols.target)
+	.to(targetPosition,3000)
+	.easing(TWEEN.Easing.Linear.None)
+	.start()
+}
+
+function setControlsTargetToDefault(){
+	let targetPosition=new THREE.Vector3(0,0,0)
+	let tweenChangeTargetControls=new TWEEN.Tween(Orbcontrols.target)
+	.to(targetPosition,3000)
+	.easing(TWEEN.Easing.Linear.None)
+	.start()
 }
 
 
