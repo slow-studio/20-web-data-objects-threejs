@@ -543,17 +543,33 @@ function setDefaultSphereOpacity(){
 
 //change camera lookAt
 function changeControlsTargetTo(object){
-	console.log("dissddsfv"+object.position.x)
+
 	let targetPosition=new THREE.Vector3(object.position.x,object.position.y,object.position.z);
 	let tweenChangeTargetControls=new TWEEN.Tween(Orbcontrols.target)
 	.to(targetPosition,3000)
 	.easing(TWEEN.Easing.Linear.None)
 	.start()
+
+	//change camera position and make it focus on the sphere being selected
+	var objectSpecificCameraPosition_X,objectSpecificCameraPosition_Y,objectSpecificCameraPosition_Z ;
+	for(let i=0;i<objects.length;i++){
+		if(objects[i]==object){
+			if(i!=(objects.length-1)){
+				objectSpecificCameraPosition_Z=(populationWealthDistribution[i].wealthDistribution)*3.75;
+			}
+			else if(i==(objects.length-1)){
+				objectSpecificCameraPosition_Z=(populationWealthDistribution[i].wealthDistribution)*2;
+			}					
+		}
+	}	
+	objectSpecificCameraPosition_X=object.position.x
+	objectSpecificCameraPosition_Y=cameraPosition_y
+	transitionByCameraPosition(objectSpecificCameraPosition_X,objectSpecificCameraPosition_Y,objectSpecificCameraPosition_Z)
+
 }
 
-function setControlsTargetToDefault(){
-	
-	
+//declare function to set target controls to default when the user clicks outside
+function setControlsTargetToDefault(){		
 
 	let targetPosition=new THREE.Vector3(0,0,0)
 	let tweenChangeTargetControls=new TWEEN.Tween(Orbcontrols.target)
