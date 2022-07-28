@@ -13,6 +13,9 @@ var camera_FOV=35, cameraAspectRatio=(window.innerWidth/window.innerHeight),came
 var cameraPosition_x=0, cameraPosition_y=2,cameraPosition_z=30;
 //declaring camera lookat
 cameraLookAt_x=0,cameraLookAt_y=0,cameraLookAt_z=0;
+//declaring where the camera shall look at when the user clicks on the cta
+var changeCameraPosition_x=0, changeCameraPosition_y=6, changeCameraPosition_z=65;
+
 
 /*----light variables, make changes as required----------*/
 //intensity of lghts
@@ -249,7 +252,7 @@ window.addEventListener( 'resize', onWindowResize );
 function transitionStartonClick(){
 	
 	infoText.innerHTML=displayTextWhenButtonClicked;
-	transitionByCameraPosition(0,6,65);
+	transitionByCameraPosition(changeCameraPosition_x,changeCameraPosition_y,changeCameraPosition_z)
 	transitionByPosition();
 	transitionByScale();  
 
@@ -313,7 +316,8 @@ function onMouseDown(){
 			sphereText.style.visibility='hidden'
 		} 
 
-		setControlsTargetToDefault()
+		transitionByCameraPosition(changeCameraPosition_x,changeCameraPosition_y,changeCameraPosition_z)
+		setControlsTargetToDefault()			//set orbit controls to default
 		setDefaultSphereOpacity()
 		getOrignalSphereColor(object)			//set the color of the sphere to its original color
 
@@ -408,7 +412,7 @@ function transitionByCameraPosition(changeCameraPosition_x,changeCameraPosition_
 
 	let targetPosition=new THREE.Vector3(changeCameraPosition_x,changeCameraPosition_y,changeCameraPosition_z);
 	let tweenChangeCameraPosition=new TWEEN.Tween(camera.position)
-	.to(targetPosition,10000)
+	.to(targetPosition,5000)
 	.easing(TWEEN.Easing.Linear.None)
 	.start()
 
@@ -548,6 +552,9 @@ function changeControlsTargetTo(object){
 }
 
 function setControlsTargetToDefault(){
+	
+	
+
 	let targetPosition=new THREE.Vector3(0,0,0)
 	let tweenChangeTargetControls=new TWEEN.Tween(Orbcontrols.target)
 	.to(targetPosition,3000)
