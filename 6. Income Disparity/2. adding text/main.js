@@ -19,7 +19,7 @@ var changeCameraPosition_x=0, changeCameraPosition_y=6, changeCameraPosition_z=6
 
 /*----light variables, make changes as required----------*/
 //intensity of lghts
-intensity_AmbientLight=0.9
+intensity_AmbientLight=0.8
 
 //color of lights
 color_AmbientLight=0xffffff;
@@ -29,7 +29,7 @@ var sphereTotal=13;
 // var sphereWidthSegmets=16, sphereHeightSegmets=16;  
 var isSphereWireframe=true;
 var changeSPhereColorToOnTouch=0x004CF0;
-var sphereOpacityValue=0.45;
+var sphereOpacityValue=0.35;
 
 /*----setting up the light-------*/
 var ambientLight=getAmbientLight(color_AmbientLight,intensity_AmbientLight)
@@ -44,9 +44,16 @@ var displayTextAttheStartOfTheScene="Would you like to view the wealth distribut
 var displayTextWhenButtonClicked="Click on any of the spheres to know more details about it"
 var ctaInnerText="proceed"
 
+
+/*----setting up the spherical background-------------*/
+var sphereBackground=getSphere(150,32,32,0xffffff,false)
+sphereBackground.material.side= THREE.BackSide; 
+
+
+
 /*----declaring the scene-------*/
 const scene=new THREE.Scene();
-
+scene.add(sphereBackground)
 
 /*----------adding a grid helper---------*/
 
@@ -58,7 +65,7 @@ const gridHelper = new THREE.GridHelper( size, divisions );
 
 /*------adding elements to the scene-------------*/
 //adding the lights
-scene.add(ambientLight)
+sphereBackground.add(ambientLight)
 
 
 //adding the spheres to the scene
@@ -136,6 +143,8 @@ labelRenderer = new THREE.CSS2DRenderer();
 /*--------setting up orbit controls---------*/
 var Orbcontrols = new THREE.OrbitControls(camera,renderer.domElement);
 // Orbcontrols.enableZoom = false;
+
+Orbcontrols.maxDistance=200
 // Orbcontrols.enablePan = false;
 Orbcontrols.enableDamping = true;   //damping 
 Orbcontrols.dampingFactor = 0.25;   //damping inertia
@@ -216,6 +225,13 @@ function getAmbientLight(color,intensity){
     return light;
 }
 
+//function to get a point light
+function getPointLight(color,intensity){
+	const light = new THREE.PointLight(color,intensity);
+	light.castShadow=true;
+	return light;
+}
+
 
 /*---declaring the objects on the scene----*/
 //funciton to add sphere
@@ -225,9 +241,12 @@ function getSphere(radius,widthSegmets,heightSegmets,sphereColor,isSphereWirefra
         color: sphereColor,
 		wireframe: isSphereWireframe,
 		transparent: true,
-		opacity:1
+		opacity:1,
+		
     });
     const mesh=new THREE.Mesh(geometry,material);
+	mesh.castShadow=true;
+	mesh.receiveShadow=true;
     return mesh;
 }
 
@@ -285,49 +304,52 @@ function onMouseDown(){
     var intersects = raycaster.intersectObject(scene,true);  
 	if (intersects.length > 0) { 
         object = intersects[0].object;
-		
-		//hide the text box for the sphere if the user clicks outside
-		const sphereTextLabelClassExists = document.querySelectorAll('.label');
-		if (sphereTextLabelClassExists.length>0) {
-			console.log("label exists");
-			sphereText.style.visibility='hidden'
-		} 
 
-		//make changes to the sphere opacity
-		setDefaultSphereOpacity()
-		setObjectOpacity(object);
-
-		//manipulate color of sphers when the user click on them		
-		getOrignalSphereColor(object)
-		object.material.color.set(changeSPhereColorToOnTouch)	
-		object.material.wireframe=false;		//wireframe is disabled when the user clicks on the object
+		if(object!=sphereBackground){
 			
-		changeControlsTargetTo(object)			//set the orbit controls to point at the selected object
+			//hide the text box for the sphere if the user clicks outside
+			const sphereTextLabelClassExists = document.querySelectorAll('.label');
+			if (sphereTextLabelClassExists.length>0) {
+				console.log("label exists");
+				sphereText.style.visibility='hidden'
+			}
 
-		// transitionByText(object);
-		addTextLabel(object)					//add text label to spheres when the user clicks on them
+			//make changes to the sphere opacity
+			setDefaultSphereOpacity()
+			setObjectOpacity(object);
+			
+			//manipulate color of sphers when the user click on them
+			getOrignalSphereColor(object)
+			object.material.color.set(changeSPhereColorToOnTouch)
+			object.material.wireframe=false;		//disable object wireframe when touched
 
-	}else{
+			changeControlsTargetTo(object)			//set orbit controls to target the selected object
+		
+			// transitionByText(object);  
+			addTextLabel(object)              
+   			 }
+		}
+
+		
+	else{
 
 		//hide the text box for the sphere if the user clicks outside
 		const sphereTextLabelClassExists = document.querySelectorAll('.label');
 		if (sphereTextLabelClassExists.length>0) {
 			console.log("label exists");
 			sphereText.style.visibility='hidden'
-		} 
-
-		transitionByCameraPosition(changeCameraPosition_x,changeCameraPosition_y,changeCameraPosition_z)
+		}
+		
 		setControlsTargetToDefault()			//set orbit controls to default
 		setDefaultSphereOpacity()
 		getOrignalSphereColor(object)			//set the color of the sphere to its original color
-
-	}
+	}    
 }
 
 //declaring function for mouse up
 function onMouseUp(){
 	object.material.wireframe=true;				//wireframe is renabled when the user leaves the said object	
-	
+	sphereBackground.material.wireframe=false;
 }
 
 
@@ -338,36 +360,42 @@ function onTouchStart(event){
     console.log("touch start")
     var rect = canvas1.getBoundingClientRect();
     mouse.x = + ( (event.targetTouches[ 0 ].pageX - rect.left) / rect.width ) * 2 - 1;
-     mouse.y = - ( (event.targetTouches[ 0 ].pageY - rect.top) / rect.height ) * 2 + 1;
+    mouse.y = - ( (event.targetTouches[ 0 ].pageY - rect.top) / rect.height ) * 2 + 1;
     // find intersections
-      raycaster.setFromCamera(mouse, camera);
+    raycaster.setFromCamera(mouse, camera);
     
     var intersects = raycaster.intersectObject(scene,true);  
     //check if the mouse has intersected any object on the canvas
     if (intersects.length > 0) { 
         object = intersects[0].object;
 
-		//hide the text box for the sphere if the user clicks outside
-		const sphereTextLabelClassExists = document.querySelectorAll('.label');
-		if (sphereTextLabelClassExists.length>0) {
-			console.log("label exists");
-			sphereText.style.visibility='hidden'
+		if(object!=sphereBackground){
+			
+			//hide the text box for the sphere if the user clicks outside
+			const sphereTextLabelClassExists = document.querySelectorAll('.label');
+			if (sphereTextLabelClassExists.length>0) {
+				console.log("label exists");
+				sphereText.style.visibility='hidden'
+			}
+
+			//make changes to the sphere opacity
+			setDefaultSphereOpacity()
+			setObjectOpacity(object);
+			
+			//manipulate color of sphers when the user click on them
+			getOrignalSphereColor(object)
+			object.material.color.set(changeSPhereColorToOnTouch)
+			object.material.wireframe=false;		//disable object wireframe when touched
+
+			changeControlsTargetTo(object)			//set orbit controls to target the selected object
+		
+			// transitionByText(object);  
+			addTextLabel(object)              
+    }
 		}
 
-		//make changes to the sphere opacity
-		setDefaultSphereOpacity()
-		setObjectOpacity(object);
 		
-		//manipulate color of sphers when the user click on them
-		getOrignalSphereColor(object)
-		object.material.color.set(changeSPhereColorToOnTouch)
-		object.material.wireframe=false;		//disable object wireframe when touched
-
-		changeControlsTargetTo(object)			//set orbit controls to target the selected object
-	
-		// transitionByText(object);  
-		addTextLabel(object)              
-    }else{
+	else{
 
 		//hide the text box for the sphere if the user clicks outside
 		const sphereTextLabelClassExists = document.querySelectorAll('.label');
@@ -384,7 +412,8 @@ function onTouchStart(event){
 
 //declaring touchEnd function
 function onTouchEnd(){
-        object.material.wireframe=true;			//object becomes a wireframe when the user left the click                                       
+        object.material.wireframe=true;			//object becomes a wireframe when the user left the click    
+		sphereBackground.material.wireframe=false;                                   
 }
 
 
@@ -561,9 +590,10 @@ function changeControlsTargetTo(object){
 				objectSpecificCameraPosition_Z=(populationWealthDistribution[i].wealthDistribution)*2;
 			}					
 		}
+		objectSpecificCameraPosition_Y=(populationWealthDistribution[i].wealthDistribution)*0.5;
 	}	
 	objectSpecificCameraPosition_X=object.position.x
-	objectSpecificCameraPosition_Y=cameraPosition_y
+	// objectSpecificCameraPosition_Y=cameraPosition_y
 	transitionByCameraPosition(objectSpecificCameraPosition_X,objectSpecificCameraPosition_Y,objectSpecificCameraPosition_Z)
 
 }
@@ -578,6 +608,9 @@ function setControlsTargetToDefault(){
 	.start()
 }
 
+
+// var p1=getPointLight((0xffffcc),0.2)
+// sphereBackground.add(p1)
 
 /*---------function to animate and render the scene--------*/
 animate();
