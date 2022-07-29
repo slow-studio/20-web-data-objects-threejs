@@ -20,6 +20,7 @@ var sphereText;
 /*----setting up the spherical background-------------*/
 var sphereBackground=getSphere(250,32,32,0x3C4347,false)
 sphereBackground.material.side= THREE.BackSide; 
+sphereBackground.receiveShadow=false;
 
 
 /*---------set camera variables--------------------*/
@@ -40,15 +41,16 @@ intensity_AmbientLight=0.8
 //color of lights
 color_AmbientLight=0xffffff;
 
-var pointLight1=getPointLight((0xffffff),0.5)
-sphereBackground.add(pointLight1)
+var pointLight1=getPointLight((0xffffff),0.3)
+pointLight1.position.set(-273,145,-20)
+
 
 /*---sphere variables---*/
 var sphereTotal=13;
 // var sphereWidthSegmets=16, sphereHeightSegmets=16;  
 var isSphereWireframe=true;
 var changeSPhereColorToOnTouch=0x76E5E3;
-var sphereOpacityValue=0.25;
+var sphereOpacityValue=0.1;
 
 /*----setting up the light-------*/
 var ambientLight=getAmbientLight(color_AmbientLight,intensity_AmbientLight)
@@ -58,7 +60,7 @@ var ambientLight=getAmbientLight(color_AmbientLight,intensity_AmbientLight)
 let numberOfRows=4;             //total number of rows 
 let numberOfColoumns=4;         //total number of coloumns
 
-/*--------*/
+/*-----set delay for animation transtition---*/
 var delayDuration=1000;
 
 /*-------setting up the text to display-----*/
@@ -71,6 +73,7 @@ var ctaInnerText="proceed"
 /*----declaring the scene-------*/
 const scene=new THREE.Scene();
 scene.add(sphereBackground)
+scene.add(pointLight1)
 
 /*----------adding a grid helper---------*/
 
@@ -298,6 +301,7 @@ function transitionStartonClick(){
 	transitionByScale();  
 
 	/*---event listeners will get activated only when user clicks the CTA----*/
+
 	renderer.domElement.addEventListener('mousedown',onMouseDown);
 	renderer.domElement.addEventListener('mouseup',onMouseUp);
 	renderer.domElement.addEventListener('touchstart',onTouchStart);
@@ -308,6 +312,7 @@ function transitionStartonClick(){
 
 
 /*----declaring event listeners for web-----------------------------*/
+
 
 //declaring MouseDown function
 function onMouseDown(){
@@ -337,18 +342,18 @@ function onMouseDown(){
 			}
 
 			//make changes to the sphere opacity
-			setDefaultSphereOpacity()
+			setDefaultSphereOpacity();
 			setObjectOpacity(object);
 			
 			//manipulate color of sphers when the user click on them
-			getOrignalSphereColor(object)
-			object.material.color.set(changeSPhereColorToOnTouch)
+			getOrignalSphereColor(object);
+			object.material.color.set(changeSPhereColorToOnTouch);
 			object.material.wireframe=false;		//disable object wireframe when touched
 
-			changeControlsTargetTo(object)			//set orbit controls to target the selected object
+			changeControlsTargetTo(object);			//set orbit controls to target the selected object
 		
 			// transitionByText(object);  
-			addTextLabel(object)              
+			addTextLabel(object);              
    			 }else{
 
 					//hide the text box for the sphere if the user clicks outside
@@ -540,7 +545,7 @@ function addTextLabel(object){
 
 	sphereText = document.createElement( 'div' );
 	sphereText.className = 'label';
-	
+	sphereText.style.color ='rbg(1,1,1)';
 	var totalSpheres=objects.length;
 	for(let i=0;i<totalSpheres;i++){
 		if(object==objects[i]){
@@ -550,13 +555,14 @@ function addTextLabel(object){
 		}	
 	}
 	
-	sphereText.style.marginTop = '-1em';
+	sphereText.style.marginTop = '-1.5em';
+	
 	const sphereLabel=new THREE.CSS2DObject( sphereText );
 	// sphereLabel.position.set(0,0,0);
-
+	
 	// sphereText.style.visibility='hidden'
 	sphereLabel.position.copy(object.position)
-	sphereLabel.position.set(0,0,0);
+	sphereLabel.position.set(0,0.75,0);
 	object.add(sphereLabel);
 }
 
