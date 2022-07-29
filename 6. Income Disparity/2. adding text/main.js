@@ -27,7 +27,7 @@ sphereBackground.receiveShadow=false;
 //set the camera parameters
 var camera_FOV=35, cameraAspectRatio=(window.innerWidth/window.innerHeight),camera_NearSight=1,camera_FarSight=30000
 //declaring camera position
-var cameraPosition_x=0, cameraPosition_y=2,cameraPosition_z=30;
+const cameraPosition_x=0, cameraPosition_y=2,cameraPosition_z=30;
 //declaring camera lookat
 cameraLookAt_x=0,cameraLookAt_y=0,cameraLookAt_z=0;
 //declaring where the camera shall look at when the user clicks on the cta
@@ -307,12 +307,39 @@ function transitionStartonClick(){
 	renderer.domElement.addEventListener('touchstart',onTouchStart);
 	renderer.domElement.addEventListener('touchend',onTouchEnd);
 
+	
+	document.addEventListener('dblclick', ondblclick, false);
+
 	document.getElementById("btnCTA").style.visibility="hidden";       
 }
 
 
 /*----declaring event listeners for web-----------------------------*/
 
+//declaring function for double click
+function ondblclick(event){
+	
+    event.preventDefault();
+    // mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    // mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+	let canvasBounds = renderer.context.canvas.getBoundingClientRect();
+	mouse.x = ( ( event.clientX - canvasBounds.left ) / ( canvasBounds.right - canvasBounds.left ) ) * 2 - 1;
+	mouse.y = - ( ( event.clientY - canvasBounds.top ) / ( canvasBounds.bottom - canvasBounds.top) ) * 2 + 1;
+
+    // find intersections from raytracing
+      raycaster.setFromCamera(mouse, camera);
+    
+    var intersects = raycaster.intersectObject(scene,true);  
+	if (intersects.length > 0) { 
+        object = intersects[0].object;
+
+		if(object==sphereBackground){
+			console.log("bg")
+			setControlsTargetToDefault()
+		}	
+}	
+}
 
 //declaring MouseDown function
 function onMouseDown(){
@@ -629,6 +656,9 @@ function setControlsTargetToDefault(){
 	.to(targetPosition,delayDuration)
 	.easing(TWEEN.Easing.Linear.None)
 	.start()
+
+	transitionByCameraPosition(changeCameraPosition_x,changeCameraPosition_y,changeCameraPosition_z)	//set the camera position to default
+
 }
 
 
