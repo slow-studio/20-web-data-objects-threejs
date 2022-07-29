@@ -1,3 +1,12 @@
+/*------issues to fix so far-----*/
+/*
+	1. decrease the transition delay, it is taking too long.
+	2. the bounding sphere can be seen when rotating the scene, fix it.
+	3. interactions when the user clicks outside aren't working, fix it.
+	4. camera position doesn't need to go back to the orignal state when clicked outside.
+
+*/
+
 console.log("text page transition")
 
 console.log("initiating income disparity")
@@ -5,6 +14,13 @@ console.log("initiating income disparity")
 let objects=[]  //we will store all the objects in this array once they are initiated
 var shouldTransition;
 var sphereText;
+
+
+
+/*----setting up the spherical background-------------*/
+var sphereBackground=getSphere(250,32,32,0x3C4347,false)
+sphereBackground.material.side= THREE.BackSide; 
+
 
 /*---------set camera variables--------------------*/
 //set the camera parameters
@@ -24,12 +40,15 @@ intensity_AmbientLight=0.8
 //color of lights
 color_AmbientLight=0xffffff;
 
+var pointLight1=getPointLight((0xffffff),0.5)
+sphereBackground.add(pointLight1)
+
 /*---sphere variables---*/
 var sphereTotal=13;
 // var sphereWidthSegmets=16, sphereHeightSegmets=16;  
 var isSphereWireframe=true;
-var changeSPhereColorToOnTouch=0x004CF0;
-var sphereOpacityValue=0.35;
+var changeSPhereColorToOnTouch=0x76E5E3;
+var sphereOpacityValue=0.25;
 
 /*----setting up the light-------*/
 var ambientLight=getAmbientLight(color_AmbientLight,intensity_AmbientLight)
@@ -39,15 +58,13 @@ var ambientLight=getAmbientLight(color_AmbientLight,intensity_AmbientLight)
 let numberOfRows=4;             //total number of rows 
 let numberOfColoumns=4;         //total number of coloumns
 
+/*--------*/
+var delayDuration=1000;
+
 /*-------setting up the text to display-----*/
 var displayTextAttheStartOfTheScene="Would you like to view the wealth distribution in India?"
 var displayTextWhenButtonClicked="Click on any of the spheres to know more details about it"
 var ctaInnerText="proceed"
-
-
-/*----setting up the spherical background-------------*/
-var sphereBackground=getSphere(150,32,32,0xffffff,false)
-sphereBackground.material.side= THREE.BackSide; 
 
 
 
@@ -95,7 +112,8 @@ info.appendChild(infoText)
 
 // adding a CTA to the div
 btn=document.createElement('button')
-btn.id="btnCTA"
+btn.id="btnCTA";
+btn.style.color="#003E46";
 btn.innerHTML=ctaInnerText
 info.appendChild(btn)
 
@@ -142,12 +160,16 @@ labelRenderer = new THREE.CSS2DRenderer();
 
 /*--------setting up orbit controls---------*/
 var Orbcontrols = new THREE.OrbitControls(camera,renderer.domElement);
+Orbcontrols.addEventListener( 'change', render )
 // Orbcontrols.enableZoom = false;
 
 Orbcontrols.maxDistance=200
 // Orbcontrols.enablePan = false;
 Orbcontrols.enableDamping = true;   //damping 
 Orbcontrols.dampingFactor = 0.25;   //damping inertia
+
+Orbcontrols.minAzimuthAngle=Math.PI*1.6;
+Orbcontrols.maxAzimuthAngle=Math.PI*2;
 
 
 //setting up drag controls to drag an object around the screen
@@ -228,7 +250,7 @@ function getAmbientLight(color,intensity){
 //function to get a point light
 function getPointLight(color,intensity){
 	const light = new THREE.PointLight(color,intensity);
-	light.castShadow=true;
+	// light.castShadow=true;
 	return light;
 }
 
@@ -327,23 +349,20 @@ function onMouseDown(){
 		
 			// transitionByText(object);  
 			addTextLabel(object)              
-   			 }
-		}
+   			 }else{
 
-		
-	else{
-
-		//hide the text box for the sphere if the user clicks outside
-		const sphereTextLabelClassExists = document.querySelectorAll('.label');
-		if (sphereTextLabelClassExists.length>0) {
-			console.log("label exists");
-			sphereText.style.visibility='hidden'
-		}
-		
-		setControlsTargetToDefault()			//set orbit controls to default
-		setDefaultSphereOpacity()
-		getOrignalSphereColor(object)			//set the color of the sphere to its original color
-	}    
+					//hide the text box for the sphere if the user clicks outside
+					const sphereTextLabelClassExists = document.querySelectorAll('.label');
+					if (sphereTextLabelClassExists.length>0) {
+						console.log("label exists");
+						sphereText.style.visibility='hidden'
+					}
+					
+					// setControlsTargetToDefault()			//set orbit controls to default
+					setDefaultSphereOpacity()
+					getOrignalSphereColor(object)			//set the color of the sphere to its original color
+				}    
+		}	
 }
 
 //declaring function for mouse up
@@ -391,11 +410,7 @@ function onTouchStart(event){
 		
 			// transitionByText(object);  
 			addTextLabel(object)              
-    }
-		}
-
-		
-	else{
+    }else{
 
 		//hide the text box for the sphere if the user clicks outside
 		const sphereTextLabelClassExists = document.querySelectorAll('.label');
@@ -407,8 +422,10 @@ function onTouchStart(event){
 		setControlsTargetToDefault()			//set orbit controls to default
 		setDefaultSphereOpacity()
 		getOrignalSphereColor(object)			//set the color of the sphere to its original color
-	}    
+		}    
+	}			
 }
+
 
 //declaring touchEnd function
 function onTouchEnd(){
@@ -441,7 +458,7 @@ function transitionByCameraPosition(changeCameraPosition_x,changeCameraPosition_
 
 	let targetPosition=new THREE.Vector3(changeCameraPosition_x,changeCameraPosition_y,changeCameraPosition_z);
 	let tweenChangeCameraPosition=new TWEEN.Tween(camera.position)
-	.to(targetPosition,5000)
+	.to(targetPosition,delayDuration)
 	.easing(TWEEN.Easing.Linear.None)
 	.start()
 
@@ -479,7 +496,7 @@ function transitionByScale(){
 		//declaring tween animation to animate the scaling
 		let targetScaleTo=new THREE.Vector3(objectScaleInX, objectScaleInY, objectScaleInZ); //scale for x,y,z
 		let scaleChange=new TWEEN.Tween(objects[i].scale)
-			.to(targetScaleTo,10000)
+			.to(targetScaleTo,delayDuration)
 			.easing(TWEEN.Easing.Linear.None) //type of easing animation
 			.start();
 		}
@@ -492,7 +509,7 @@ function transitionByPosition(){
 	for(let i=0;i<objects.length;i++){
 		let targetPosition=new THREE.Vector3(populationWealthDistribution[i].targetPositionX,populationWealthDistribution[i].targetPositionY,populationWealthDistribution[i].targetPositionZ);
 		let tweenChangePosition=new TWEEN.Tween(objects[i].position)
-		.to(targetPosition,10000)
+		.to(targetPosition,delayDuration)
 		.easing(TWEEN.Easing.Linear.None)
 		.start()
 	}
@@ -575,7 +592,7 @@ function changeControlsTargetTo(object){
 
 	let targetPosition=new THREE.Vector3(object.position.x,object.position.y,object.position.z);
 	let tweenChangeTargetControls=new TWEEN.Tween(Orbcontrols.target)
-	.to(targetPosition,3000)
+	.to(targetPosition,delayDuration)
 	.easing(TWEEN.Easing.Linear.None)
 	.start()
 
@@ -603,14 +620,11 @@ function setControlsTargetToDefault(){
 
 	let targetPosition=new THREE.Vector3(0,0,0)
 	let tweenChangeTargetControls=new TWEEN.Tween(Orbcontrols.target)
-	.to(targetPosition,3000)
+	.to(targetPosition,delayDuration)
 	.easing(TWEEN.Easing.Linear.None)
 	.start()
 }
 
-
-// var p1=getPointLight((0xffffcc),0.2)
-// sphereBackground.add(p1)
 
 /*---------function to animate and render the scene--------*/
 animate();
