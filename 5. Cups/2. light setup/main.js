@@ -10,7 +10,7 @@ var CANVAS_HEIGHT=480;      //custom canvas height
 var storyCup1="you have selected cup 1"
 var storyCup2="you have selected cup 2"
 var storyCup3="you have selected cup 3"
-var storyBackground="select a cup"
+var storyBackground="Select a cup to find out what prolonged smoking does to your body."
 
 /*-------define the location of each cup here-------------------------*/
 var locationCup1='./assets/cup1.glb', x_Cup1=-1.5,y_cup1=0.5,z_cup1=1.5,colorCup1=0xffcc00, cup1_count=1, cup1_class="cup";     //cup 1
@@ -67,7 +67,7 @@ info.style.color = '#b52525';
 info.style.backgroundColor = 'transparent';
 info.style.zIndex = '1';
 info.style.fontFamily = 'Poppins';
-info.innerHTML = 'Select a cup'      //-----the input to this can be defined from the OnClick function below
+info.innerHTML = storyBackground;      //-----the input to this can be defined from the OnClick function below
 document.getElementById('canvas1').appendChild( info );
 
 
