@@ -58,7 +58,7 @@ let populationWealthDistribution=[
         },
     //population segment 10
     {
-        "populationRepresentationId": 10,  "wealthDistribution": 72.5,    "color": 0xff9933,    "story": "story of population segmenet 10",
+        "populationRepresentationId": 10,  "wealthDistribution": 72.5,    "color": 0xFF9326,    "story": "story of population segmenet 10",
         "radius": 1, "populationSphereLabelId": "Top 10%",
         "targetPositionX": 75,    "targetPositionY":3,    "targetPositionZ":-50
         },        

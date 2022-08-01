@@ -1,9 +1,6 @@
 /*------issues to fix so far-----*/
 /*
-	1. decrease the transition delay, it is taking too long.
-	2. the bounding sphere can be seen when rotating the scene, fix it.
-	3. interactions when the user clicks outside aren't working, fix it.
-	4. camera position doesn't need to go back to the orignal state when clicked outside.
+	1. the color of the text label for each sphere is not going well, change it to a contrasting color.
 
 */
 
@@ -36,13 +33,16 @@ var changeCameraPosition_x=0, changeCameraPosition_y=6, changeCameraPosition_z=6
 
 /*----light variables, make changes as required----------*/
 //intensity of lghts
-intensity_AmbientLight=0.8
+intensity_AmbientLight=0.75
 
 //color of lights
 color_AmbientLight=0xffffff;
 
 var pointLight1=getPointLight((0xffffff),0.3)
 pointLight1.position.set(-273,145,-20)
+
+// var pointLight2=getPointLight((0xffffff),0.3)
+// pointLight2.position.set(-273,145,-20)
 
 
 /*---sphere variables---*/
@@ -73,7 +73,8 @@ var ctaInnerText="proceed"
 /*----declaring the scene-------*/
 const scene=new THREE.Scene();
 scene.add(sphereBackground)
-scene.add(pointLight1)
+sphereBackground.add(pointLight1)
+// sphereBackground.add(pointLight2)
 
 /*----------adding a grid helper---------*/
 
@@ -96,9 +97,9 @@ getMultipleSpheres(populationWealthDistribution)
 /*-----------adding text box inside canvas-------------------------------------*/
 info = document.createElement( 'div' );
 info.id = 'textDiv'
-info.style.position = 'relative';
-info.style.top = '80px';
-info.style.left = '20px';
+info.style.position = 'absolute';
+info.style.top = '30px';
+info.style.left = '30px';
 info.style.width = '100%';
 info.style.textAlign = 'left';
 info.style.color = '#ffffff';      
@@ -109,6 +110,7 @@ document.getElementById('canvas1').appendChild( info );
 
 // adding paragraph element to the div
 infoText=document.createElement('p')
+// infoText.style.padding='5px'
 infoText.id="displayText"
 infoText.innerHTML=displayTextAttheStartOfTheScene
 info.appendChild(infoText)
@@ -117,6 +119,8 @@ info.appendChild(infoText)
 btn=document.createElement('button')
 btn.id="btnCTA";
 btn.style.color="#003E46";
+btn.style.marginTop='20px'
+btn.style.padding='10px'
 btn.innerHTML=ctaInnerText
 info.appendChild(btn)
 
@@ -262,11 +266,13 @@ function getPointLight(color,intensity){
 //funciton to add sphere
 function getSphere(radius,widthSegmets,heightSegmets,sphereColor,isSphereWireframe){
     const geometry=new THREE.SphereGeometry(radius,widthSegmets,heightSegmets);
-    const material=new THREE.MeshPhongMaterial({
+    const material=new THREE.MeshStandardMaterial({
         color: sphereColor,
 		wireframe: isSphereWireframe,
 		transparent: true,
 		opacity:1,
+		metalness:0.1,
+		roughness:0.75
 		
     });
     const mesh=new THREE.Mesh(geometry,material);
@@ -572,7 +578,7 @@ function addTextLabel(object){
 
 	sphereText = document.createElement( 'div' );
 	sphereText.className = 'label';
-	sphereText.style.color ='rbg(1,1,1)';
+	sphereText.style.color='0xfffcc';
 	var totalSpheres=objects.length;
 	for(let i=0;i<totalSpheres;i++){
 		if(object==objects[i]){

@@ -14,7 +14,8 @@ const sphereGUI_8=gui.addFolder('sphere 8')
 const sphereGUI_9=gui.addFolder('sphere 9')
 const sphereGUI_10=gui.addFolder('sphere 10')
 const cameraControls=gui.addFolder('camera controls')
-const pointLightControls1=gui.addFolder('pointLight controls')
+const pointLightControls1=gui.addFolder('pointLight 1 controls')
+// const pointLightControls2=gui.addFolder('pointLight 2 controls')
 
 //sphere 1 controls
 sphereGUI_1.add(objects[0].position, 'x').min(-100).max(100).step(0.01).listen();
@@ -71,8 +72,14 @@ cameraControls.add(camera.position, 'x').min(-500).max(500).step(0.01).listen();
 cameraControls.add(camera.position, 'y').min(-500).max(500).step(0.01).listen();
 cameraControls.add(camera.position, 'z').min(-500).max(500).step(0.01).listen();
 
-//pointLight Gui
+//pointLight1 Gui
 pointLightControls1.add(pointLight1.position,'x').min(-500).max(500).step(0.01).listen();
 pointLightControls1.add(pointLight1.position,'y').min(-500).max(500).step(0.01).listen();
 pointLightControls1.add(pointLight1.position,'z').min(-500).max(500).step(0.01).listen();
 pointLightControls1.add(pointLight1,'intensity').min(0).max(10).step(0.001).listen();
+
+// //pointLight2 Gui
+// pointLightControls2.add(pointLight2.position,'x').min(-500).max(500).step(0.01).listen();
+// pointLightControls2.add(pointLight2.position,'y').min(-500).max(500).step(0.01).listen();
+// pointLightControls2.add(pointLight2.position,'z').min(-500).max(500).step(0.01).listen();
+// pointLightControls2.add(pointLight2,'intensity').min(0).max(10).step(0.001).listen();

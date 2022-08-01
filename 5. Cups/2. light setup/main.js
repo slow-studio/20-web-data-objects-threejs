@@ -359,8 +359,6 @@ function onTouchEnd(){
         }           
     
 
-
-
 /*---------------DOM event listeners for WEB on a PC-----------------------*/
 //declaring function for MouseDown event
 function onMouseDown(event){
