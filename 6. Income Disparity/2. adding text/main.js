@@ -11,7 +11,7 @@ console.log("initiating income disparity")
 let objects=[]  //we will store all the objects in this array once they are initiated
 var shouldTransition;
 var sphereText;
-
+const totalWealthIndia=15.3*1000000;	//wealth in million USD in 2019
 
 
 /*----setting up the spherical background-------------*/
@@ -64,9 +64,12 @@ let numberOfColoumns=4;         //total number of coloumns
 var delayDuration=1000;
 
 /*-------setting up the text to display-----*/
-var displayTextAttheStartOfTheScene="Would you like to view the wealth distribution in India?"
-var displayTextWhenButtonClicked="Click on any of the spheres to know more details about it"
-var ctaInnerText="proceed"
+var displayTextAttheStartOfTheScene="India has a population of 1300 M people."
+var displayTextAttheStartOfTheScene2="As per a report by Credit-Suisse, the total wealth in India as of 2020 was 15.3 trillion USD."
+var displayTextWhenButtonClicked1="Each sphere represents 10% of the population."
+var displayTextWhenButtonClicked2="Click on a sphere to know more."
+
+var ctaInnerText="PROCEED"
 
 
 
@@ -98,29 +101,45 @@ getMultipleSpheres(populationWealthDistribution)
 info = document.createElement( 'div' );
 info.id = 'textDiv'
 info.style.position = 'absolute';
+info.style.padding='2%';
 info.style.top = '30px';
 info.style.left = '30px';
 info.style.width = '100%';
 info.style.textAlign = 'left';
-info.style.color = '#ffffff';      
+// info.style.color = '#ffcc66';      
 info.style.backgroundColor = 'transparent';
 info.style.zIndex = '1';
 info.style.fontFamily = 'Poppins';
 document.getElementById('canvas1').appendChild( info );
 
 // adding paragraph element to the div
+
 infoText=document.createElement('p')
-// infoText.style.padding='5px'
-infoText.id="displayText"
+infoText.id="displayText1"
+infoText.style.color='#ffffff'
 infoText.innerHTML=displayTextAttheStartOfTheScene
 info.appendChild(infoText)
+
+
+// adding paragraph element to the div
+infoText2=document.createElement('p')
+// infoText.style.padding='5px'
+infoText2.id="displayText2"
+infoText2.style.marginTop='2px'
+infoText2.style.color='#ffcc66'
+infoText2.innerHTML=displayTextAttheStartOfTheScene2
+info.appendChild(infoText2)
 
 // adding a CTA to the div
 btn=document.createElement('button')
 btn.id="btnCTA";
-btn.style.color="#003E46";
+btn.style.backgroundColor='transparent';
+btn.style.border='2.5px solid #ffffff';
+btn.style.color="#ffcc66";
 btn.style.marginTop='20px'
 btn.style.padding='10px'
+btn.style.borderRadius='4px'
+
 btn.innerHTML=ctaInnerText
 info.appendChild(btn)
 
@@ -301,7 +320,11 @@ window.addEventListener( 'resize', onWindowResize );
 //delcaring onClick function for CTA button
 function transitionStartonClick(){
 	
-	infoText.innerHTML=displayTextWhenButtonClicked;
+	//change the text when user clicks on the cta
+	infoText.innerHTML=displayTextWhenButtonClicked1;
+	infoText2.innerHTML=displayTextWhenButtonClicked2;
+	
+	//make the transitions
 	transitionByCameraPosition(changeCameraPosition_x,changeCameraPosition_y,changeCameraPosition_z)
 	transitionByPosition();
 	transitionByScale();  
@@ -578,24 +601,46 @@ function addTextLabel(object){
 
 	sphereText = document.createElement( 'div' );
 	sphereText.className = 'label';
-	sphereText.style.color='0xfffcc';
+	sphereText.style.color='#3C4347' ;
+	// sphereText.style.color='rgb(1,1,1)'
+
+	// sphereText.style.fontWeight='900';
+	// txt0 = document.createElement('p')
+	var wealthShareTxt = document.createElement('p')
+	sphereText.appendChild(wealthShareTxt)
+	var wealthSharingData= document.createElement('p')
+	sphereText.appendChild(wealthSharingData)
+	var wealthPerPersonTxt= document.createElement('p')
+	sphereText.appendChild(wealthPerPersonTxt)
+	var wealthPerPersonData= document.createElement('p')
+	sphereText.appendChild(wealthPerPersonData)
 	var totalSpheres=objects.length;
 	for(let i=0;i<totalSpheres;i++){
-		if(object==objects[i]){
-			const text=populationWealthDistribution[i].story;	
-			sphereText.textContent = text;		
-
+		if(object==objects[i]){ 		
+			var text0="Share of Wealth: ";
+			wealthShareTxt.innerHTML=text0;
+			var text1=+populationWealthDistribution[i].wealthDistribution+"% of 15.3 trillion USD"
+			wealthSharingData.innerHTML = text1;
+			var text2="Average wealth per person: ";
+			wealthPerPersonTxt.innerHTML=text2;
+			var text3=+populationWealthDistribution[i].wealthPerPerson+" USD";	
+			wealthPerPersonData.innerHTML=text3;		
+			
 		}	
 	}
 	
-	sphereText.style.marginTop = '-1.5em';
+	wealthShareTxt.style.fontWeight='900'
+	wealthPerPersonTxt.style.fontWeight='900'
+
+	sphereText.style.marginTop = '-5em';
+	sphereText.style.padding='1%'
+	sphereText.style.background='#ffffff'
+	sphereText.style.borderRadius='4px'
 	
-	const sphereLabel=new THREE.CSS2DObject( sphereText );
-	// sphereLabel.position.set(0,0,0);
-	
+	const sphereLabel=new THREE.CSS2DObject( sphereText );		
 	// sphereText.style.visibility='hidden'
 	sphereLabel.position.copy(object.position)
-	sphereLabel.position.set(0,0.75,0);
+	sphereLabel.position.set(0,0.5,0);
 	object.add(sphereLabel);
 }
 

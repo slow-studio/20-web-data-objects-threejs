@@ -12,3 +12,7 @@
     width: 500px; */
 }
 
+
+#btnCTA:hover{
+    background-color: #4CAF50;
+}
