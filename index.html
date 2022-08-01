@@ -2,118 +2,216 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link type="text/css" rel="stylesheet" href="./style.css">
-    <title>Web Data Objects</title>
-
-    <style>
-        body{
-            background-color: rgb(236, 249, 252);
-            color:black;
-            padding: 2%;
-        }
-
-        a{
-            color:blue;  
-        }
-
-    	/* Create two equal columns that floats next to each other */
-			.column {
-			float: left;
-			width: 50%;
-			padding: 10px;
-			height: 100%; /* Should be removed. Only for demonstration */
-			}
-
-			/* Clear floats after the columns */
-			.row:after {
-			content: "";
-			display: table;
-			clear: both;
-			}    
-
-    </style>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link type="text/css" rel="stylesheet" href="style.css">
+  <title>Web Data Objects</title>
 
 </head>
 
-<body>
 
+<body id=masterIndex>
+  <div id="container">
     <header>
-     
-        <hr>
-        <h1 style="text-align:center;">Data Driven Interactive 3d objects for the web</h1>
-        <hr>
+      <h1>Data-Driven 3d Interactive objects for the web</h1>
     </header>
 
-    <br>
-    <section>
-        <div class="row">
+    <hr>
 
-            <div class="coloumn" style="background-color:antiquewhite;">
-                <div id="container"></div>
-                <a href="1. place 3d object/index.html">
-                    <h3>Place an 3d object into the web</h3> 
-                </a>                               
-            </div>            
+    <div id="content">
 
-            <div class="coloumn" style="background-color:aqua;">
-                <div id="container"></div>
-                <a href="./2. make it dance/index.html">
-                    <h3>Make it dance</h3>
-                </a>               
-            </div>
+      <h3>getting started</h3>
+      <ol type='1'>
+        <li>
+          adding objects: 
+          <ul>
+            <li>
+              generate <a href="1_start/objects/single object">single</a> or <a href="1_start/objects/multiple objects/index.html">multiple</a> objects
+            </li>
+            <li><a href="1_start/objects/externalObj">import an external object</a></li>
+          </ul>
+        </li>
+        <li>
+          pan &amp; zoom:
+          <ul>
+            <li><a href="1_start/pan_zoom/Zoom/zoom.html">Zooming in and out of the object</a></li>
+            <li><a href="1_start/pan_zoom/pan/pan.html">Panning/rotating around the object</a></li>
+            <li><a href="1_start/pan_zoom/panZoom/panZoom.html">Pan, Zoom and Rotate</a></li>
+          </ul>
+        </li>
+        <li>
+          material: 
+          <a href="1_start/material/MeshBasic/mBasic.html">Mesh Basic</a>, 
+          <a href="1_start/material/MeshPhong/mPhong.html">Mesh Phong</a>, 
+          <a href="1_start/material/MeshStandard/mStandard.html">Mesh Standard</a>, 
+          <a href="1_start/material/MeshNormal/mNormal.html">Mesh Normal</a>
+        </li>
+        <li>
+          lights:
+          <ul>
+            <li>
+              types of light: <a href="1_start/lights/4. add lights/ambLight/amblt.html">Ambient</a>, <a href="1_start/lights/4. add lights/pointLight/point.html">Point</a>, <a href="1_start/lights/4. add lights/DirectLight/drct.html">Directional</a>, <a href="1_start/lights/4. add lights/HemiLight/hemi.html">Hemispherical</a>
+            </li>
+          <li><a href="1_start/lights/5. intensity&Location/intentsityLocation.html">Intensity &amp; location</a></li>
+          <li><a href="1_start/lights/6. rotate light with camera/CameraRotateLight.html">attach a light to the camera</a></li>
+          </ul>
+        </li>
+      </ol>
 
-        </div>    
+      <hr class="thin dotted">
 
-        <br>
-        <div class="row">
+      <h3>Making things <em>dance</em> (a little)</h3>         
+      <ol type='1'>
+        <li>
+          <h3>movement</h3>
+          <ol type='a'>
+            <li>
+              whole object moves
+              <ul>
+                  <li><a href="2_movement/1. LinearMovement/Linear.html">Linear Movement</a></li>
+                  <li><a href="2_movement/2. CyclicMovement/cyclic.html">Cyclic Movement</a></li>
+                  <li><a href="2_movement/3. PathMovement/path.html">Movement along a path</a> // could not solve</li>
+              </ul>
+            </li>
+            <li>
+              object parameters change
+              <ul>
+                <li><a href="2_movement/4. ScaleRotation/scaleRotation.html">Visibility, rotation & scale</a></li>
+                <li>Object Material</li>
+                <li><a href="2_movement/6. moving objects/movingObject.html">Moving objects around and Collision Detection</a></li>
+                <li>Forces and effectors- gravity and wind</li>
+                <li>Force field around the mouse</li>
+              </ul>
+            </li>
+          </ol>
+        </li>
+        <li>
+          <h3>interactivity</h3>
+          <ul>
+            <li><a href="2_movement/9. Interactivty movement using movement/mouseInt.html">Interactivity using a mouse</a></li>  
+            <li><a href="2_movement/9. Interactivty movement using movement/threejs-dragControls.html">3js-dc</a></li>        
+            <li><a href="2_movement/10. Interactity External Obj/interactivityExtObj.html">Interactivity on an external object</a></li>  
+            <li><a href="2_movement/11. Three js embedded in html-css/canvasResize.html">Three JS embedded inside HTML and CSS</a></li> 
+          </ul>
+        </li>
+      </ol>
+      
+      <hr class="thin dotted">
+      
+        <h3>mugs</h3>
+        
+        <ul>
+          <li><a href="mugs/1. position in space/1. inside cube/positionCube.html">place mugs, with several lights</a></li>
+          <li><a href="mugs/1. position in space/2. inside sphere/positionSphere.html">place mugs inside a large sphere</a></li>
+          <li><a href="mugs/2. light setup/index.html">clickable</a></li>
+        </ul>
+      
 
-            <div class="coloumn" style="background-color:rgb(235, 246, 152);">
-                <div id="container"></div>
-                <a href="./3. create native object/index.html">
-                    <h3>Natively create an object on the web</h3>
-                </a>                
-            </div>
+      <hr class="thin dotted">
+        
+        <h3>natively creating objects on the web</h3>
+        <ol type='1'>
+          <li>
+            create *simple* objects
+            <ol type='a'>
+              <li>import from outside</li>
+              <li>build from primitives within threejs</li>
+            </ol>
+          </li>
+          <li>
+            what kinds of objects can we make?
+            <ol type='a'>
+              <li>made of simple primitive forms</li>
+              <li>using the-3d-equivalent-of-polygons</li>
+              <li>using the-3d-equivalent-of-splines</li>
+            </ol>
+          </li>
+          <li>
+            <p>after this, can we make these objects dance in the same way (or in a better way) as all the steps before?<em>remember, our goal is to turn data into objects, and then control them.</em> </p>
+          </li>
+        </ol>
+      
+      <hr class="thin dotted">
+        
+        <h3>letting data affect the object <em>parametrically</em></h3>
 
-            <div class="coloumn" style="background-color:rgb(255, 217, 164);">
-                <div id="container"></div>
-                <a href="./4. data affect object/index.html">
-                    <h3>Let data affect the object parametrically</h3>
-                </a>                
-            </div>
+        <p><strong>note:</strong> the biggest challenge here will be in identifying a dataset, and in exploring the same process with different datasets.</p>
 
-            <div class="coloumn" style="background-color:rgb(171, 254, 255);">
-                <div id="container"></div>
-                <a href="./5. Cups/index.html">
-                    <h3>The cups</h3>
-                </a>                
-            </div>
+        <ol type='1'>
+          <li>
+            data → 3d: create a body using data, and just present it.
+            <ol type='a'>
+              <li>
+                <p>one possible route:</p>
+                <ul>
+                  <li>to take a dataset and be able to make a 2d graph using js</li>
+                  <li>then be able to extrude that into 3d.</li>
+                </ul>
+              </li>
+              <li>
+                <p>another route: some direct method to create 3d forms which we don't know about (making meshes, or defining all points on a mesh, or something else)</p>
+              </li>
+            </ol>
+          </li>
+          <li>
+            how to animate the data as it is being generated.
+          </li>
+        </ol>
 
-            <div class="coloumn" style="background-color:rgb(171, 254, 255);">
-                <div id="container"></div>
-                <a href="./6. Income Disparity/index.html">
-                    <h3>Income Disparity</h3>
-               </a>
-               <ul>
-                   <li>
-                    <a href="./6. Income Disparity/1. transition/transitionIndex.html">Income Disparity-scale transition</a>
-                   </li>
-                   <li>
-                    <a href="./6. Income Disparity/2. adding text/transitionText.html">Income Disparity-Adding text</a>
-                   </li>
-               </ul>           
-            </div>
+      <hr class="thin dotted">
 
-        </div>
-    </section>
-    <br>
-    
+          <h3>income disparity</h3>
+          <ul>
+            <li>
+              <a href="income_disparity/index.html">arranging spheres in space</a>
+            </li>
+            <li>
+              <a href="income_disparity/1. transition/transitionIndex.html">change parameters on click</a>
+            </li>
+            <li>
+              <a href="income_disparity/2. adding text/transitionText.html">interactive, animated, with data and popups</a>
+            </li>
+          </ul>
+
+    <hr>
+
+    <h2>why did we explore this?</h2>
+
+    <p>
+      <ul>
+        <li>
+          <h3>data-driven:</h3>
+          <p>we live in the age of data, so we should be comfortable working with it (look at “how design needs data” by joshua noble)</p>
+        </li>
+        <li>
+          <h3>3d:</h3>
+          <p>data viz is largely 2d graphs-and-charts, and people grown numb to it over time because of how much they are exposed to it.</p>
+        </li>
+        <li>
+          <h3>interactive:</h3>
+          <p>more memorable. possible to tell a narrative, by showing different things in sequence.</p>
+        </li>
+        <li>
+          <h3>objects:</h3>
+          <p>things that are more relatable can potentially be more memorable</p>
+        </li>
+        <li>
+          <h3>web:</h3> 
+          <p>can be distributed en masse, instead of being niche (like AR/VR), or requiring special apps.</p>
+        </li>
+      </ul>
+    </p>
+
+
+    <hr>
+
+    </div><!-- end of: #content-->
+
     <footer>
-        <hr>
-        <h5 style="text-align:center;">Web Data Objects</h5>
     </footer>
+
+  </div><!-- end of #container -->
 
 </body>
 </html>

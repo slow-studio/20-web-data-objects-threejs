@@ -12,7 +12,7 @@
                 }
 
             canvas {
-                background-color: #999;
+                background-color: rgb(196, 195, 195);
                 position: absolute;
                 height: 100vh;
                 width: 100vw;
@@ -23,7 +23,17 @@
 
     <body>
 
-        <header><h3>Panning/rotating around an object</h3></header>
+        <header><h3>Zooming in and out of the object</h3></header>
+
+        <p>
+            on a computer,
+            <br>
+            <li>click-and-drag (anywhere on the canvas) with one finger to rotate.</li> 
+            <li>click-and-drag (anywhere on the canvas) with two fingers to zoom. or, pinch with two fingers.</li>
+            <li>right-click-and-drag (or tap-down with two fingers and drag) to pan.</li>
+        </p>
+
+        <p>! not tested on mobile !</p>
 
         <script src='../js/three.js'></script>
         <script src="../js/OrbitControls.js"></script>
@@ -77,9 +87,8 @@
                 // camera.lookAt(new THREE.Vector3(0,13,0));
 
                 controls = new THREE.OrbitControls(camera,renderer.domElement);
-               
-                //disablie zoom
-                controls.enableZoom = false;
+              
+
                 controls.rotateSpeed = 0.75;
                 //--enable the commands below to strict rotation around the y axis
                 // controls.minPolarAngle = Math.PI/2;
@@ -127,7 +136,7 @@
               render();
             }
 
-            
+            //calling all the functions in sequence
             createScene();
             createCamera();
             createLights();

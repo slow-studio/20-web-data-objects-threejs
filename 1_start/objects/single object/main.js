@@ -15,10 +15,13 @@ scene.add(pointLight1);
 scene.add(plane);
 scene.add(hemiLight)
 
+
+ASPECT_RATIO = 3/2
+
 //adding a perspective camera to the scene
 var camera=new THREE.PerspectiveCamera(
     75,                                         //FOV
-    window.innerWidth / window.innerHeight,     //aspect ration
+    ASPECT_RATIO,     //aspect ratio
     0.1,                                        //near
     1000                                        //far
 );
@@ -34,9 +37,11 @@ const renderer=new THREE.WebGLRenderer({
     antialias: true,
 });   //creating an instance of the renderer
 
-
-renderer.setSize( window.innerWidth, window.innerHeight);   //setting up the size of the renderer
-document.body.appendChild( renderer.domElement);
+contentDiv = document.getElementById('content')
+CANVAS_WIDTH = contentDiv.offsetWidth
+CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
+renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);   //setting up the size of the renderer
+document.getElementById('content').appendChild( renderer.domElement);
 
 //function to display a box cube
 function getCube(width,height,depth){
