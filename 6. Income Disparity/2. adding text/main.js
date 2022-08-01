@@ -600,6 +600,8 @@ function onWindowResize() {
 function addTextLabel(object){
 
 	sphereText = document.createElement( 'div' );
+
+
 	sphereText.className = 'label';
 	sphereText.style.color='#3C4347' ;
 	// sphereText.style.color='rgb(1,1,1)'
@@ -640,7 +642,7 @@ function addTextLabel(object){
 	const sphereLabel=new THREE.CSS2DObject( sphereText );		
 	// sphereText.style.visibility='hidden'
 	sphereLabel.position.copy(object.position)
-	sphereLabel.position.set(0,0.5,0);
+	sphereLabel.position.set(0,0,0);
 	object.add(sphereLabel);
 }
 
