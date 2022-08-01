@@ -603,7 +603,8 @@ function addTextLabel(object){
 
 
 	sphereText.className = 'label';
-	sphereText.style.color='#3C4347' ;
+	sphereText.style.color='#3C4347';
+	sphereText.style.position='absolute'
 	// sphereText.style.color='rgb(1,1,1)'
 
 	// sphereText.style.fontWeight='900';
