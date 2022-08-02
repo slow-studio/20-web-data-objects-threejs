@@ -1,104 +1,99 @@
-//creating the 3d scene
-const scene=new THREE.Scene();
-const gui=new dat.GUI();
+// add title and heading to sketch's html page.
+document.title = 'place objects | external object'
+document.getElementById('sketch_title').innerHTML = 'external object in 3d space'
+document.getElementById('sketch_description').innerHTML = ''
 
-//calling the declared functions
-var plane=getPlane(30,30);
-var ambLight=getAmbientLight(0.4);
-var hemiLight=getHemiLight(0.4);
-var pointLight1=getPointLight(0.2);
-var spotLight1=getSpotLight(0.5);
-var gltfObj1=getGLTFLoader('./assets/roun.glb',-0.5,0,1);        //here we are passing the obj location and positions as the parameter
+
+/*---declaring camera parameters------*/
+var cameraPositionX=0, cameraPositionY=2,cameraPositionZ=6;
+var FOV=35,nearSight=0.1,farSight=1000;
+
+/*--declaring object pararmet---*/
+//plane parameters
+var planeLength=10,planeBredth=10, planeColor=0xffffff;
+var planePositionX=0,planePositionY=-1,planePositionZ=0;
+//external object parameters
+var externObjectPositionX=0,externObjectPositionY=-1,externObjectPositionZ=0;
+var externalObjectColor=0xffcc44; 
+
+/*---delaring the light parameters---*/
+//point light parameters
+var PointLight1Color=0xffffff, pointLight1Intensity=0.5;
+var pointLight1PositionX=-20;pointLight1PositionY=15;pointLight1PositionZ=15.5;
+//hemi light
+var hemiLightColor=0xffffee, hemiLightGroundColor=0xffffee, hemiLightIntensity=0.5;
+
+
+/*--declare the canvas dimensions--*/
+const ASPECT_RATIO = 3/2
+contentDiv = document.getElementById('content')
+const CANVAS_WIDTH = contentDiv.offsetWidth
+const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
+
+
+/*-----object declaration-----*/
+//declaring objects to bring in the elements to the scene
+var plane=getPlane(planeLength, planeBredth, planeColor)
+var pointLight1=getPointLight(PointLight1Color, pointLight1Intensity);
+var hemiLight=getHemiLight(hemiLightColor,hemiLightGroundColor,hemiLightIntensity)
+
+//external object,here we are passing the obj location and positions as the parameter
+var gltfObj1=getGLTFLoader('./assets/roun.glb',externObjectPositionX,externObjectPositionY,externObjectPositionZ, externalObjectColor);        
+
+/*--creating the scene----*/
+const scene = new THREE.Scene();
 
 //adding elements to the scene
 scene.add(plane);
-scene.add(hemiLight);
-scene.add(spotLight1);
+scene.add(pointLight1)
+scene.add(hemiLight)
 
+
+/*--setting positions of the objects in the 3d plane---*/
 //rotating the plan on the x axis to use it as a floor
 plane.rotateX( - Math.PI / 2);
 
+
+/*-----setting up object positions----------------*/
+plane.position.set(planePositionX,planePositionY,planePositionZ)
+//setting up light positions
+pointLight1.position.set(pointLight1PositionX,pointLight1PositionY,pointLight1PositionZ)
+
+/*-----declaring the camera and the renderer--*/
+
 //adding a perspective camera to the scene
 var camera=new THREE.PerspectiveCamera(
-    55,                                         //FOV
-    window.innerWidth / window.innerHeight,     //aspect ration
-    0.1,                                        //near
-    1000                                        //far
-);
+    FOV,
+    ASPECT_RATIO,     
+    nearSight,
+    farSight
+    );
 
 //set camera positions
-camera.position.set(-3,3,4);
-spotLight1.position.set(30,20,25);
-
-//add the light source as a child of the camera to make the camera as the soure of the light
-camera.add(pointLight1);
-
-//we need to add the camera to the scene as we created a child of it
-scene.add(camera)
-
-//adding the GUI controls for each element
-const spotLightGUI=gui.addFolder('SpotLight Controls')
-spotLightGUI.add(spotLight1, 'intensity').min(0).max(10).step(0.01);
-spotLightGUI.add(spotLight1.position, 'x').min(-50).max(100).step(0.01);
-spotLightGUI.add(spotLight1.position, 'y').min(-50).max(100).step(0.01);
-spotLightGUI.add(spotLight1.position, 'z').min(-50).max(100).step(0.01);
+camera.position.set(cameraPositionX,cameraPositionY,cameraPositionZ);
 
 //setting up the renderer
 const renderer=new THREE.WebGLRenderer({
-    alpha:true,
-    antialias:true,
-    depth: true
-});   //creating an instance of the renderer
+    antialias: true,
+    });   
 
+ //setting up the size of the renderer
+renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);  
 renderer.shadowMap.enabled = true;                          //enabling shadow in render
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
-renderer.setSize( window.innerWidth, window.innerHeight);   //setting up the size of the renderer
-renderer.setClearColor(new THREE.Color('#ffffff'),0.45)
-document.body.appendChild( renderer.domElement);
+// renderer.setClearColor(new THREE.Color('#ffcc66'),0.45)
+//adding renderer to the DOM
+document.getElementById('content').appendChild( renderer.domElement);
 
 
 //setting up Orbit Controls
 controls = new THREE.OrbitControls(camera,renderer.domElement);
-//controls.enableRotate=false;
-
-//function to get an Ambient Light-------------------
-function getAmbientLight(intensity){
-    const light=new THREE.AmbientLight(0xffffee);
-    light.intensity=intensity;
-    return light;
-}
-
-//function to add a hemi light
-function getHemiLight(intensity){
-    const light=new THREE.HemisphereLight(0xffffee,0xffffee, intensity)
-    return light;
-}
-
-//function to add a PointLight-----------------------
-function getPointLight(intensity){
-    const light = new THREE.PointLight(0xffffff, intensity);
-    light.castShadow=true;
-    // light.shadow.radius = 5;
-    return light;
-}
-
-
-//function to add a spotlight
-function getSpotLight(intensity){
-    const light=new THREE.SpotLight(0xffffff,intensity);
-    light.castShadow=true;
-    
-    light.shadow.bias= -0.00001;
-    light.shadow.mapSize.width=1024*2;
-    light.shadow.mapSize.height=1024*2;
-    return light;
-}
 
 //function to add a plan-------------------------------
-function getPlane(length,breadth){
+function getPlane(length,breadth,color){
     const geometry=new THREE.PlaneGeometry(length,breadth);
     const material=new THREE.MeshPhongMaterial({
-        color: 0xffffff,
+        color: color,
         side: THREE.DoubleSide
     })
     const mesh=new THREE.Mesh(geometry,material)
@@ -106,18 +101,17 @@ function getPlane(length,breadth){
     return mesh;
 }
 
+/*---function to load external objects-----*/
 //function to call the GLTF Loader----the obj location and positions are passed as parameters in the function call
-function getGLTFLoader(assetLocation,positionX,positionY,positionZ){
+function getGLTFLoader(assetLocation,positionX,positionY,positionZ, color){
     const loader=new THREE.GLTFLoader();
 loader.load( assetLocation, function ( gltf ) {
     model=gltf.scene;
 
     const newMaterial = new THREE.MeshStandardMaterial({
-                                    color: 0xffcc00,
-                                   // wireframe: true,
-                                    roughness: 0,
-                                    emissive: 0x000000,
-                                    
+                                    color: color,
+                                    roughness: 0.8
+                                                                       
                         });
 						model.traverse((o) => {
 						if (o.isMesh) o.material = newMaterial;
@@ -139,10 +133,39 @@ loader.load( assetLocation, function ( gltf ) {
 }
 
 
-//animating the scene    
-function animate() {
-    requestAnimationFrame( animate );
-    model.rotation.y += 0.0025;
-    renderer.render( scene, camera );
+/*-----function declarations to add lights----*/
+//function to get PointLight
+function getPointLight(color, intensity){
+    const light = new THREE.PointLight(color, intensity);
+    light.castShadow=true;
+    return light;
 }
+
+//function to add a hemi light-------------------------
+function getHemiLight(color, groundColor,intensity){
+    const light=new THREE.HemisphereLight(color, groundColor, intensity)
+    return light;
+}
+
+//function to get an Ambient Light-------------------
+function getAmbientLight(intensity,color){
+    const light=new THREE.AmbientLight(color);
+    light.intensity=intensity;
+    return light;
+}
+
+
+//function to animate the scene    
 animate();
+function animate() {   
+        
+    requestAnimationFrame( animate );  
+    
+
+
+    render();
+    }    
+function render() {       
+    renderer.render( scene, camera );
+    }
+    
