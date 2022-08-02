@@ -1,14 +1,15 @@
 // add title and heading to sketch's html page.
 document.title = 'interactivty | mouse'
 document.getElementById('sketch_title').innerHTML = 'Interactivity using a mouse: Drag Controls'
-document.getElementById('sketch_description').innerHTML = ''
+document.getElementById('sketch_description').innerHTML = 'we use drag controls in this sketch use the mouse to control the elemnts on the screen'
 
 
 /*--declare the canvas dimensions--*/
 const ASPECT_RATIO = 3/2
 contentDiv = document.getElementById('content')
 //this doesn't seems to be woking, canvas width
-const CANVAS_WIDTH = contentDiv.offsetWidth  
+// const CANVAS_WIDTH = contentDiv.offsetWidth
+const CANVAS_WIDTH = 640;  
 const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
 
 //declaring the scene
@@ -21,8 +22,6 @@ var objects=[];
 /*----calling objects to initiate the elements--------*/
 //calling the rbg loader to load the hdr image
 rgbeLoader=getRGBLoader('./images/img_4k.hdr') 
-
-
 
 
 //adding all the spheres to the scene
