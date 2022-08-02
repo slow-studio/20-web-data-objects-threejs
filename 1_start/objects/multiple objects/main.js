@@ -1,3 +1,9 @@
+// add title and heading to sketch's html page.
+document.title = 'place objects'
+document.getElementById('sketch_title').innerHTML = 'multiple objects in 3d space'
+document.getElementById('sketch_description').innerHTML = ''
+
+
 const scene = new THREE.Scene();
 //const gui=new dat.GUI();
 
@@ -24,10 +30,16 @@ scene.add(sphere1);
 scene.add(pointLight1);
 scene.add(plane);
 
+// values (constants) for aspect-ratio and canvas-size
+ASPECT_RATIO = 3/2
+contentDiv = document.getElementById('content')
+CANVAS_WIDTH = contentDiv.offsetWidth
+CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
+
 //adding a perspective camera to the scene
 var camera=new THREE.PerspectiveCamera(
     30,                                         //FOV
-    window.innerWidth / window.innerHeight,     //aspect ration
+    ASPECT_RATIO,
     0.1,                                        //near
     1000                                        //far
 );
@@ -43,8 +55,10 @@ const renderer=new THREE.WebGLRenderer({
     antialias: true,
 });   //creating an instance of the renderer
 
-renderer.setSize( window.innerWidth, window.innerHeight);   //setting up the size of the renderer
-document.body.appendChild( renderer.domElement);
+//setting up the size of the renderer
+renderer.setSize(CANVAS_WIDTH, CANVAS_HEIGHT);   
+//adding renderer to the DOM
+contentDiv.appendChild( renderer.domElement);
 
 //function to display a sphere
 function getSphere(radius,widthSegment,heightSegment){
@@ -98,5 +112,6 @@ function animate() {
 
 
     renderer.render( scene, camera );
-    }
-    animate();
+}
+
+animate();
