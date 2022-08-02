@@ -25,7 +25,7 @@ var cube2PositionX=-0.8,cube2PositionY=0.5,cube2PositionZ=0;
 var PointLight1Color=0xffffff, pointLight1Intensity=0.5;
 var pointLight1PositionX=-100;pointLight1PositionY=100;pointLight1PositionZ=50;
 //hemi light
-var hemiLightColor=0xffffee, hemiLightGroundColor=0xffffee, hemiLightIntensity=0.5;
+var ambientLightColor=0xffffee, ambientLightGroundColor=0xffffee, ambientLightIntensity=0.5;
 
 /*--declare the canvas dimensions--*/
 const ASPECT_RATIO = 3/2
@@ -40,7 +40,7 @@ var cube1=getCube(cube1Width,cube1Height,cube1Depth,cube1Color)
 var cube2=getCube(cube2Width,cube2Height,cube2Depth,cube2Color)
 var sphere1=getSphere(sphere1Radius,sphere1WidthSegments,sphere1HeightSegments,sphere1Color);
 var pointLight1=getPointLight(PointLight1Color, pointLight1Intensity);
-var hemiLight=getHemiLight(hemiLightColor,hemiLightGroundColor,hemiLightIntensity)
+var ambientLight=getambientLight(ambientLightColor,ambientLightGroundColor,ambientLightIntensity)
 
 
 /*--creating the scene----*/
@@ -51,7 +51,7 @@ scene.add(cube1);
 scene.add(cube2);
 scene.add(sphere1);
 scene.add(pointLight1);
-scene.add(hemiLight)
+scene.add(ambientLight)
 
 
 //setting position of the objects in the 3d plane
@@ -116,7 +116,7 @@ function getPointLight(color, intensity){
 }
 
 //function to add a hemi light-------------------------
-function getHemiLight(color, groundColor,intensity){
+function getambientLight(color, groundColor,intensity){
     const light=new THREE.HemisphereLight(color, groundColor, intensity)
     return light;
 }

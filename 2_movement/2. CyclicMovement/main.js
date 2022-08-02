@@ -1,7 +1,19 @@
-console.log("initiate cycle movement")
+/*-----------new section-----------*/
+
+// add title and heading to sketch's html page.
+document.title = 'Movement | Cyclic '
+document.getElementById('sketch_title').innerHTML = 'Cyclic movement'
+document.getElementById('sketch_description').innerHTML = ''
+
+
+/*--declare the canvas dimensions--*/
+const ASPECT_RATIO = 3/2
+contentDiv = document.getElementById('content')
+const CANVAS_WIDTH = contentDiv.offsetWidth
+const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
+
 
 const scene=new THREE.Scene();
-const gui=new dat.GUI()
 
 //objects to call the elements
 var cube1=getCube(0.8,0.8,0.8);
@@ -10,21 +22,17 @@ var sphere2=getSphere(0.35,32,16,0x3D9D9B)
 var sphere3=getSphere(0.2,32,16,0x3290FF)
 var sphere4=getSphere(0.2,32,16,0x3290FF)
 
-var hemiLight=getHemiLight(0.5);
+var ambientLight=getambientLight(0.5);
 var spotLight=getSpotLight(0.5);
-
-//creating a grid
-const gridHelper=new THREE.GridHelper(50,10,0x000000,0xffffff);
-scene.add(gridHelper);
 
 
 //adding elements to the scene
 scene.add(cube1);
-scene.add(hemiLight);
+scene.add(ambientLight);
 scene.add(spotLight);
 scene.add(sphere1,sphere2,sphere3,sphere4);
 
-//creating a parent container
+//creating a parent container where we put all the other smaller spheres
 var parentContainer1 = new THREE.Mesh();
 scene.add(parentContainer1);
 parentContainer1.add(sphere1,sphere2,sphere3,sphere4);
@@ -32,14 +40,14 @@ parentContainer1.add(sphere1,sphere2,sphere3,sphere4);
 //setting up ther perspective camera
 var camera=new THREE.PerspectiveCamera(
     50,                                       //camera FOV
-    window.innerWidth/window.innerHeight,     //camera aspectRatio
+   ASPECT_RATIO,                              //camera aspectRatio
     0.1,                                      //nearSight
     1000                                      //farSight
 );
 
 //set camera positions
-camera.position.set(0,2,5);     //set the camera position on on x,y,z axes
-camera.lookAt(0,0,0)            //makes the camera look at the center of the object
+camera.position.set(0,2,5);     
+camera.lookAt(0,0,0)            
 
 //setting up the element positions
 spotLight.position.set(20,20,30);
@@ -51,22 +59,27 @@ sphere4.position.set(0,-1.5,0);
 
 //setting up the renderer
 const renderer=new THREE.WebGLRenderer({
-    alpha:true,
     antialias:true,
     depth: true
-});                     //creating an instance of the renderer
+});                  
 
-renderer.shadowMap.enabled = true;                          //enabling shadow in render
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
-renderer.setSize( window.innerWidth, window.innerHeight);   //setting up the size of the renderer
-renderer.setClearColor(new THREE.Color('#ffffff'),0.45)
-document.body.appendChild( renderer.domElement);
+ //enabling shadow in render
+renderer.shadowMap.enabled = true;      
+ //adding shadow type as soft shadow                   
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;          
+renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);   
+renderer.setClearColor(new THREE.Color('#b9b7bd'),0.45)
+document.getElementById('content').appendChild( renderer.domElement);
 
 //setting up orbit controls
 controls = new THREE.OrbitControls(camera,renderer.domElement);
+controls.enableDamping = true;   
+//damping inertia
+controls.dampingFactor = 0.25;
+
 
 //function to add a hemi light
-function getHemiLight(intensity){
+function getambientLight(intensity){
     const light=new THREE.HemisphereLight(0xffffee,0xffffee, intensity)
     return light;
 }
@@ -97,7 +110,6 @@ function getCube(width,height,depth){
 function getSphere(radius,widthSegment,heightSegment,color){
     const geometry=new THREE.SphereBufferGeometry(radius,widthSegment,heightSegment);
     const material=new THREE.MeshPhongMaterial({      
-        // color:  0x3D9D9B
         color: color       
     });
     const mesh=new THREE.Mesh(geometry,material);
@@ -116,6 +128,7 @@ function animate(){
     //rotating the parent container to rotate the spheres a whole in the z,y axes
     parentContainer1.rotation.z-=0.01;   
     parentContainer1.rotation.y-=0.01; 
+
     renderer.render(scene,camera);
 }
 animate();

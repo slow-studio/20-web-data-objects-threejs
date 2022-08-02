@@ -15,7 +15,7 @@ var plane1=getPlane(15,10,0xffffff);
 var shadowPlane1=getShadowPlane()         
 
 //adding the lights
-var hemiLight=getHemiLight(0.45)
+var ambientLight=getambientLight(0.45)
 var directLight1=getDirectionalLight(0xffffcc,0.5);
 var directLight2=getDirectionalLight(0xffffff,0.5);
 var ambientLight=getAmbientLight(0xffffff,0.5)
@@ -36,7 +36,7 @@ shadowPlane1.rotateX( - Math.PI / 2);    //rotating the shadow plan to align wit
 
 //adding the elements to the scene
 scene.add(cubeBox)
-cubeBox.add(hemiLight)
+cubeBox.add(ambientLight)
 scene.add(ambientLight)
 cubeBox.add(directLight1)
 cubeBox.add(directLight2)
@@ -47,7 +47,7 @@ ambientLight.visible=false;
 /*------------adding the light controls-----------------*/
 
 //toggle hemi light, ambient light on and off
-gui.add(hemiLight,'visible').name('hemi light')
+gui.add(ambientLight,'visible').name('hemi light')
 gui.add(ambientLight,'visible').name('ambient light')
 
 //adding the GUI controls for the point light
@@ -189,7 +189,7 @@ function getAmbientLight(color,intensity){
 }
 
 //function to add a hemi light
-function getHemiLight(intensity){
+function getambientLight(intensity){
     const light=new THREE.HemisphereLight(0xCCCCBE,0xffffee, intensity)
     return light;
 }

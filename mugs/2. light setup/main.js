@@ -23,11 +23,11 @@ var locationBackGroundPlane='./assets/curved_Plan.glb',x_bg=0,y_bg=-0.5,z_bg=0.3
 
 /*----light variables, make changes as required----------*/
 //intensity of lghts
-intensity_hemiLight=0.7,intensity_AmbientLight=0.5,intensity_rectLight=1,intensity_pointLight=0.5,intensity_DirectLight=0.65
+intensity_ambientLight=0.7,intensity_AmbientLight=0.5,intensity_rectLight=1,intensity_pointLight=0.5,intensity_DirectLight=0.65
 
 //color of lights
 color_AmbientLight=0xffffff,color_rectLight=0xffffff,color_pointLight=0xffffff,color_directLight=0xffffcc
-color_hemiLightSky=0xCCCCBE,color_hemiLightSurface=0Xffffee     
+color_ambientLightSky=0xCCCCBE,color_ambientLightSurface=0Xffffee     
 
 //dimensions for rectangular area light
 rectLight_width=10,rectLight_height=10;
@@ -85,7 +85,7 @@ var gltfObj3=getGLTFLoader(locationCup3,x_Cup3,y_cup3,z_cup3,colorCup3,cup3_clas
 var gltfPlanBG=getGLTFLoader(locationBackGroundPlane,x_bg,y_bg,z_bg,color_bg,bg_class,bg_count);
 
 //adding the lights
-var hemiLight=getHemiLight(color_hemiLightSky,color_hemiLightSurface,intensity_hemiLight)
+var ambientLight=getambientLight(color_ambientLightSky,color_ambientLightSurface,intensity_ambientLight)
 var rectLight=getRectArLight(intensity_rectLight,color_rectLight,rectLight_width,rectLight_height);
 var pointLight1=getPointLight(color_pointLight,intensity_pointLight);
 var directLight1=getDirectionalLight(color_directLight,intensity_DirectLight);
@@ -102,7 +102,7 @@ directLight1.position.set(directLight1Position_x,directLight1Position_y,directLi
 pointLight1.position.set(pointLightPosition1_x,pointLightPosition1_y,pointLightPosition1_z);
 
 //adding the elements to the scene
-scene.add(hemiLight)
+scene.add(ambientLight)
 scene.add(rectLight);
 scene.add(ambientLight)
 scene.add(directLight1)
@@ -118,7 +118,7 @@ directLight1.visible = false
 /*------------adding the light controls in GUI-----------------*/
 
 //toggle hemi light, ambient light on and off
-gui.add(hemiLight,'visible').name('hemi light')
+gui.add(ambientLight,'visible').name('hemi light')
 gui.add(ambientLight,'visible').name('ambient light')
 gui.add(rectLight,'visible').name('rect area light')
 gui.add(pointLight1,'visible').name('Point light')
@@ -261,8 +261,8 @@ function getPointLight(color,intensity){
 }
 
 //function to add a hemi light
-function getHemiLight(color_hemiLightSky,color_hemiLightSurface,intensity){
-    const light=new THREE.HemisphereLight(color_hemiLightSky,color_hemiLightSurface, intensity)
+function getambientLight(color_ambientLightSky,color_ambientLightSurface,intensity){
+    const light=new THREE.HemisphereLight(color_ambientLightSky,color_ambientLightSurface, intensity)
     return light;
 }
 

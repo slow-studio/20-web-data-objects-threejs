@@ -21,7 +21,7 @@ var externalObjectColor=0xffcc44;
 var PointLight1Color=0xffffff, pointLight1Intensity=0.5;
 var pointLight1PositionX=-20;pointLight1PositionY=15;pointLight1PositionZ=15.5;
 //hemi light
-var hemiLightColor=0xffffee, hemiLightGroundColor=0xffffee, hemiLightIntensity=0.5;
+var ambientLightColor=0xffffee, ambientLightGroundColor=0xffffee, ambientLightIntensity=0.5;
 
 
 /*--declare the canvas dimensions--*/
@@ -35,7 +35,7 @@ const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
 //declaring objects to bring in the elements to the scene
 var plane=getPlane(planeLength, planeBredth, planeColor)
 var pointLight1=getPointLight(PointLight1Color, pointLight1Intensity);
-var hemiLight=getHemiLight(hemiLightColor,hemiLightGroundColor,hemiLightIntensity)
+var ambientLight=getambientLight(ambientLightColor,ambientLightGroundColor,ambientLightIntensity)
 
 //external object,here we are passing the obj location and positions as the parameter
 var gltfObj1=getGLTFLoader('./assets/roun.glb',externObjectPositionX,externObjectPositionY,externObjectPositionZ, externalObjectColor);        
@@ -46,7 +46,7 @@ const scene = new THREE.Scene();
 //adding elements to the scene
 scene.add(plane);
 scene.add(pointLight1)
-scene.add(hemiLight)
+scene.add(ambientLight)
 
 
 /*--setting positions of the objects in the 3d plane---*/
@@ -81,7 +81,6 @@ const renderer=new THREE.WebGLRenderer({
 renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);  
 renderer.shadowMap.enabled = true;                          //enabling shadow in render
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
-// renderer.setClearColor(new THREE.Color('#ffcc66'),0.45)
 //adding renderer to the DOM
 document.getElementById('content').appendChild( renderer.domElement);
 
@@ -142,7 +141,7 @@ function getPointLight(color, intensity){
 }
 
 //function to add a hemi light-------------------------
-function getHemiLight(color, groundColor,intensity){
+function getambientLight(color, groundColor,intensity){
     const light=new THREE.HemisphereLight(color, groundColor, intensity)
     return light;
 }

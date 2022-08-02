@@ -19,7 +19,7 @@ var plane1=getPlane(15,10,0xffffff);
 var shadowPlane1=getShadowPlane()         
 
 //adding the lights
-var hemiLight=getHemiLight(0.45)
+var ambientLight=getambientLight(0.45)
 var rectLight=getRectArLight(2,0xffffff,10,10);
 var directLight1=getDirectionalLight(0xffffcc,0.5);
 var directLight2=getDirectionalLight(0xffffff,0.5);
@@ -46,19 +46,19 @@ directLight1.position.set(-0.97,1.96,1.23)
 
 //adding the elements to the scene
 scene.add(sphericalBox);
-scene.add(hemiLight)
+scene.add(ambientLight)
 scene.add(ambientLight)
 scene.add(directLight1)
 scene.add(directLight2)
 
 //set ambient light and direct light 2 to invisible by default
-hemiLight.visible = false
+ambientLight.visible = false
 directLight2.visible = false
 
 /*------------adding the light controls-----------------*/
 
 //toggle light on and off
-// gui.add(hemiLight,'visible').name('hemi light')
+// gui.add(ambientLight,'visible').name('hemi light')
 // gui.add(ambientLight,'visible').name('ambient light')
 
 //adding the GUI controls for the point light
@@ -213,7 +213,7 @@ function getAmbientLight(color,intensity){
 }
 
 //function to add a hemi light
-function getHemiLight(intensity){
+function getambientLight(intensity){
     const light=new THREE.HemisphereLight(0xCCCCBE,0xffffee, intensity)
     return light;
 }

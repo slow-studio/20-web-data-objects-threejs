@@ -6,12 +6,12 @@ const scene=new THREE.Scene();
 const gui=new dat.GUI()
 
 //caling the elements
-var hemiLight=getHemiLight(0.75);
+var ambientLight=getambientLight(0.75);
 var spotLight=getSpotLight(0.5);
 var LinePath=getLinePath();
 var sphere1=getSphere(0.2,48,24)
 //adding elements to the scene
-scene.add(hemiLight);
+scene.add(ambientLight);
 scene.add(spotLight)
 // scene.add(LinePath);
 // scene.add(sphere1);
@@ -71,7 +71,7 @@ function getLinePath(){
 }
 
 //function to add a hemi light
-function getHemiLight(intensity){
+function getambientLight(intensity){
     const light=new THREE.HemisphereLight(0xffffee,0xffffee, intensity)
     return light;
 }

@@ -1,99 +1,119 @@
-console.log("scale and rotation")
-var clock = new THREE.Clock;    //defining clock as a global variable
+/*-----------new section-----------*/
 
+// add title and heading to sketch's html page.
+document.title = 'Transform controls'
+document.getElementById('sketch_title').innerHTML = 'Transform Controls: scale & rotation'
+document.getElementById('sketch_description').innerHTML = ''
+
+
+/*--declare the canvas dimensions--*/
+const ASPECT_RATIO = 3/2
+contentDiv = document.getElementById('content')
+const CANVAS_WIDTH = contentDiv.offsetWidth
+const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
+
+//global variables
+var clock = new THREE.Clock;   
+
+//declaring the scene
 const scene=new THREE.Scene();
 const gui=new dat.GUI()
 
 //objects to call elements
-cube1=getCube(0.5,0.5,0.5,0xffcc00);        //pass the color of the cube as a parameter with the function call
-cube2=getCube(0.5,0.5,0.5,0x3D9D9B);        //pass the color of the cube as a parameter with the function call
+cube1=getCube(0.5,0.5,0.5,0xffcc00);        
+cube2=getCube(0.5,0.5,0.5,0x3D9D9B);        
 sphere1=getSphere(0.35,32,16,0x3290FF) 
 torus1=getTorus(0x3D9D9B);
 cube3=getCube(0.8,0.8,0.8,0x3290FF);
-hemiLight=getHemiLight(0.5);
+ambientLight=getambientLight(0.5);
 spotLight=getSpotLight(0.75);
 plane=getPlane(10,10);
-shadowPlane=getShadowPlane()                //this is a shadow plan which is cast on top of the original plan
 
-//creating a grid
-const gridHelper=new THREE.GridHelper(10,10,0x000000,0xffffff);
-gridHelper.position.y = - 1;
-scene.add(gridHelper);
+//this is a shadow plan which is cast on top of the original plan
+shadowPlane=getShadowPlane()                
 
-//setting position and scale
+
+//setting position of the objects
 plane.position.set(0,-1)
 shadowPlane.position.set(0,-1)
-cube1.scale.set( 1, 1, 1 );
 torus1.position.set(-1.5,0,0);
 sphere1.position.set(1.5,0,0);
 cube2.position.set(0,0,-2.5);
-spotLight.position.set(10,30,50);       //setting position of spotlight
+
+//setting position of the light
+spotLight.position.set(10,30,50);       
 
 
 //adding elements to the scene
 scene.add(plane);
 scene.add( shadowPlane );
-
 scene.add(cube1);
 scene.add(torus1);
 scene.add(sphere1);
 scene.add(cube2);
-scene.add(hemiLight);
+scene.add(ambientLight);
 scene.add(spotLight);
 
 //rotating the plan on the x axis to use it as a floor
 plane.rotateX( - Math.PI / 2);
-shadowPlane.rotateX( - Math.PI / 2);    //rotating the shadow plan to align with the original plan
+//rotating the shadow plan to align with the original plan
+shadowPlane.rotateX( - Math.PI / 2);    
 
-//adding GUI controls
-const cubeScale=gui.addFolder('Scale cube')     //----scaling the cube------------
+
+/*---adding GUI controls--------*/
+//----scaling the cube------------
+const cubeScale=gui.addFolder('Scale cube')     
 cubeScale.add(cube1.scale, 'x').min(0.1).max(10).step(0.01).name('width');
 cubeScale.add(cube1.scale, 'y').min(0.1).max(10).step(0.01).name('height');
 cubeScale.add(cube1.scale, 'z').min(0.1).max(10).step(0.01).name('depth');
 
-const torusRotate=gui.addFolder('Rotate torus')     //----rotating the cube------------
+//----rotating the cube------------
+const torusRotate=gui.addFolder('Rotate torus')     
 torusRotate.add(torus1.rotation, 'x').min(0.1).max(10).step(0.01).name('roatation x');
 torusRotate.add(torus1.rotation, 'y').min(0.1).max(10).step(0.01).name('roatation y');
 torusRotate.add(torus1.rotation, 'z').min(0.1).max(10).step(0.01).name('roatation z');
 
-
-const sphereOpacity=gui.addFolder('Sphere Opacity') //----changing the opacity of the object-------
+//----changing the opacity of the object-------
+const sphereOpacity=gui.addFolder('Sphere Opacity') 
 sphereOpacity.add(sphere1.material,'opacity').min(0.2).max(1).step(0.001).name('opacity');
 
 //setting up ther perspective camera
 var camera=new THREE.PerspectiveCamera(
     40,                                       //camera FOV
-    window.innerWidth/window.innerHeight,     //camera aspectRatio
+    ASPECT_RATIO,                              //camera aspectRatio
     0.1,                                      //nearSight
     1000                                      //farSight
 );
 
 //set camera positions
-camera.position.set(0,1,4);     //set the camera position on on x,y,z axes
-camera.lookAt(0,0,0)            //makes the camera look at the center of the object
+camera.position.set(0,1,4);     
+camera.lookAt(0,0,0)            
 
 //setting up the renderer
 const renderer=new THREE.WebGLRenderer({
-    alpha:true,
     antialias:true,
     depth: true
-});                     //creating an instance of the renderer
+});                   
 
-renderer.shadowMap.enabled = true;                          //enabling shadow in render
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
-renderer.setSize( window.innerWidth, window.innerHeight);   //setting up the size of the renderer
-renderer.setClearColor(new THREE.Color('#ffffff'),0.45)
-document.body.appendChild( renderer.domElement);
+renderer.shadowMap.enabled = true;     
+ //adding shadow type as soft shadow                     
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;  
+ //setting up the size of the renderer       
+renderer.setSize( CANVAS_WIDTH,CANVAS_HEIGHT);  
+document.getElementById('content').appendChild( renderer.domElement);
 
 //setting up orbit controls
 controls = new THREE.OrbitControls(camera,renderer.domElement);
-controls.maxPolarAngle = Math.PI/2;     //prevent orbit controls from going below the ground
-controls.enableDamping = true;   //damping 
-controls.dampingFactor = 0.25;   //damping inertia
+//prevent orbit controls from going below the ground
+controls.maxPolarAngle = Math.PI/2;
+//damping      
+controls.enableDamping = true;   
+ //damping inertia
+controls.dampingFactor = 0.25;  
 
 
 //function to add a hemi light
-function getHemiLight(intensity){
+function getambientLight(intensity){
     const light=new THREE.HemisphereLight(0xffffee,0xffffee, intensity)
     return light;
 }
@@ -118,7 +138,7 @@ function getPlane(breadth,length){
         side: THREE.DoubleSide
     })
     const mesh=new THREE.Mesh(geometry,material)
-    mesh.receiveShadow = false;      //set this to true to allow the object to recieve the shadow
+    mesh.receiveShadow = false;     
     return mesh;
 }
 
@@ -129,7 +149,9 @@ function getShadowPlane(){
 	material.opacity = 0.2;
     const mesh = new THREE.Mesh( plane.geometry, material );
     mesh.receiveShadow = true;
-    mesh.position.copy( plane.position );   //the shadow plan will copy its position from the original plan
+
+    //the shadow plan will copy its position from the original plan
+    mesh.position.copy( plane.position );   
     return mesh;    
 }
     
@@ -199,7 +221,6 @@ function getAnimateObject(object){
         object.scale.y=0+(t/3.0);
         object.scale.z=0+(t/3.0);
         object.material.opacity= 1+(t/3.0);
-        // object.scale.set(2,2,2);
     }
     else{
         clock=new THREE.Clock()    

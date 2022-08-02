@@ -1,22 +1,26 @@
-/*---------single object in the scene--------------*/
 // add title and heading to sketch's html page.
-document.title = 'place objects | single object'
-document.getElementById('sketch_title').innerHTML = 'a single object in 3d space'
+document.title = 'pan, zoom and rotate '
+document.getElementById('sketch_title').innerHTML = 'Pan, zoom and rotate around the object'
 document.getElementById('sketch_description').innerHTML = ''
 
-/*---declaring camera parameters------*/
-var cameraPositionX=0, cameraPositionY=0,cameraPositionZ=5;
-var FOV=75,nearSight=0.1,farSight=1000;
 
-/*------declaring the object paramters------*/
-//declaring the sphere parameters
-var sphereRadius=1, sphereWidthSegments=32, sphereHeightSegments=16, sphereColor=0xffcc66;
-var sphereRadiusPositionX=0,sphereRadiusPositionY=0,sphereRadiusPositionZ=0;
+/*---declaring camera parameters------*/
+var cameraPositionX=-5, cameraPositionY=2,cameraPositionZ=6;
+var FOV=45,nearSight=0.1,farSight=1000;
+
+/*--declaring object pararmet---*/
+//declaring cube 1 parameters
+var cube1Width=1.5,cube1Height=1.5,cube1Depth=1.5, cube1Color=0xffcc00;
+var cube1PositionX=-0,cube1PositionY=0,cube1PositionZ=0;
+//plane parameters
+var planeLength=10,planeBredth=10, planeColor=0xffffff;
+var planePositionX=0,planePositionY=-(cube1Height/2),planePositionZ=0;
+
 
 /*---delaring the light parameters---*/
 //point light parameters
 var PointLight1Color=0xffffff, pointLight1Intensity=0.5;
-var pointLight1PositionX=-100;pointLight1PositionY=100;pointLight1PositionZ=50;
+var pointLight1PositionX=-20;pointLight1PositionY=25;pointLight1PositionZ=50;
 //hemi light
 var ambientLightColor=0xffffee, ambientLightGroundColor=0xffffee, ambientLightIntensity=0.5;
 
@@ -26,28 +30,32 @@ contentDiv = document.getElementById('content')
 const CANVAS_WIDTH = contentDiv.offsetWidth
 const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
 
-
-/*-----object declaration-----*/
 //declaring objects to bring in the elements to the scene
-var sphere=getSphere(sphereRadius,sphereWidthSegments,sphereHeightSegments,sphereColor);
+var cube1=getCube(cube1Width,cube1Height,cube1Depth,cube1Color)
+var plane=getPlane(planeLength, planeBredth, planeColor)
 var pointLight1=getPointLight(PointLight1Color, pointLight1Intensity);
 var ambientLight=getambientLight(ambientLightColor,ambientLightGroundColor,ambientLightIntensity)
 
-    
-/*-----creating the scene----*/
+/*--creating the scene----*/
 const scene = new THREE.Scene();
 
-//adding all the elements to the scene
-scene.add(sphere);
-scene.add(pointLight1);
+//adding elements to the scene
+scene.add(cube1)
+scene.add(plane);
+scene.add(pointLight1)
 scene.add(ambientLight)
 
 
-/*----setting up the object positions------*/
-sphere.position.set(sphereRadiusPositionX,sphereRadiusPositionY,sphereRadiusPositionZ)
+/*--setting positions of the objects in the 3d plane---*/
+//rotating the plan on the x axis to use it as a floor
+plane.rotateX( - Math.PI / 2);
+
+
+/*-----setting up object positions----------------*/
+plane.position.set(planePositionX,planePositionY,planePositionZ)
+cube1.position.set(cube1PositionX,cube1PositionY,cube1PositionZ);
 //setting up light positions
 pointLight1.position.set(pointLight1PositionX,pointLight1PositionY,pointLight1PositionZ)
-
 
 /*-----declaring the camera and the renderer--*/
 
@@ -57,7 +65,7 @@ var camera=new THREE.PerspectiveCamera(
     ASPECT_RATIO,     
     nearSight,
     farSight
-);
+    );
 
 //set camera positions
 camera.position.set(cameraPositionX,cameraPositionY,cameraPositionZ);
@@ -65,7 +73,7 @@ camera.position.set(cameraPositionX,cameraPositionY,cameraPositionZ);
 //setting up the renderer
 const renderer=new THREE.WebGLRenderer({
     antialias: true,
-});   
+    });   
 
  //setting up the size of the renderer
 renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);  
@@ -73,11 +81,26 @@ renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);
 document.getElementById('content').appendChild( renderer.domElement);
 
 
-/*----function declarations to add objects--------*/
+//setting up Orbit Controls
+controls = new THREE.OrbitControls(camera,renderer.domElement);
 
-//function to add a sphere
-function getSphere(sphereRadius,sphereWidthSegments,sphereHeightSegments,color){
-    const geometry=new THREE.SphereGeometry(sphereRadius,sphereWidthSegments,sphereHeightSegments);
+
+/*-----function declarations to add objects----*/
+//function to add a plan-------------------------------
+function getPlane(length,breadth,color){
+    const geometry=new THREE.PlaneGeometry(length,breadth);
+    const material=new THREE.MeshPhongMaterial({
+        color: color,
+        side: THREE.DoubleSide
+    })
+    const mesh=new THREE.Mesh(geometry,material)
+    mesh.receiveShadow = true;      //set this to true to allow the object to recieve the shadow
+    return mesh;
+}
+
+//function to display a box cube
+function getCube(width,height,depth, color){
+    const geometry=new THREE.BoxGeometry(width,height,depth);
     const material=new THREE.MeshPhongMaterial({
         color: color
         });
@@ -90,6 +113,7 @@ function getSphere(sphereRadius,sphereWidthSegments,sphereHeightSegments,color){
 //function to get PointLight
 function getPointLight(color, intensity){
     const light = new THREE.PointLight(color, intensity);
+    light.castShadow=true;
     return light;
 }
 
@@ -100,12 +124,12 @@ function getambientLight(color, groundColor,intensity){
 }
 
 
+
 //function to animate the scene    
 animate();
 function animate() {   
         
-    requestAnimationFrame( animate );   
-
+    requestAnimationFrame( animate );  
     render();
     }    
 function render() {       

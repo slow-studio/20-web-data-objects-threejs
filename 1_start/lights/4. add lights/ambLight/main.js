@@ -1,59 +1,102 @@
-//creating the scene
-const scene = new THREE.Scene();
-//const gui=new dat.GUI();
+// add title and heading to sketch's html page.
+document.title = 'Loight | ambient '
+document.getElementById('sketch_title').innerHTML = 'Ambient Light'
+document.getElementById('sketch_description').innerHTML = ''
 
-//calling the functions of each individual element
-var cube=getCube(1,1,1);
-var ambLight=getAmbientLight(3); //adding the ambient light, the variable passed is the light intensity
+/*---declaring camera parameters------*/
+var cameraPositionX=-5, cameraPositionY=8,cameraPositionZ=5;
+var FOV=35,nearSight=0.1,farSight=1000;
+
+/*--declaring object pararmet---*/
+//declaring cube 1 parameters
+var cube1Width=1.5,cube1Height=1.5,cube1Depth=1.5, cube1Color=0xffcc00;
+var cube1PositionX=-0,cube1PositionY=0,cube1PositionZ=0;
+
+/*---delaring the light parameters---*/
+//ambient light
+var ambientLightColor=0xffffff, ambientLightIntensity=1
+
+/*--declare the canvas dimensions--*/
+const ASPECT_RATIO = 3/2
+contentDiv = document.getElementById('content')
+const CANVAS_WIDTH = contentDiv.offsetWidth
+const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
+
+
+//declaring objects to bring in the elements to the scene
+var cube1=getCube(cube1Width,cube1Height,cube1Depth,cube1Color)
+var ambientLight=getAmbientLight(ambientLightIntensity,ambientLightColor)
+
+/*--creating the scene----*/
+const scene = new THREE.Scene();
 
 //adding elements to the scene
-scene.add(cube);
-scene.add(ambLight);
+scene.add(cube1)
+scene.add(ambientLight)
+
+/*-----setting up object positions----------------*/
+cube1.position.set(cube1PositionX,cube1PositionY,cube1PositionZ);
+//setting up light positions
+
+
+/*-----declaring the camera and the renderer--*/
 
 //adding a perspective camera to the scene
 var camera=new THREE.PerspectiveCamera(
-    75,                                         //FOV
-    window.innerWidth / window.innerHeight,     //aspect ration
-    0.1,                                        //near
-    1000                                        //far
-);
+    FOV,
+    ASPECT_RATIO,     
+    nearSight,
+    farSight
+    );
 
 //set camera positions
-camera.position.set(-1,0,5);
+camera.position.set(cameraPositionX,cameraPositionY,cameraPositionZ);
 
 //setting up the renderer
 const renderer=new THREE.WebGLRenderer({
-    antialias:true
-});   //creating an instance of the renderer
+    antialias: true,
+    });   
 
-renderer.setSize( window.innerWidth, window.innerHeight);   //setting up the size of the renderer
-document.body.appendChild( renderer.domElement);
+ //setting up the size of the renderer
+renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);  
+//adding renderer to the DOM
+document.getElementById('content').appendChild( renderer.domElement);
+
+
+//setting up Orbit Controls
+controls = new THREE.OrbitControls(camera,renderer.domElement);
+
 
 //function to display a box cube
-function getCube(width,height,depth){
+function getCube(width,height,depth, color){
     const geometry=new THREE.BoxGeometry(width,height,depth);
     const material=new THREE.MeshPhongMaterial({
-        color: 0x44aa88
+        color: color
         });
     const mesh=new THREE.Mesh(geometry,material);    
     return mesh;
 }
 
+
+/*-----function declarations to add lights----*/
 //function to get an Ambient Light
-function getAmbientLight(intensity){
-    const light=new THREE.AmbientLight(0x404040);
+function getAmbientLight(intensity,color){
+    const light=new THREE.AmbientLight(color);
     light.intensity=intensity;
     return light;
 }
 
-//animating the scene    
-function animate() {
-    requestAnimationFrame( animate );
-    cube.rotation.x += 0.0025;		//rotate the cube in the x axis
-    cube.rotation.y += 0.0025;		//rotate the cube in the y axis
-    renderer.render( scene, camera );
-}
+
+
+
+//function to animate the scene    
 animate();
-
-
-
+function animate() {   
+        
+    requestAnimationFrame( animate );  
+    render();
+    }    
+function render() {       
+    renderer.render( scene, camera );
+    }
+    

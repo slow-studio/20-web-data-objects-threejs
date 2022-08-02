@@ -1,56 +1,117 @@
-/* MeshBasic materials don't react to light, so no light has been added to the scene*/
+// add title and heading to sketch's html page.
+document.title = 'Materials | Basic '
+document.getElementById('sketch_title').innerHTML = 'Mesh Basic Material'
+document.getElementById('sketch_description').innerHTML = ''
 
-//creating the scene
+/*---declaring camera parameters------*/
+var cameraPositionX=-5, cameraPositionY=2,cameraPositionZ=6;
+var FOV=45,nearSight=0.1,farSight=1000;
+
+/*--declaring object pararmet---*/
+//declaring cube 1 parameters
+var cube1Width=1.5,cube1Height=1.5,cube1Depth=1.5, cube1Color=0xffcc00;
+var cube1PositionX=-0,cube1PositionY=0,cube1PositionZ=0;
+
+/*---delaring the light parameters---*/
+//point light parameters
+var PointLight1Color=0xffffff, pointLight1Intensity=0.5;
+var pointLight1PositionX=-20;pointLight1PositionY=25;pointLight1PositionZ=50;
+//hemi light
+var ambientLightColor=0xffffee, ambientLightGroundColor=0xffffee, ambientLightIntensity=0.5;
+
+
+/*--declare the canvas dimensions--*/
+const ASPECT_RATIO = 3/2
+contentDiv = document.getElementById('content')
+const CANVAS_WIDTH = contentDiv.offsetWidth
+const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
+
+
+//declaring objects to bring in the elements to the scene
+var cube1=getCube(cube1Width,cube1Height,cube1Depth,cube1Color)
+var pointLight1=getPointLight(PointLight1Color, pointLight1Intensity);
+var ambientLight=getAmbientLight(ambientLightColor,ambientLightIntensity)
+
+
+/*--creating the scene----*/
 const scene = new THREE.Scene();
 
-//calling the individual functions
-var cube=getCube(1,1,1);
-
 //adding elements to the scene
-scene.add(cube);
+scene.add(cube1)
+scene.add(pointLight1)
+scene.add(ambientLight)
 
+
+/*-----setting up object positions----------------*/
+cube1.position.set(cube1PositionX,cube1PositionY,cube1PositionZ);
+//setting up light positions
+pointLight1.position.set(pointLight1PositionX,pointLight1PositionY,pointLight1PositionZ)
+
+
+
+/*-----declaring the camera and the renderer--*/
 
 //adding a perspective camera to the scene
 var camera=new THREE.PerspectiveCamera(
-    75,                                         //FOV
-    window.innerWidth / window.innerHeight,     //aspect ration
-    0.1,                                        //near
-    1000                                        //far
-);
+    FOV,
+    ASPECT_RATIO,     
+    nearSight,
+    farSight
+    );
 
-//set camera positions on the x,y,z coordinates
-camera.position.set(-1,0,5);
-
+//set camera positions
+camera.position.set(cameraPositionX,cameraPositionY,cameraPositionZ);
 
 //setting up the renderer
-const renderer=new THREE.WebGLRenderer(
-    {
-        antialias: true,
-        alpha: true
-    }
-);   //creating an instance of the renderer
+const renderer=new THREE.WebGLRenderer({
+    antialias: true,
+    });   
 
-renderer.setSize( window.innerWidth, window.innerHeight);   //setting up the size of the renderer
-document.body.appendChild( renderer.domElement);
+ //setting up the size of the renderer
+renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);  
+//adding renderer to the DOM
+document.getElementById('content').appendChild( renderer.domElement);
+
+
+//setting up Orbit Controls
+controls = new THREE.OrbitControls(camera,renderer.domElement);
+
 
 //function to display a box cube
-function getCube(width,height,depth){
+function getCube(width,height,depth, color){
     const geometry=new THREE.BoxGeometry(width,height,depth);
     const material=new THREE.MeshBasicMaterial({
-        color: 0xffcc00
+        color: color
         });
     const mesh=new THREE.Mesh(geometry,material);    
     return mesh;
 }
 
-//animating the scene    
-function animate() {
-    requestAnimationFrame( animate );
-    cube.rotation.x += 0.0025;		//rotate the cube in the x axis
-    cube.rotation.y += 0.0025;		//rotate the cube in the y axis
+
+/*-----function declarations to add lights----*/
+//function to get PointLight
+function getPointLight(color, intensity){
+    const light = new THREE.PointLight(color, intensity);
+    light.castShadow=true;
+    return light;
+}
+
+//function to get an Ambient Light-------------------
+function getAmbientLight(intensity,color){
+    const light=new THREE.AmbientLight(color);
+    light.intensity=intensity;
+    return light;
+}
+
+
+//function to animate the scene    
+animate();
+function animate() {   
+        
+    requestAnimationFrame( animate );  
+    render();
+    }    
+function render() {       
     renderer.render( scene, camera );
     }
-    animate();
-
-
-
+    

@@ -1,16 +1,27 @@
-console.log("hello world")
+/*-----------new section-----------*/
+// add title and heading to sketch's html page.
+document.title = 'Movement | Linear '
+document.getElementById('sketch_title').innerHTML = 'Linear movement'
+document.getElementById('sketch_description').innerHTML = ''
+
+
+/*--declare the canvas dimensions--*/
+const ASPECT_RATIO = 3/2
+contentDiv = document.getElementById('content')
+const CANVAS_WIDTH = contentDiv.offsetWidth
+const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
+
 
 var clock = new THREE.Clock;    //defining clock as a global variable
 
 //creating the 3d scene
 const scene=new THREE.Scene();
-const gui=new dat.GUI();
 
 
 //objets to call the elements
 var plane=getPlane();
 var sphere=getSphere(0.35,32,16);
-var hemiLight=getHemiLight(0.5);
+var ambientLight=getambientLight(0.5);
 var spotLight=getSpotLight(0.5);
 
 
@@ -19,7 +30,7 @@ spotLight.position.set(10,30,50);       //setting position of spotlight
 //adding elements to the scene
 scene.add(plane);
 scene.add(sphere);
-scene.add(hemiLight);
+scene.add(ambientLight);
 scene.add(spotLight);
 
 
@@ -28,13 +39,13 @@ scene.add(spotLight);
 //setting up the perspective camera to the scene
 var camera=new THREE.PerspectiveCamera(
     45,                                         //FOV
-    window.innerWidth / window.innerHeight,     //aspect ration
+    ASPECT_RATIO,     //aspect ration
     0.1,                                        //near
     1000                                        //far
 );
 
 //set camera positions
-camera.position.set(0,2,5);
+camera.position.set(0,2,4.5);
 camera.lookAt(0,0,0)
 spotLight.position.set(30,30,30);
 
@@ -47,30 +58,29 @@ plane.rotateX( - Math.PI / 2);
 //setting the position of the sphere with respect to the y axis on top of the plan
 sphere.position.y = sphere.geometry.parameters.radius;
 
-//adding the GUI controls for each element
-const spotLightGUI=gui.addFolder('SpotLight Controls')
-spotLightGUI.add(spotLight, 'intensity').min(0).max(10).step(0.01);
-
-
 
 //setting up the renderer
 const renderer=new THREE.WebGLRenderer({
-    alpha:true,
     antialias:true,
     depth: true
-});   //creating an instance of the renderer
+});   
 
-renderer.shadowMap.enabled = true;                          //enabling shadow in render
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
-renderer.setSize( window.innerWidth, window.innerHeight);   //setting up the size of the renderer
-renderer.setClearColor(new THREE.Color('#ffffff'),0.45)
-document.body.appendChild( renderer.domElement);
+//enabling shadow in render
+renderer.shadowMap.enabled = true;      
+ //adding shadow type as soft shadow                    
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;          
+renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);   
+//adding renderer to the DOM
+document.getElementById('content').appendChild( renderer.domElement);
 
 //setting up orbit controls
 controls = new THREE.OrbitControls(camera,renderer.domElement);
-controls.maxPolarAngle = Math.PI/2.05;     //prevent orbit controls from going below the ground
-controls.enableDamping = true;   //damping 
-controls.dampingFactor = 0.25;   //damping inertia
+//prevent orbit controls from going below the ground
+controls.maxPolarAngle = Math.PI/2.05;  
+//damping    
+controls.enableDamping = true;   
+//damping inertia
+controls.dampingFactor = 0.25;   
 
 //function to get a sphere
 function getSphere(radius,widthSegment,heightSegment){
@@ -96,12 +106,12 @@ function getPlane(){
         side: THREE.DoubleSide
     })
     const mesh=new THREE.Mesh(geometry,material)
-    mesh.receiveShadow = true;      //set this to true to allow the object to recieve the shadow
+    mesh.receiveShadow = true;      
     return mesh;
 }
 
 //function to add a hemi light
-function getHemiLight(intensity){
+function getambientLight(intensity){
     const light=new THREE.HemisphereLight(0xffffee,0xffffee, intensity)
     return light;
 }
@@ -117,7 +127,7 @@ function getSpotLight(intensity){
     return light;
 }
 
-
+//function to set linear movement
 function getMovement(object){
     var t = clock.getElapsedTime();
     var position;
