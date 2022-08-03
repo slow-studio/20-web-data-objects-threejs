@@ -1,24 +1,20 @@
-/*------issues to fix so far-----*/
-/*
-	1. the color of the text label for each sphere is not going well, change it to a contrasting color.
+// add title and heading to sketch's html page.
+document.title = 'income disparity'
+document.getElementById('sketch_title').innerHTML = 'Income Disparity'
+document.getElementById('sketch_description').innerHTML = ''
 
-*/
+/*--declare the canvas dimensions--*/
+const ASPECT_RATIO = 3/2
+contentDiv = document.getElementById('content')
+const CANVAS_WIDTH = contentDiv.offsetWidth
+const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
 
-console.log("text page transition")
 
-console.log("initiating income disparity")
-
-let objects=[]  //we will store all the objects in this array once they are initiated
+let objects=[];  //we will store all the objects in this array once they are initiated
 var shouldTransition;
 var sphereText;
 const totalWealthIndia=15.3*1000000;	//wealth in million USD in 2019
 
-
-// parent of our canvas is going to be called 'parent'
-parent = document.getElementById('canvas1')
-CANVAS_WIDTH = parent.offsetWidth
-console.log(CANVAS_WIDTH)
-ASPECT_RATIO = 1
 
 /*----setting up the spherical background-------------*/
 var sphereBackground=getSphere(250,32,32,0x3C4347,false)
@@ -106,7 +102,7 @@ getMultipleSpheres(populationWealthDistribution)
 /*-----------adding text box inside canvas-------------------------------------*/
 info = document.createElement( 'div' );
 info.id = 'textDiv'     
-document.getElementById('canvas1').appendChild( info );
+document.getElementById('content').appendChild( info );
 
 // adding paragraph element to the div
 
@@ -119,7 +115,6 @@ info.appendChild(infoText)
 
 // adding paragraph element to the div
 infoText2=document.createElement('p')
-// infoText.style.padding='5px'
 infoText2.id="displayText2"
 infoText2.style.marginTop='2px'
 infoText2.style.color='#ffcc66'
@@ -156,17 +151,15 @@ camera.lookAt(cameraLookAt_x,cameraLookAt_y,cameraLookAt_z)
 
 /*--------setting up the renderer----------------------*/
 const renderer=new THREE.WebGLRenderer({
-    alpha:true,
     antialias:true,
     depth: true
 });                     //creating an instance of the renderer
 
 renderer.shadowMap.enabled = true;                          //enabling shadow in render
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
-renderer.setSize( CANVAS_WIDTH, CANVAS_WIDTH/ASPECT_RATIO );   //setting up the size of the renderer
+renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT );   //setting up the size of the renderer
 renderer.setClearColor(new THREE.Color('#737373'),1)
-document.getElementById('canvas1').appendChild( renderer.domElement );
-// document.body.appendChild( renderer.domElement);
+document.getElementById('content').appendChild( renderer.domElement);
 
 
 /*----adding lable rendrer-------------------*/
@@ -176,7 +169,7 @@ labelRenderer = new THREE.CSS2DRenderer();
 				labelRenderer.domElement.style.top = '0px';
 				labelRenderer.domElement.style.pointerEvents = 'none'       //ensures that orbit controls is enabled after adding label rendere
 				// document.body.appendChild( labelRenderer.domElement );	
-                document.getElementById('canvas1').appendChild( labelRenderer.domElement );	
+                document.getElementById('content').appendChild( labelRenderer.domElement );	
 
 
 
@@ -344,13 +337,8 @@ function transitionStartonClick(){
 //declaring function for double click
 function ondblclick(event){
 	
-    event.preventDefault();
-    // mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    // mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
-	let canvasBounds = renderer.context.canvas.getBoundingClientRect();
-	mouse.x = ( ( event.clientX - canvasBounds.left ) / ( canvasBounds.right - canvasBounds.left ) ) * 2 - 1;
-	mouse.y = - ( ( event.clientY - canvasBounds.top ) / ( canvasBounds.bottom - canvasBounds.top) ) * 2 + 1;
+	mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
+    mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
 
     // find intersections from raytracing
       raycaster.setFromCamera(mouse, camera);
@@ -369,13 +357,8 @@ function ondblclick(event){
 //declaring MouseDown function
 function onMouseDown(){
 	
-    event.preventDefault();
-    // mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    // mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
-	let canvasBounds = renderer.context.canvas.getBoundingClientRect();
-	mouse.x = ( ( event.clientX - canvasBounds.left ) / ( canvasBounds.right - canvasBounds.left ) ) * 2 - 1;
-	mouse.y = - ( ( event.clientY - canvasBounds.top ) / ( canvasBounds.bottom - canvasBounds.top) ) * 2 + 1;
+  	mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
+    mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
 
     // find intersections from raytracing
       raycaster.setFromCamera(mouse, camera);
@@ -434,10 +417,11 @@ function onMouseUp(){
 //declaring touchstart function
 function onTouchStart(event){
     console.log("touch start")
-    var rect = canvas1.getBoundingClientRect();
+    var rect = getElementById('content').getBoundingClientRect();
     mouse.x = + ( (event.targetTouches[ 0 ].pageX - rect.left) / rect.width ) * 2 - 1;
     mouse.y = - ( (event.targetTouches[ 0 ].pageY - rect.top) / rect.height ) * 2 + 1;
-    // find intersections
+   
+	// find intersections
     raycaster.setFromCamera(mouse, camera);
     
     var intersects = raycaster.intersectObject(scene,true);  

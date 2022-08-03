@@ -64,9 +64,9 @@ var changeObjectColorBackTo=0xffcc00, delayDuration=500;
 
 /*-----------adding text box inside canvas-------------------------------------*/
 info = document.createElement( 'div' );
-info.style.position = 'relative';
-info.style.top = '50px';
-info.style.width = '100%';
+info.style.position = 'absolute';
+info.style.top = '30%';
+info.style.width = '60%';
 info.style.textAlign = 'center';
 info.style.color = '#b52525';      
 info.style.backgroundColor = 'transparent';
@@ -301,8 +301,6 @@ mouse = new THREE.Vector2()
  window.addEventListener( 'resize', onWindowResize );       
 
 //adding on event listeners to aid user interactions
-// renderer.domElement.addEventListener('click', onClick);
-
 /*----DOM events for web----*/
 renderer.domElement.addEventListener('mousedown',onMouseDown);
 renderer.domElement.addEventListener('mouseup',onMouseUp);
@@ -325,8 +323,7 @@ function onWindowResize() {
 /*---------------DOM event listeners for Mobile-----------------------*/
 //declaring function for Touch start event
 function onTouchStart(event){
-    console.log("touch start")
-    var rect = canvas1.getBoundingClientRect();
+    var rect = getElementById('content').getBoundingClientRect();
     mouse.x = + ( (event.targetTouches[ 0 ].pageX - rect.left) / rect.width ) * 2 - 1;
      mouse.y = - ( (event.targetTouches[ 0 ].pageY - rect.top) / rect.height ) * 2 + 1;
     // find intersections
@@ -350,7 +347,6 @@ function onTouchStart(event){
 
 //declaring function for Touch End event
 function onTouchEnd(){
-    console.log("touch end event")
   
          //this is where you specify the required interaction as required
         if(object.parent.object_class=="cup"){
@@ -362,11 +358,9 @@ function onTouchEnd(){
 /*---------------DOM event listeners for WEB on a PC-----------------------*/
 //declaring function for MouseDown event
 function onMouseDown(event){
-    console.log("mouse down event")
-    event.preventDefault();
+   
     mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
     mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
-
 
     // find intersections
       raycaster.setFromCamera(mouse, camera);
@@ -389,7 +383,7 @@ function onMouseDown(event){
 
 //declaring function for MouseUp event
 function onMouseUp(){
-    console.log("mouse up event")
+    
       //this is where you specify the required interaction as required
       if(object.parent.object_class=="cup"){
         timeFunction(object)            
