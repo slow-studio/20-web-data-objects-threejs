@@ -140,6 +140,10 @@ function getPlane(breadth,length){
         side: THREE.DoubleSide
     })
     const mesh=new THREE.Mesh(geometry,material)
+    // we dont want the normal plan to receive a shadow,
+    // because the shadows look really ugly. 
+    // instead, we created a shadowMaterial,
+    // and it looks better for shadows
     mesh.receiveShadow = false;     
     return mesh;
 }
@@ -148,7 +152,7 @@ function getPlane(breadth,length){
 //--a shadow plan is used for casting dynamic shadows---------------
 function getShadowPlane(){
     const material = new THREE.ShadowMaterial();
-	material.opacity = 0.2;
+	material.opacity = .2;
     const mesh = new THREE.Mesh( plane.geometry, material );
     mesh.receiveShadow = true;
 

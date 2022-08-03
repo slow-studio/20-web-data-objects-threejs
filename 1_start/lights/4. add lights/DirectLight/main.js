@@ -14,8 +14,8 @@ var cube1PositionX=-0,cube1PositionY=0,cube1PositionZ=0;
 
 /*---delaring the light parameters---*/
 //direct light
-var directLightColor=0xffffff, directLightIntensity=7
-var directLightPositionX=10,directLightPositionY=05,directLightPositionZ=10;
+var directLightColor=0xffffff, directLightIntensity=.85
+var directLightPositionX=10,directLightPositionY=5,directLightPositionZ=10;
 var directLightTargetPositionX=0, directLightTargetPositionY=0,directLightTargetPositionZ=0;
 
 /*--declare the canvas dimensions--*/
@@ -27,7 +27,7 @@ const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
 
 //declaring objects to bring in the elements to the scene
 var cube1=getCube(cube1Width,cube1Height,cube1Depth,cube1Color)
-var directLight=getDirectionalLight(directLightIntensity,directLightColor)
+var directLight=getDirectionalLight(directLightColor,directLightIntensity)
 
 /*--creating the scene----*/
 const scene = new THREE.Scene();

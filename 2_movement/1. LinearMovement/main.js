@@ -77,7 +77,7 @@ document.getElementById('content').appendChild( renderer.domElement);
 //setting up orbit controls
 controls = new THREE.OrbitControls(camera,renderer.domElement);
 //prevent orbit controls from going below the ground
-controls.maxPolarAngle = Math.PI/2.05;  
+controls.maxPolarAngle = Math.PI/2.05; 
 //damping    
 controls.enableDamping = true;   
 //damping inertia
@@ -147,13 +147,12 @@ function getMovement(object){
 
 //function to animate the scene------
 animate();
+
 function animate() {
     requestAnimationFrame( animate );    
+    getMovement(sphere)
     render();
 }
-
 function render() {
-    
-    getMovement(sphere)
     renderer.render( scene, camera );
 }

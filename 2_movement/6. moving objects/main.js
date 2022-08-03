@@ -10,9 +10,6 @@ contentDiv = document.getElementById('content')
 const CANVAS_WIDTH = contentDiv.offsetWidth
 const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
 
-//defining clock as a global variable
-var clock = new THREE.Clock;   
-
 //declaring the scene
 const scene=new THREE.Scene();
 

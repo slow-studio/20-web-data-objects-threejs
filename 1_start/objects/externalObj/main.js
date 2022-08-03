@@ -81,6 +81,7 @@ const renderer=new THREE.WebGLRenderer({
 renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);  
 renderer.shadowMap.enabled = true;                          //enabling shadow in render
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
+renderer.setClearColor(new THREE.Color('#eee'),0.5)
 //adding renderer to the DOM
 document.getElementById('content').appendChild( renderer.domElement);
 
