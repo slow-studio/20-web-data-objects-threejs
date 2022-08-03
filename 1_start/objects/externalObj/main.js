@@ -104,26 +104,24 @@ function getPlane(length,breadth,color){
 //function to call the GLTF Loader----the obj location and positions are passed as parameters in the function call
 function getGLTFLoader(assetLocation,positionX,positionY,positionZ, color){
     const loader=new THREE.GLTFLoader();
-loader.load( assetLocation, function ( gltf ) {
-    model=gltf.scene;
+    loader.load( assetLocation, function ( gltf ) {
+    model = gltf.scene;
 
     const newMaterial = new THREE.MeshStandardMaterial({
-                                    color: color,
-                                    roughness: 0.8
-                                                                       
-                        });
-						model.traverse((o) => {
-						if (o.isMesh) o.material = newMaterial;
-						}); 
-
-                        //model.wireframe=true    
-                        model.castShadow = true;
-                        model.traverse(function (node) {
-                          if (node.isMesh) {
-                            node.castShadow = true;
-                            node.receiveShadow = true;
-                          }
-                        });
+        color: color,
+        roughness: 0.8
+    });
+	model.traverse((o) => {
+	   if (o.isMesh) o.material = newMaterial;
+	}); 
+    // model.wireframe = true    
+    model.castShadow = true; // not sure if this has any effect. need to check.
+    model.traverse(function (node) {
+      if (node.isMesh) {
+        node.castShadow = true;
+        node.receiveShadow = true;
+      }
+    });
     model.position.set(positionX,positionY,positionZ);                        
 	scene.add(model);
 }, undefined, function ( error ) {
