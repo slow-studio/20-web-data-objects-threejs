@@ -25,7 +25,7 @@ cube2=getCube(0.5,0.5,0.5,0x3D9D9B);
 sphere1=getSphere(0.35,32,16,0x3290FF) 
 torus1=getTorus(0x3D9D9B);
 cube3=getCube(0.8,0.8,0.8,0x3290FF);
-ambientLight=getambientLight(0.5);
+HemiLight=getHemiLight(0.5);
 spotLight=getSpotLight(0.75);
 plane=getPlane(10,10);
 
@@ -40,6 +40,7 @@ torus1.position.set(-1.5,0,0);
 sphere1.position.set(1.5,0,0);
 cube2.position.set(0,0,-2.5);
 
+
 //setting position of the light
 spotLight.position.set(10,30,50);       
 
@@ -51,7 +52,7 @@ scene.add(cube1);
 scene.add(torus1);
 scene.add(sphere1);
 scene.add(cube2);
-scene.add(ambientLight);
+scene.add(HemiLight);
 scene.add(spotLight);
 
 //rotating the plan on the x axis to use it as a floor
@@ -100,6 +101,7 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;  
  //setting up the size of the renderer       
 renderer.setSize( CANVAS_WIDTH,CANVAS_HEIGHT);  
+renderer.setClearColor(new THREE.Color('#b9b7bd'),0.45)
 document.getElementById('content').appendChild( renderer.domElement);
 
 //setting up orbit controls
@@ -113,8 +115,8 @@ controls.dampingFactor = 0.25;
 
 
 //function to add a hemi light
-function getambientLight(intensity){
-    const light=new THREE.HemisphereLight(0xffffee,0xffffee, intensity)
+function getHemiLight(intensity){
+    const light=new THREE.HemisphereLight(0xffffee,0xffcc00, intensity)
     return light;
 }
 
@@ -134,7 +136,7 @@ function getSpotLight(intensity){
 function getPlane(breadth,length){
     const geometry=new THREE.PlaneGeometry(breadth,length);
     const material=new THREE.MeshPhongMaterial({
-        color: 0xffffff,
+        color: 0xddeeff,
         side: THREE.DoubleSide
     })
     const mesh=new THREE.Mesh(geometry,material)

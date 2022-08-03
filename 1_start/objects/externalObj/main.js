@@ -21,7 +21,7 @@ var externalObjectColor=0xffcc44;
 var PointLight1Color=0xffffff, pointLight1Intensity=0.5;
 var pointLight1PositionX=-20;pointLight1PositionY=15;pointLight1PositionZ=15.5;
 //hemi light
-var ambientLightColor=0xffffee, ambientLightGroundColor=0xffffee, ambientLightIntensity=0.5;
+var HemiLightColor=0xffffee, HemiLightGroundColor=0xffffee, HemiLightIntensity=0.5;
 
 
 /*--declare the canvas dimensions--*/
@@ -35,7 +35,7 @@ const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
 //declaring objects to bring in the elements to the scene
 var plane=getPlane(planeLength, planeBredth, planeColor)
 var pointLight1=getPointLight(PointLight1Color, pointLight1Intensity);
-var ambientLight=getambientLight(ambientLightColor,ambientLightGroundColor,ambientLightIntensity)
+var HemiLight=getHemiLight(HemiLightColor,HemiLightGroundColor,HemiLightIntensity)
 
 //external object,here we are passing the obj location and positions as the parameter
 var gltfObj1=getGLTFLoader('./assets/roun.glb',externObjectPositionX,externObjectPositionY,externObjectPositionZ, externalObjectColor);        
@@ -46,7 +46,7 @@ const scene = new THREE.Scene();
 //adding elements to the scene
 scene.add(plane);
 scene.add(pointLight1)
-scene.add(ambientLight)
+scene.add(HemiLight)
 
 
 /*--setting positions of the objects in the 3d plane---*/
@@ -79,6 +79,7 @@ const renderer=new THREE.WebGLRenderer({
 
  //setting up the size of the renderer
 renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);  
+renderer.setClearColor(new THREE.Color('#b9b7bd'),0.45)
 renderer.shadowMap.enabled = true;                          //enabling shadow in render
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
 //adding renderer to the DOM
@@ -141,15 +142,8 @@ function getPointLight(color, intensity){
 }
 
 //function to add a hemi light-------------------------
-function getambientLight(color, groundColor,intensity){
+function getHemiLight(color, groundColor,intensity){
     const light=new THREE.HemisphereLight(color, groundColor, intensity)
-    return light;
-}
-
-//function to get an Ambient Light-------------------
-function getAmbientLight(intensity,color){
-    const light=new THREE.AmbientLight(color);
-    light.intensity=intensity;
     return light;
 }
 
@@ -159,9 +153,6 @@ animate();
 function animate() {   
         
     requestAnimationFrame( animate );  
-    
-
-
     render();
     }    
 function render() {       

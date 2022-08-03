@@ -21,7 +21,7 @@ const scene=new THREE.Scene();
 //objets to call the elements
 var plane=getPlane();
 var sphere=getSphere(0.35,32,16);
-var ambientLight=getambientLight(0.5);
+var HemiLight=getHemiLight(0.5);
 var spotLight=getSpotLight(0.5);
 
 
@@ -30,7 +30,7 @@ spotLight.position.set(10,30,50);       //setting position of spotlight
 //adding elements to the scene
 scene.add(plane);
 scene.add(sphere);
-scene.add(ambientLight);
+scene.add(HemiLight);
 scene.add(spotLight);
 
 
@@ -69,7 +69,8 @@ const renderer=new THREE.WebGLRenderer({
 renderer.shadowMap.enabled = true;      
  //adding shadow type as soft shadow                    
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;          
-renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);   
+renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT); 
+renderer.setClearColor(new THREE.Color('#b9b7bd'),0.45)  
 //adding renderer to the DOM
 document.getElementById('content').appendChild( renderer.domElement);
 
@@ -87,9 +88,9 @@ function getSphere(radius,widthSegment,heightSegment){
     const geometry=new THREE.SphereBufferGeometry(radius,widthSegment,heightSegment);
     const material=new THREE.MeshStandardMaterial({
 
-        metalness:0.3,
+        metalness:0,
         roughness:0.75,
-        opacity:0.5,
+        opacity:1,
         color:  0xffcc00
         
     });
@@ -102,7 +103,7 @@ function getSphere(radius,widthSegment,heightSegment){
 function getPlane(){
     const geometry=new THREE.PlaneGeometry(10,10);
     const material=new THREE.MeshPhongMaterial({
-        color: 0xffffff,
+        color: 0xddeeff,
         side: THREE.DoubleSide
     })
     const mesh=new THREE.Mesh(geometry,material)
@@ -111,7 +112,7 @@ function getPlane(){
 }
 
 //function to add a hemi light
-function getambientLight(intensity){
+function getHemiLight(intensity){
     const light=new THREE.HemisphereLight(0xffffee,0xffffee, intensity)
     return light;
 }

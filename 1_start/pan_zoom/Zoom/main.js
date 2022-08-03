@@ -22,7 +22,7 @@ var planePositionX=0,planePositionY=-(cube1Height/2),planePositionZ=0;
 var PointLight1Color=0xffffff, pointLight1Intensity=0.5;
 var pointLight1PositionX=-20;pointLight1PositionY=25;pointLight1PositionZ=50;
 //hemi light
-var ambientLightColor=0xffffee, ambientLightGroundColor=0xffffee, ambientLightIntensity=0.5;
+var HemiLightColor=0xffffee, HemiLightGroundColor=0xffffee, HemiLightIntensity=0.5;
 
 /*--declare the canvas dimensions--*/
 const ASPECT_RATIO = 3/2
@@ -34,7 +34,7 @@ const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
 var cube1=getCube(cube1Width,cube1Height,cube1Depth,cube1Color)
 var plane=getPlane(planeLength, planeBredth, planeColor)
 var pointLight1=getPointLight(PointLight1Color, pointLight1Intensity);
-var ambientLight=getambientLight(ambientLightColor,ambientLightGroundColor,ambientLightIntensity)
+var HemiLight=getHemiLight(HemiLightColor,HemiLightGroundColor,HemiLightIntensity)
 
 /*--creating the scene----*/
 const scene = new THREE.Scene();
@@ -43,7 +43,7 @@ const scene = new THREE.Scene();
 scene.add(cube1)
 scene.add(plane);
 scene.add(pointLight1)
-scene.add(ambientLight)
+scene.add(HemiLight)
 
 
 /*--setting positions of the objects in the 3d plane---*/
@@ -77,6 +77,7 @@ const renderer=new THREE.WebGLRenderer({
 
  //setting up the size of the renderer
 renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);  
+renderer.setClearColor(new THREE.Color('#b9b7bd'),0.45)
 //adding renderer to the DOM
 document.getElementById('content').appendChild( renderer.domElement);
 
@@ -118,18 +119,10 @@ function getPointLight(color, intensity){
 }
 
 //function to add a hemi light-------------------------
-function getambientLight(color, groundColor,intensity){
+function getHemiLight(color, groundColor,intensity){
     const light=new THREE.HemisphereLight(color, groundColor, intensity)
     return light;
 }
-
-//function to get an Ambient Light-------------------
-function getAmbientLight(intensity,color){
-    const light=new THREE.AmbientLight(color);
-    light.intensity=intensity;
-    return light;
-}
-
 
 
 //function to animate the scene    

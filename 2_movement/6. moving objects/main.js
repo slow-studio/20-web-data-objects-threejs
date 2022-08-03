@@ -17,7 +17,7 @@ var clock = new THREE.Clock;
 const scene=new THREE.Scene();
 
 //objects to call the declared elements
-var ambientLight=getambientLight(0.5);
+var HemiLight=getHemiLight(0.5);
 var spotLight=getSpotLight(0.5);
 var sphere1=getSphere(0.35,32,16,0x3290FF); 
 var sphere2=getSphere(0.3,32,16,0xffcc00)
@@ -40,7 +40,7 @@ sphere3.position.x=+2;
 spotLight.position.set(10,20,20);   
 
 //adding the elements to the scene
-scene.add(ambientLight);
+scene.add(HemiLight);
 scene.add(sphere1);
 scene.add(sphere2);
 scene.add(sphere3);
@@ -84,6 +84,7 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
 //setting up the size of the renderer         
 renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);   
+renderer.setClearColor(new THREE.Color('#b9b7bd'),0.45)
 document.getElementById('content').appendChild( renderer.domElement);
 
 //setting up orbit controls
@@ -100,8 +101,8 @@ controls.dampingFactor = 0.25;
 
 
 //function to add a hemi light-------------------------
-function getambientLight(intensity){
-    const light=new THREE.HemisphereLight(0xffffee,0xffffee, intensity)
+function getHemiLight(intensity){
+    const light=new THREE.HemisphereLight(0xffffee,0xffcc00, intensity)
     return light;
 }
 
@@ -120,7 +121,7 @@ function getSpotLight(intensity){
 function getPlane(breadth,length){
     const geometry=new THREE.PlaneGeometry(breadth,length);
     const material=new THREE.MeshPhongMaterial({
-        color: 0xffffff,
+        color: 0xddeeff,
         side: THREE.DoubleSide
     })
     const mesh=new THREE.Mesh(geometry,material)

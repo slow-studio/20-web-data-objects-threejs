@@ -77,6 +77,7 @@ const renderer=new THREE.WebGLRenderer({
 
  //setting up the size of the renderer
 renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);  
+renderer.setClearColor(new THREE.Color('#b9b7bd'),0.45)
 //adding renderer to the DOM
 document.getElementById('content').appendChild( renderer.domElement);
 

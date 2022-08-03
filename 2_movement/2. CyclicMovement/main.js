@@ -22,13 +22,13 @@ var sphere2=getSphere(0.35,32,16,0x3D9D9B)
 var sphere3=getSphere(0.2,32,16,0x3290FF)
 var sphere4=getSphere(0.2,32,16,0x3290FF)
 
-var ambientLight=getambientLight(0.5);
+var HemiLight=getHemiLight(0.5);
 var spotLight=getSpotLight(0.5);
 
 
 //adding elements to the scene
 scene.add(cube1);
-scene.add(ambientLight);
+scene.add(HemiLight);
 scene.add(spotLight);
 scene.add(sphere1,sphere2,sphere3,sphere4);
 
@@ -79,7 +79,7 @@ controls.dampingFactor = 0.25;
 
 
 //function to add a hemi light
-function getambientLight(intensity){
+function getHemiLight(intensity){
     const light=new THREE.HemisphereLight(0xffffee,0xffffee, intensity)
     return light;
 }
@@ -125,7 +125,7 @@ function animate(){
     cube1.rotation.x+=0.0025;
     cube1.rotation.y-=0.0025;
     
-    //rotating the parent container to rotate the spheres a whole in the z,y axes
+    //rotating the parent container to rotate the spheres as a whole in the z,y axes
     parentContainer1.rotation.z-=0.01;   
     parentContainer1.rotation.y-=0.01; 
 

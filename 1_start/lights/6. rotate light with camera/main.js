@@ -10,10 +10,10 @@ var FOV=35,nearSight=0.1,farSight=1000;
 
 /*--declaring object pararmet---*/
 //declaring cube 1 parameters
-var cube1Width=1,cube1Height=1,cube1Depth=1, cube1Color=0xffcc00;
+var cube1Width=1,cube1Height=1,cube1Depth=1, cube1Color=0xffbb00;
 var cube1PositionX=-0,cube1PositionY=0,cube1PositionZ=0;
 //plane parameters
-var planeLength=3, planeBreadth=3,planeColor=0xffffff;
+var planeLength=3, planeBreadth=3,planeColor=0xddeeff;
 
 /*---delaring the light parameters---*/
 //hemi light
@@ -77,6 +77,7 @@ const renderer=new THREE.WebGLRenderer({
 renderer.shadowMap.enabled = true;                          //enabling shadow in render
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
 renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);  
+renderer.setClearColor(new THREE.Color('#b9b7bd'),0.45)
 //adding renderer to the DOM
 document.getElementById('content').appendChild( renderer.domElement);
 

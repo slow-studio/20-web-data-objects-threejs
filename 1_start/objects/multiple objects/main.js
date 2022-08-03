@@ -25,7 +25,7 @@ var cube2PositionX=-0.8,cube2PositionY=0.5,cube2PositionZ=0;
 var PointLight1Color=0xffffff, pointLight1Intensity=0.5;
 var pointLight1PositionX=-100;pointLight1PositionY=100;pointLight1PositionZ=50;
 //hemi light
-var ambientLightColor=0xffffee, ambientLightGroundColor=0xffffee, ambientLightIntensity=0.5;
+var HemiLightColor=0xffffee, HemiLightGroundColor=0xffffee, HemiLightIntensity=0.5;
 
 /*--declare the canvas dimensions--*/
 const ASPECT_RATIO = 3/2
@@ -40,7 +40,7 @@ var cube1=getCube(cube1Width,cube1Height,cube1Depth,cube1Color)
 var cube2=getCube(cube2Width,cube2Height,cube2Depth,cube2Color)
 var sphere1=getSphere(sphere1Radius,sphere1WidthSegments,sphere1HeightSegments,sphere1Color);
 var pointLight1=getPointLight(PointLight1Color, pointLight1Intensity);
-var ambientLight=getambientLight(ambientLightColor,ambientLightGroundColor,ambientLightIntensity)
+var HemiLight=getHemiLight(HemiLightColor,HemiLightGroundColor,HemiLightIntensity)
 
 
 /*--creating the scene----*/
@@ -51,7 +51,7 @@ scene.add(cube1);
 scene.add(cube2);
 scene.add(sphere1);
 scene.add(pointLight1);
-scene.add(ambientLight)
+scene.add(HemiLight)
 
 
 //setting position of the objects in the 3d plane
@@ -82,6 +82,7 @@ const renderer=new THREE.WebGLRenderer({
 
  //setting up the size of the renderer
 renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);  
+renderer.setClearColor(new THREE.Color('#b9b7bd'),0.45)
 //adding renderer to the DOM
 document.getElementById('content').appendChild( renderer.domElement);
 
@@ -116,7 +117,7 @@ function getPointLight(color, intensity){
 }
 
 //function to add a hemi light-------------------------
-function getambientLight(color, groundColor,intensity){
+function getHemiLight(color, groundColor,intensity){
     const light=new THREE.HemisphereLight(color, groundColor, intensity)
     return light;
 }

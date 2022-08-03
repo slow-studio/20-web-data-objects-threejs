@@ -9,7 +9,7 @@ var FOV=45,nearSight=0.1,farSight=1000;
 
 /*--declaring object pararmet---*/
 //declaring cube 1 parameters
-var cube1Width=1.5,cube1Height=1.5,cube1Depth=1.5, cube1Color=0xffcc00;
+var cube1Width=1.5,cube1Height=1.5,cube1Depth=1.5, cube1Color=0xffbb00;
 var cube1PositionX=-0,cube1PositionY=0,cube1PositionZ=0;
 
 /*---delaring the light parameters---*/
@@ -69,6 +69,7 @@ const renderer=new THREE.WebGLRenderer({
 
  //setting up the size of the renderer
 renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);  
+renderer.setClearColor(new THREE.Color('#b9b7bd'),0.45)
 //adding renderer to the DOM
 document.getElementById('content').appendChild( renderer.domElement);
 
