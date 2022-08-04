@@ -21,7 +21,7 @@ var externalObjectColor=0xffcc44;
 var PointLight1Color=0xffffff, pointLight1Intensity=0.5;
 var pointLight1PositionX=-20;pointLight1PositionY=15;pointLight1PositionZ=15.5;
 //hemi light
-var HemiLightColor=0xffffee, HemiLightGroundColor=0xffffee, HemiLightIntensity=0.5;
+var ambientLightColor=0xffffee, ambientLightGroundColor=0xffffee, ambientLightIntensity=0.5;
 
 
 /*--declare the canvas dimensions--*/
@@ -35,7 +35,7 @@ const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
 //declaring objects to bring in the elements to the scene
 var plane=getPlane(planeLength, planeBredth, planeColor)
 var pointLight1=getPointLight(PointLight1Color, pointLight1Intensity);
-var HemiLight=getHemiLight(HemiLightColor,HemiLightGroundColor,HemiLightIntensity)
+var ambientLight=getambientLight(ambientLightColor,ambientLightGroundColor,ambientLightIntensity)
 
 //external object,here we are passing the obj location and positions as the parameter
 var gltfObj1=getGLTFLoader('./assets/roun.glb',externObjectPositionX,externObjectPositionY,externObjectPositionZ, externalObjectColor);        
@@ -46,7 +46,7 @@ const scene = new THREE.Scene();
 //adding elements to the scene
 scene.add(plane);
 scene.add(pointLight1)
-scene.add(HemiLight)
+scene.add(ambientLight)
 
 
 /*--setting positions of the objects in the 3d plane---*/
@@ -79,9 +79,9 @@ const renderer=new THREE.WebGLRenderer({
 
  //setting up the size of the renderer
 renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);  
-renderer.setClearColor(new THREE.Color('#b9b7bd'),0.45)
 renderer.shadowMap.enabled = true;                          //enabling shadow in render
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
+renderer.setClearColor(new THREE.Color('#eee'),0.5)
 //adding renderer to the DOM
 document.getElementById('content').appendChild( renderer.domElement);
 
@@ -105,26 +105,24 @@ function getPlane(length,breadth,color){
 //function to call the GLTF Loader----the obj location and positions are passed as parameters in the function call
 function getGLTFLoader(assetLocation,positionX,positionY,positionZ, color){
     const loader=new THREE.GLTFLoader();
-loader.load( assetLocation, function ( gltf ) {
-    model=gltf.scene;
+    loader.load( assetLocation, function ( gltf ) {
+    model = gltf.scene;
 
     const newMaterial = new THREE.MeshStandardMaterial({
-                                    color: color,
-                                    roughness: 0.8
-                                                                       
-                        });
-						model.traverse((o) => {
-						if (o.isMesh) o.material = newMaterial;
-						}); 
-
-                        //model.wireframe=true    
-                        model.castShadow = true;
-                        model.traverse(function (node) {
-                          if (node.isMesh) {
-                            node.castShadow = true;
-                            node.receiveShadow = true;
-                          }
-                        });
+        color: color,
+        roughness: 0.8
+    });
+	model.traverse((o) => {
+	   if (o.isMesh) o.material = newMaterial;
+	}); 
+    // model.wireframe = true    
+    model.castShadow = true; // not sure if this has any effect. need to check.
+    model.traverse(function (node) {
+      if (node.isMesh) {
+        node.castShadow = true;
+        node.receiveShadow = true;
+      }
+    });
     model.position.set(positionX,positionY,positionZ);                        
 	scene.add(model);
 }, undefined, function ( error ) {
@@ -142,8 +140,15 @@ function getPointLight(color, intensity){
 }
 
 //function to add a hemi light-------------------------
-function getHemiLight(color, groundColor,intensity){
+function getambientLight(color, groundColor,intensity){
     const light=new THREE.HemisphereLight(color, groundColor, intensity)
+    return light;
+}
+
+//function to get an Ambient Light-------------------
+function getAmbientLight(intensity,color){
+    const light=new THREE.AmbientLight(color);
+    light.intensity=intensity;
     return light;
 }
 
@@ -153,6 +158,9 @@ animate();
 function animate() {   
         
     requestAnimationFrame( animate );  
+    
+
+
     render();
     }    
 function render() {       

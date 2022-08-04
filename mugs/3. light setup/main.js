@@ -189,10 +189,25 @@ Orbcontrols.enablePan = false;
 
 //prevent orbit controls from going below the ground
 Orbcontrols.maxPolarAngle = Math.PI/2.2; 
+Orbcontrols.minPolarAngle = Math.PI/4; 
+Orbcontrols.maxAzimuthAngle = Math.PI/4.5; 
+Orbcontrols.minAzimuthAngle = -Math.PI/4.5; 
+/* 
+// minZoom and maxZoom only work with an Orthographic camera, 
+// and since we're using a perspective camera,
+// these don't work.
+Orbcontrols.minZoom = 1;
+Orbcontrols.maxZoom = 2;
+*/
 //damping     
 Orbcontrols.enableDamping = true;
 //damping inertia   
 Orbcontrols.dampingFactor = 0.25;   
+
+renderer.domElement.addEventListener('change',onOrbChange);
+function onOrbChange(event){
+    console.log("orbit controls change event")
+}
 
 
 //--function to call the GLTF Loader----the obj location and positions are passed as parameters in the function call
@@ -224,7 +239,10 @@ loader.load( assetLocation, function ( gltf ) {
                             node.receiveShadow = true;
                           }
                         });                   
-    model.position.set(positionX,positionY,positionZ);                      
+    model.position.set(positionX,positionY,positionZ);         
+    if(assetLocation=='../assets/curved_Plan.glb') {
+        model.scale.x = 5
+    }
 	scene.add(model);
 }); 
 }

@@ -118,31 +118,11 @@ document.getElementById('content').appendChild( renderer.domElement);
 var Orbcontrols = new THREE.OrbitControls(camera,renderer.domElement);
 //set max zoom(dolly) out distance for perspective camera, default=infinity
 Orbcontrols.maxDistance=12;             
-Orbcontrols.minDistance=3
-//prevent orbit controls from going below the ground
-Orbcontrols.maxPolarAngle = Math.PI/2.1;    
+Orbcontrols.minDistance=3 
 //enablel damping
 Orbcontrols.enableDamping = true;           
 Orbcontrols.dampingFactor = 0.25;         
 
-
-
-/*---function declarations to add elements------*/
-//function to get a sphere-----------------------------
-function getSphere(radius,widthSegment,heightSegment,color){
-    const geometry=new THREE.SphereBufferGeometry(radius,widthSegment,heightSegment);
-    const material=new THREE.MeshStandardMaterial({      
-        color: color,
-        metalness:0.1,
-        roughness:0.5,
-        transparent: true,
-        opacity:1
-    });
-    const mesh=new THREE.Mesh(geometry,material);
-    mesh.receiveShadow=true;
-    mesh.castShadow=true;    
-    return mesh;
-}
 
 
 
@@ -169,7 +149,6 @@ function onWindowResize() {
 
 //function to declare mouse down event
 function onMouseDown(){
-    event.preventDefault();
 
     mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
     mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
@@ -194,6 +173,26 @@ function getRGBLoader(assetLocation){
         scene.background=texture;
         scene.environment=texture;
         });
+}
+
+
+
+
+/*---function declarations to add elements------*/
+//function to get a sphere-----------------------------
+function getSphere(radius,widthSegment,heightSegment,color){
+    const geometry=new THREE.SphereBufferGeometry(radius,widthSegment,heightSegment);
+    const material=new THREE.MeshStandardMaterial({      
+        color: color,
+        metalness:0.1,
+        roughness:0.5,
+        transparent: true,
+        opacity:1
+    });
+    const mesh=new THREE.Mesh(geometry,material);
+    mesh.receiveShadow=true;
+    mesh.castShadow=true;    
+    return mesh;
 }
 
 
