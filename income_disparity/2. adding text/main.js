@@ -164,7 +164,8 @@ document.getElementById('content').appendChild( renderer.domElement);
 
 /*----adding lable rendrer-------------------*/
 labelRenderer = new THREE.CSS2DRenderer();
-				labelRenderer.setSize( CANVAS_WIDTH, CANVAS_WIDTH/ASPECT_RATIO );
+				labelRenderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT );
+				labelRenderer.id = 'labelRenderer'
 				labelRenderer.domElement.style.position = 'absolute';
 				labelRenderer.domElement.style.top = '0px';
 				labelRenderer.domElement.style.pointerEvents = 'none'       //ensures that orbit controls is enabled after adding label rendere
@@ -569,7 +570,7 @@ function textForEachSphere(objectId){
 function onWindowResize() {
     camera.aspect = ASPECT_RATIO;
     camera.updateProjectionMatrix();
-    renderer.setSize( CANVAS_WIDTH, CANVAS_WIDTH/ASPECT_RATIO);
+    renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);
 
    
 }
@@ -580,7 +581,6 @@ function onWindowResize() {
 function addTextLabel(object){
 
 	sphereText = document.createElement( 'div' );
-
 
 	sphereText.className = 'label';
 	sphereText.style.color='#3C4347';
