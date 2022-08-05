@@ -4,7 +4,7 @@ document.getElementById('sketch_title').innerHTML = 'Income Disparity'
 document.getElementById('sketch_description').innerHTML = ''
 
 /*--declare the canvas dimensions--*/
-const ASPECT_RATIO = 3/2
+const ASPECT_RATIO = 1
 contentDiv = document.getElementById('content')
 const CANVAS_WIDTH = contentDiv.offsetWidth
 const CANVAS_HEIGHT = CANVAS_WIDTH/ASPECT_RATIO
@@ -17,9 +17,16 @@ const totalWealthIndia=15.3*1000000;	//wealth in million USD in 2019
 
 
 /*----setting up the spherical background-------------*/
+// there's a large-humongous SPHERE inside which we place the camera and objects. 
+// we're always stuck inside this SPHERE, and never go outside.
+// we could do without this, to be honest,
+// but, in the way we've structured the code now,
+// lights and interactions are attached to this SPHERE.
+// so let's keep it as-is, and work with this.
 var sphereBackground=getSphere(250,32,32,0x3C4347,false)
 sphereBackground.material.side= THREE.BackSide; 
 sphereBackground.receiveShadow=false;
+sphereBackground.material.opacity =0;
 
 
 /*---------set camera variables--------------------*/
@@ -99,7 +106,7 @@ sphereBackground.add(ambientLight)
 getMultipleSpheres(populationWealthDistribution)
 
 
-/*-----------adding text box inside canvas-------------------------------------*/
+/*-----------adding text box -------------------------------------*/
 info = document.createElement( 'div' );
 info.id = 'textDiv'     
 document.getElementById('content').appendChild( info );
@@ -158,15 +165,15 @@ const renderer=new THREE.WebGLRenderer({
 renderer.shadowMap.enabled = true;                          //enabling shadow in render
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;           //adding shadow type as soft shadow
 renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT );   //setting up the size of the renderer
-renderer.setClearColor(new THREE.Color('#737373'),1)
+renderer.setClearColor(new THREE.Color('#333'),1)
 document.getElementById('content').appendChild( renderer.domElement);
 
 
 /*----adding lable rendrer-------------------*/
 labelRenderer = new THREE.CSS2DRenderer();
 				labelRenderer.setSize( CANVAS_WIDTH, CANVAS_WIDTH/ASPECT_RATIO );
-				labelRenderer.domElement.style.position = 'absolute';
-				labelRenderer.domElement.style.top = '0px';
+				labelRenderer.domElement.style.position = 'relative';
+				labelRenderer.domElement.style.bottom = CANVAS_WIDTH/ASPECT_RATIO+"px";
 				labelRenderer.domElement.style.pointerEvents = 'none'       //ensures that orbit controls is enabled after adding label rendere
 				// document.body.appendChild( labelRenderer.domElement );	
                 document.getElementById('content').appendChild( labelRenderer.domElement );	
