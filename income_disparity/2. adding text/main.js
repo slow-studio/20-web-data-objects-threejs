@@ -177,7 +177,7 @@ labelRenderer = new THREE.CSS2DRenderer();
 				labelRenderer.domElement.style.bottom = CANVAS_WIDTH/ASPECT_RATIO+"px";
 				labelRenderer.domElement.style.pointerEvents = 'none'       //ensures that orbit controls is enabled after adding label rendere
 				// document.body.appendChild( labelRenderer.domElement );	
-                // document.getElementById('content').appendChild( labelRenderer.domElement );	
+                document.getElementById('content').appendChild( labelRenderer.domElement );	
 
 
 
@@ -580,7 +580,6 @@ function onWindowResize() {
     camera.aspect = ASPECT_RATIO;
     camera.updateProjectionMatrix();
     renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT);
-
    
 }
 
@@ -598,29 +597,42 @@ function addTextLabel(object){
 
 	// sphereText.style.fontWeight='900';
 	// txt0 = document.createElement('p')
+	var percentageRepTxt = document.createElement('p')
+	sphereText.appendChild(percentageRepTxt)
+	var percentageRepData = document.createElement('p')
+	sphereText.appendChild(percentageRepData)
 	var wealthShareTxt = document.createElement('p')
 	sphereText.appendChild(wealthShareTxt)
 	var wealthSharingData= document.createElement('p')
 	sphereText.appendChild(wealthSharingData)
+
 	var wealthPerPersonTxt= document.createElement('p')
 	sphereText.appendChild(wealthPerPersonTxt)
 	var wealthPerPersonData= document.createElement('p')
 	sphereText.appendChild(wealthPerPersonData)
 	var totalSpheres=objects.length;
 	for(let i=0;i<totalSpheres;i++){
-		if(object==objects[i]){ 		
-			var text0="Share of Wealth: ";
-			wealthShareTxt.innerHTML=text0;
-			var text1=+populationWealthDistribution[i].wealthDistribution+"% of 15.3 trillion USD"
-			wealthSharingData.innerHTML = text1;
-			var text2="Average wealth per person: ";
-			wealthPerPersonTxt.innerHTML=text2;
-			var text3=+populationWealthDistribution[i].wealthPerPerson+" USD";	
-			wealthPerPersonData.innerHTML=text3;		
+		if(object==objects[i]){ 	
+			
+			var text0="Population representation"
+			percentageRepTxt.innerHTML=text0;
+			var text1="10% of 1.3 billion"
+			percentageRepData.innerHTML=text1;	
+			var text2="Share of Wealth: ";
+			wealthShareTxt.innerHTML=text2;
+			var text3=+populationWealthDistribution[i].wealthDistribution+"% of 15.3 trillion USD"
+			wealthSharingData.innerHTML = text3;
+			var text3="Average wealth per person: ";
+			wealthPerPersonTxt.innerHTML=text3;
+			var text4=+populationWealthDistribution[i].wealthPerPerson+" USD";	
+			wealthPerPersonData.innerHTML=text4;
+			
+			
 			
 		}	
 	}
 	
+	percentageRepTxt.style.fontWeight='900'
 	wealthShareTxt.style.fontWeight='900'
 	wealthPerPersonTxt.style.fontWeight='900'
 
