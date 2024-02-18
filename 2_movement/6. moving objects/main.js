@@ -1,6 +1,6 @@
 // add title and heading to sketch's html page.
 document.title = 'Transform controls'
-document.getElementById('sketch_title').innerHTML = 'Transform Controls: scale & rotation'
+document.getElementById('sketch_title').innerHTML = 'Moving objects aroundm & Collision detection'
 document.getElementById('sketch_description').innerHTML = ''
 
 
